@@ -103,6 +103,31 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .create-league-grid{display:grid;grid-template-columns:1fr 1.5fr auto;gap:10px;align-items:end}
 @media(max-width:700px){.landing-grid,.league-list{grid-template-columns:1fr}.create-league-grid{grid-template-columns:1fr}.league-switcher select{width:100%}}
 
+
+.league-switcher{display:none;align-items:center;gap:12px;margin:14px 0 4px;flex-wrap:wrap}
+.league-switcher-label{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;color:#667085}
+.league-switch-track{display:flex;gap:9px;overflow-x:auto;scrollbar-width:thin;padding:3px 2px 7px;flex:1;min-width:0}
+.league-pill{
+  flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;
+  padding:10px 14px;font-size:13px;font-weight:900;color:#344054;
+  box-shadow:0 2px 8px rgba(16,24,40,.04);transition:.18s ease
+}
+.league-pill:hover{transform:translateY(-1px);border-color:#b7c6de}
+.league-pill.active{
+  color:#fff;border-color:transparent;
+  background:linear-gradient(90deg,var(--blue) 0 68%,var(--red) 68% 100%);
+  box-shadow:0 5px 14px rgba(0,51,141,.2)
+}
+.league-add-btn{
+  flex:0 0 auto;border:1px solid #f0b7c2;background:#fff3f5;color:#9f1239;
+  border-radius:999px;padding:10px 13px;font-size:12px;font-weight:900
+}
+@media(max-width:700px){
+  .league-switcher{display:block!important}
+  .league-switch-track{width:100%;margin:5px 0 4px}
+  .league-add-btn{width:100%;margin-top:2px}
+}
+
 footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
 @media(max-width:900px){.auth{grid-template-columns:1fr 1fr 1fr}.auth .auth-copy{grid-column:1/-1}.auth button{grid-column:3}.props-grid{grid-template-columns:1fr}.navlinks{display:none}}@media(max-width:650px){nav{padding:12px 15px}.hero{padding:48px 15px 68px}main{padding:0 15px 55px}.auth{grid-template-columns:1fr;margin-top:-42px}.auth button{grid-column:auto}.section-title{align-items:start;flex-direction:column}.podium{grid-template-columns:1fr 1fr 1fr;gap:7px}.place{padding:12px 5px}.place.first{min-height:170px}.place.second{min-height:145px}.place.third{min-height:128px}.medal{font-size:30px}.place .name{font-size:12px}.place .pts{font-size:18px}.matchup-inner{padding:22px 14px;gap:8px}.team{font-size:19px}.game-meta{padding:0 14px 18px}.submit-card{align-items:flex-start;flex-direction:column}.rules-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column}.profile-chip .emailText{display:none}}
 </style>
@@ -146,9 +171,9 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
 
   <div class="app-shell" id="appShell">
     <div class="league-switcher" id="leagueSwitcher">
-      <label style="margin:0">Current League</label>
-      <select id="leagueSelect" onchange="switchLeague(this.value)"></select>
-      <button class="btn secondary" onclick="showLeaguePicker()">Join Another League</button>
+      <div class="league-switcher-label">Your Leagues</div>
+      <div class="league-switch-track" id="leagueSwitchTrack"></div>
+      <button class="league-add-btn" onclick="showLeaguePicker()">+ Join Another League</button>
     </div>
 
 <section class="section" id="leaderboard"><div class="section-title"><div><h2>Season Leaderboard</h2><p>Only players who have submitted at least one unlocked weekly card appear here.</p></div><span class="unlock-key">🏆 1st, 2nd & 3rd highlighted</span></div><div class="card leaderboard-card"><div class="podium" id="podium"></div><div class="full-board" id="leaderRows"></div></div></section>
@@ -365,8 +390,16 @@ async function showLeaguePicker(){
 }
 
 function renderLeagueSwitcher(){
- const sel=document.getElementById("leagueSelect");sel.innerHTML="";
- myLeagues.forEach(l=>{const o=document.createElement("option");o.value=l.id;o.textContent=l.name;if(currentLeague?.id===l.id)o.selected=true;sel.appendChild(o)});
+ const track=document.getElementById("leagueSwitchTrack");
+ if(!track)return;
+ track.innerHTML="";
+ myLeagues.forEach(l=>{
+   const b=document.createElement("button");
+   b.className="league-pill"+(currentLeague?.id===l.id?" active":"");
+   b.textContent=l.name;
+   b.onclick=()=>switchLeague(l.id);
+   track.appendChild(b);
+ });
 }
 
 async function switchLeague(id){
