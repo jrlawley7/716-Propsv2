@@ -81,6 +81,28 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .danger-btn{background:#b42318!important;color:#fff!important}
 .danger-box{margin-top:16px;padding:14px;border:1px solid #f3b5ad;background:#fff4f2;border-radius:12px}
 
+
+.landing-wrap{max-width:980px;margin:-44px auto 0;padding:0 20px 34px;position:relative;z-index:6}
+.landing-card{padding:26px}
+.landing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+.info-tile{padding:16px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe}
+.info-tile b{display:block;margin-bottom:4px}
+.auth-stage{display:none}
+.auth-stage.active{display:block}
+.league-picker{display:none;margin-top:18px}
+.league-picker.active{display:block}
+.league-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+.league-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.league-card h3{margin:0 0 4px;font-size:17px}
+.league-card p{margin:0 0 10px;color:var(--muted);font-size:12px}
+.league-switcher{display:none;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.league-switcher select{width:auto;min-width:220px}
+.app-shell{display:none}
+.app-shell.active{display:block}
+.create-league-box{margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe}
+.create-league-grid{display:grid;grid-template-columns:1fr 1.5fr auto;gap:10px;align-items:end}
+@media(max-width:700px){.landing-grid,.league-list{grid-template-columns:1fr}.create-league-grid{grid-template-columns:1fr}.league-switcher select{width:100%}}
+
 footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
 @media(max-width:900px){.auth{grid-template-columns:1fr 1fr 1fr}.auth .auth-copy{grid-column:1/-1}.auth button{grid-column:3}.props-grid{grid-template-columns:1fr}.navlinks{display:none}}@media(max-width:650px){nav{padding:12px 15px}.hero{padding:48px 15px 68px}main{padding:0 15px 55px}.auth{grid-template-columns:1fr;margin-top:-42px}.auth button{grid-column:auto}.section-title{align-items:start;flex-direction:column}.podium{grid-template-columns:1fr 1fr 1fr;gap:7px}.place{padding:12px 5px}.place.first{min-height:170px}.place.second{min-height:145px}.place.third{min-height:128px}.medal{font-size:30px}.place .name{font-size:12px}.place .pts{font-size:18px}.matchup-inner{padding:22px 14px;gap:8px}.team{font-size:19px}.game-meta{padding:0 14px 18px}.submit-card{align-items:flex-start;flex-direction:column}.rules-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column}.profile-chip .emailText{display:none}}
 </style>
@@ -91,8 +113,44 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
 <header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a><a href="#admin" onclick="showAdminLogin()">Admin</a></div><div style="display:flex;align-items:center;gap:8px"><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div><button class="btn secondary" id="logoutBtn" style="display:none;padding:9px 12px" onclick="logoutUser()">Log Out</button></div></nav></header>
 <section class="hero"><div class="hero-inner"><div class="hero-badges"><span class="badge">🦬 Bills Mafia</span><span class="badge">🏈 Weekly Props</span><span class="badge">🏆 Season Podium</span></div><h1>Make the picks.<br>Claim the podium.</h1><p>Sign in once, make five picks each Bills week, and battle your group for the top three spots all season long.</p></div></section>
 <div class="hero-stripe"></div>
+
 <main>
-<section class="card auth" id="authBox"><div class="auth-copy"><h2>Player Sign In</h2><div class="note">Enter your first name, last name, and email. We’ll email you a secure sign-in link. Your picks then sync across every device.</div></div><div><label for="firstNameInput">First Name</label><input id="firstNameInput" type="text" placeholder="Jake"></div><div><label for="lastNameInput">Last Name</label><input id="lastNameInput" type="text" placeholder="Lawley"></div><div><label for="emailInput">Email</label><input id="emailInput" type="email" placeholder="you@example.com"></div><button class="btn" id="signInBtn" onclick="sendMagicLink()">Email Sign-In Link</button></section>
+  <div class="landing-wrap" id="landingWrap">
+    <section class="card landing-card" id="landingCard">
+      <h2 style="margin:0 0 6px;font-size:28px">Welcome to 716 Props</h2>
+      <p style="margin:0;color:var(--muted)">A weekly Buffalo Bills prediction game for friends, families, work groups, and leagues.</p>
+
+      <div class="landing-grid">
+        <div class="info-tile"><b>🏈 Make Weekly Picks</b><span>Answer the Bills prop questions before the week locks.</span></div>
+        <div class="info-tile"><b>🏆 Compete in Leagues</b><span>Join one or more groups and climb a separate leaderboard in each league.</span></div>
+        <div class="info-tile"><b>📊 Earn Points</b><span>Correct answers earn the point value assigned to each prop.</span></div>
+      </div>
+
+      <div class="auth-stage active" id="landingSignIn">
+        <h3 style="margin:0 0 10px">Sign in to continue</h3>
+        <div class="auth" style="margin:0;box-shadow:none;border:0;padding:0;grid-template-columns:1fr 1fr 1.2fr auto">
+          <div><label for="firstNameInput">First Name</label><input id="firstNameInput" type="text" placeholder="Jake"></div>
+          <div><label for="lastNameInput">Last Name</label><input id="lastNameInput" type="text" placeholder="Lawley"></div>
+          <div><label for="emailInput">Email</label><input id="emailInput" type="email" placeholder="you@example.com"></div>
+          <button class="btn" id="signInBtn" onclick="sendMagicLink()">Email Sign-In Link</button>
+        </div>
+      </div>
+
+      <div class="league-picker" id="leaguePicker">
+        <h3 style="margin:0">Choose a League</h3>
+        <p class="note">Join a public league to enter the prop sheet. You can join more than one and switch between them later.</p>
+        <div class="league-list" id="publicLeagueList"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="app-shell" id="appShell">
+    <div class="league-switcher" id="leagueSwitcher">
+      <label style="margin:0">Current League</label>
+      <select id="leagueSelect" onchange="switchLeague(this.value)"></select>
+      <button class="btn secondary" onclick="showLeaguePicker()">Join Another League</button>
+    </div>
+
 <section class="section" id="leaderboard"><div class="section-title"><div><h2>Season Leaderboard</h2><p>Only players who have submitted at least one unlocked weekly card appear here.</p></div><span class="unlock-key">🏆 1st, 2nd & 3rd highlighted</span></div><div class="card leaderboard-card"><div class="podium" id="podium"></div><div class="full-board" id="leaderRows"></div></div></section>
 <section class="section" id="weeks"><div class="section-title"><div><h2>2026 Bills Regular Season</h2><p>Tap or swipe across the weeks. Locked weeks can be viewed, but picks cannot be submitted until you unlock them in the code.</p></div><span class="unlock-key">🔓 Week 1 unlocked</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="at">@</div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This week is view-only right now. The questions are visible, but picks and submissions are disabled until the week is unlocked.</div><div class="bye" id="byeBox"><h2 style="margin:0 0 5px">Week 7 — BYE</h2><div>No Bills game this week, so there are no props to submit.</div></div><div class="props-grid" id="propsGrid"></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT WEEK</div><div class="big" id="pickCount">0 / 5</div><div class="small" id="possiblePointsText">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset Picks</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit / Update Picks</button></div></div></section>
 
@@ -122,6 +180,15 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
     <div class="note" id="adminGameMeta"></div>
 
     <div class="admin-tabpanel active" id="adminTab-weeks">
+      <div class="create-league-box">
+        <strong>Create League</strong>
+        <div class="note" style="margin:3px 0 10px">New leagues are public for now. Private-league support can be enabled later.</div>
+        <div class="create-league-grid">
+          <div><label>League Name</label><input id="newLeagueName" placeholder="Sunday Crew"></div>
+          <div><label>Description</label><input id="newLeagueDescription" placeholder="Optional description"></div>
+          <button class="btn" onclick="createAdminLeague()">Create League</button>
+        </div>
+      </div>
       <div id="adminAutoStatus" class="auto-status"></div>
       <div class="admin-actions">
         <button class="btn" onclick="setAdminOverride(true)">🔓 Force Unlock</button>
@@ -179,13 +246,15 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
 </section>
 
 <section class="card rules" id="rules"><div class="rules-grid"><div class="rule"><b>2 points per prop</b>Five questions each game means 10 possible points per week.</div><div class="rule"><b>Automatic unlocks</b>Each week automatically opens 24 hours after the previous Bills game starts, unless the administrator overrides it.</div><div class="rule"><b>Flexible scoring</b>The administrator sets each prop’s point value and marks the correct answers after the game. The database calculates the leaderboard automatically.</div></div></section>
+
+  </div>
 </main>
 <footer><div class="footer-inner"><span>© 2026 716 Props • Built for Bills fans.</span><span>Shared picks and scores powered by Supabase. No real-money wagering.</span></div></footer>
 <script>
 const SUPABASE_URL="https://gmqwudewspaqbzxyabhe.supabase.co";
 const SUPABASE_KEY="sb_publishable_TzcN11InlMA-qJAvy3IEpQ_IKCnSOet";
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL,SUPABASE_KEY);
+const { createClient }=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const schedule=[
 {week:1,away:"Buffalo Bills",home:"Houston Texans",date:"Sunday, Sept. 13",time:"1:00 PM",network:"CBS",opp:"Houston Texans",colors:["#03202F","#A71930"]},
@@ -208,472 +277,201 @@ const schedule=[
 {week:18,away:"New York Jets",home:"Buffalo Bills",date:"Date TBD",time:"Time TBD",network:"TBD",opp:"New York Jets",colors:["#125740","#000000"]}
 ];
 
-let currentUser=null,currentProfile=null,currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false;
-let adminWeek=1,adminAnswers={},adminProps=[];
-let currentProps=[];
-let adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={};
+let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false;
+let currentProps=[],adminWeek=1,adminAnswers={},adminProps=[],adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={};
 
-function shortName(team){
- const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};
- return m[team]||team;
-}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||team}
 function unlocked(w){return !!weekStatus[w]}
 
 async function init(){
  renderWeekTabs();
  const {data:{session}}=await db.auth.getSession();
- if(session){await handleSession(session)}
- else{renderWeek();renderLeaderboard()}
- db.auth.onAuthStateChange(async(event,session)=>{
-   if(session && (!currentUser || currentUser.id!==session.user.id)) await handleSession(session);
- });
+ if(session) await handleSession(session);
+ else showLanding();
+ db.auth.onAuthStateChange(async(event,session)=>{if(session&&(!currentUser||currentUser.id!==session.user.id))await handleSession(session)});
+}
+
+function showLanding(){
+ document.getElementById("landingWrap").style.display="block";
+ document.getElementById("landingSignIn").classList.add("active");
+ document.getElementById("leaguePicker").classList.remove("active");
+ document.getElementById("appShell").classList.remove("active");
+ document.getElementById("leagueSwitcher").style.display="none";
 }
 
 async function sendMagicLink(){
- const first=document.getElementById("firstNameInput").value.trim();
- const last=document.getElementById("lastNameInput").value.trim();
- const email=document.getElementById("emailInput").value.trim().toLowerCase();
+ const first=document.getElementById("firstNameInput").value.trim(),last=document.getElementById("lastNameInput").value.trim(),email=document.getElementById("emailInput").value.trim().toLowerCase();
  if(!first||!last||!email||!email.includes("@")){alert("Enter your first name, last name, and a valid email.");return}
  localStorage.setItem("props716_pending_profile",JSON.stringify({first,last,email}));
- const redirectTo=window.location.origin+window.location.pathname;
- const {error}=await db.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo}});
+ const {error}=await db.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
  if(error){alert(error.message);return}
  alert("Check your email for the secure 716 Props sign-in link.");
 }
 
-
 async function logoutUser(){
- const {error}=await db.auth.signOut();
- if(error){alert(error.message);return}
- currentUser=null;currentProfile=null;isAdmin=false;answers={};
- document.getElementById("profileChip").style.display="none";
- document.getElementById("logoutBtn").style.display="none";
- document.getElementById("firstNameInput").value="";
- document.getElementById("lastNameInput").value="";
- document.getElementById("emailInput").value="";
- document.getElementById("signInBtn").textContent="Email Sign-In Link";
- updateAdminVisibility();
- await renderWeek();
- await renderLeaderboard();
- window.scrollTo({top:0,behavior:"smooth"});
+ await db.auth.signOut();currentUser=null;currentProfile=null;currentLeague=null;myLeagues=[];isAdmin=false;answers={};
+ document.getElementById("profileChip").style.display="none";document.getElementById("logoutBtn").style.display="none";
+ document.getElementById("firstNameInput").value="";document.getElementById("lastNameInput").value="";document.getElementById("emailInput").value="";
+ document.getElementById("signInBtn").textContent="Email Sign-In Link";showLanding();window.scrollTo({top:0,behavior:"smooth"});
 }
 
 async function handleSession(session){
  currentUser=session.user;
  const pending=JSON.parse(localStorage.getItem("props716_pending_profile")||"null");
- if(pending && pending.email===currentUser.email){
-   await db.from("profiles").upsert({id:currentUser.id,first_name:pending.first,last_name:pending.last,updated_at:new Date().toISOString()});
-   localStorage.removeItem("props716_pending_profile");
- }
- const {data:profile}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
- currentProfile=profile;
- if(currentProfile) applySignedIn();
+ if(pending&&pending.email===currentUser.email){await db.from("profiles").upsert({id:currentUser.id,first_name:pending.first,last_name:pending.last,updated_at:new Date().toISOString()});localStorage.removeItem("props716_pending_profile")}
+ const {data:profile}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();currentProfile=profile;
+ if(currentProfile)applySignedIn();
  await loadWeekStatus();
- const {data:adminFlag}=await db.rpc("is_admin");
- isAdmin=!!adminFlag;
+ const {data:adminFlag}=await db.rpc("is_admin");isAdmin=!!adminFlag;
+ await loadMyLeagues();
+ if(!myLeagues.length){await showLeaguePicker()}else{
+   const remembered=localStorage.getItem("props716_current_league");
+   currentLeague=myLeagues.find(l=>l.id===remembered)||myLeagues[0];
+   await enterApp();
+ }
  updateAdminVisibility();
- await renderWeek();
- await renderLeaderboard();
 }
 
 function applySignedIn(){
- document.getElementById("profileChip").style.display="flex";
+ document.getElementById("profileChip").style.display="flex";document.getElementById("logoutBtn").style.display="inline-block";
  document.getElementById("profileName").textContent=`${currentProfile.first_name} ${currentProfile.last_name}`;
  document.getElementById("profileEmail").textContent=currentUser.email;
  document.getElementById("avatar").textContent=currentProfile.first_name[0].toUpperCase();
- document.getElementById("firstNameInput").value=currentProfile.first_name;
- document.getElementById("lastNameInput").value=currentProfile.last_name;
- document.getElementById("emailInput").value=currentUser.email;
- document.getElementById("signInBtn").textContent="Email Another Sign-In Link";
- document.getElementById("logoutBtn").style.display="inline-block";
+ document.getElementById("firstNameInput").value=currentProfile.first_name;document.getElementById("lastNameInput").value=currentProfile.last_name;document.getElementById("emailInput").value=currentUser.email;
+}
+
+async function loadMyLeagues(){
+ const {data:members}=await db.from("league_memberships").select("league_id").eq("user_id",currentUser.id);
+ const ids=(members||[]).map(x=>x.league_id);
+ if(!ids.length){myLeagues=[];return}
+ const {data}=await db.from("leagues").select("*").in("id",ids).order("name");
+ myLeagues=data||[];
+ renderLeagueSwitcher();
+}
+
+async function showLeaguePicker(){
+ document.getElementById("landingWrap").style.display="block";document.getElementById("landingSignIn").classList.remove("active");document.getElementById("leaguePicker").classList.add("active");document.getElementById("appShell").classList.remove("active");
+ const {data,error}=await db.from("leagues").select("*").eq("is_public",true).order("name");
+ const wrap=document.getElementById("publicLeagueList");wrap.innerHTML="";
+ if(error){wrap.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}
+ (data||[]).forEach(l=>{
+   const joined=myLeagues.some(x=>x.id===l.id);
+   const card=document.createElement("div");card.className="league-card";
+   card.innerHTML=`<h3>${escapeHtml(l.name)}</h3><p>${escapeHtml(l.description||"Public league")}</p><button class="btn ${joined?"secondary":""}">${joined?"Open League":"Join League"}</button>`;
+   card.querySelector("button").onclick=async()=>{if(!joined){const {error}=await db.rpc("join_public_league",{p_league_id:l.id});if(error){alert(error.message);return}await loadMyLeagues()}currentLeague=(await db.from("leagues").select("*").eq("id",l.id).single()).data;localStorage.setItem("props716_current_league",l.id);await enterApp()};
+   wrap.appendChild(card);
+ });
+}
+
+function renderLeagueSwitcher(){
+ const sel=document.getElementById("leagueSelect");sel.innerHTML="";
+ myLeagues.forEach(l=>{const o=document.createElement("option");o.value=l.id;o.textContent=l.name;if(currentLeague?.id===l.id)o.selected=true;sel.appendChild(o)});
+}
+
+async function switchLeague(id){
+ currentLeague=myLeagues.find(l=>l.id===id)||null;if(!currentLeague)return;
+ localStorage.setItem("props716_current_league",id);renderLeagueSwitcher();await renderWeek();await renderLeaderboard();if(isAdmin)loadAdminPlayers();
+}
+
+async function enterApp(){
+ document.getElementById("landingWrap").style.display="none";document.getElementById("appShell").classList.add("active");document.getElementById("leagueSwitcher").style.display="flex";
+ renderLeagueSwitcher();await renderWeek();await renderLeaderboard();updateAdminVisibility();
 }
 
 async function loadWeekStatus(){
- if(!currentUser){weekStatus={1:true};weekStatusMeta={};return}
- const {data,error}=await db.rpc("get_week_status");
- if(error){console.error(error);return}
- weekStatus={};weekStatusMeta={};
- (data||[]).forEach(r=>{
-   weekStatus[r.week]=r.is_unlocked;
-   weekStatusMeta[r.week]={manual_override:r.manual_override,auto_unlock_at:r.auto_unlock_at};
- });
- renderWeekTabs();
+ const {data}=await db.rpc("get_week_status");weekStatus={};weekStatusMeta={};(data||[]).forEach(r=>{weekStatus[r.week]=r.is_unlocked;weekStatusMeta[r.week]={manual_override:r.manual_override,auto_unlock_at:r.auto_unlock_at}});renderWeekTabs()
 }
 
 function renderWeekTabs(){
- const wrap=document.getElementById("weekTabs");wrap.innerHTML="";
- schedule.forEach(g=>{
-   const locked=!g.bye&&!unlocked(g.week);
-   const b=document.createElement("button");
-   b.className="week-btn"+(g.week===currentWeek?" active":"")+(locked?" locked":"")+(g.bye?" bye":"");
-   b.onclick=()=>selectWeek(g.week);
-   const s=g.bye?"No game":(g.away==="Buffalo Bills"?`at ${shortName(g.home)}`:`vs ${shortName(g.away)}`);
-   b.innerHTML=`Week ${g.week}<span>${s}</span>`;wrap.appendChild(b);
- });
+ const wrap=document.getElementById("weekTabs");if(!wrap)return;wrap.innerHTML="";
+ schedule.forEach(g=>{const locked=!g.bye&&!unlocked(g.week),b=document.createElement("button");b.className="week-btn"+(g.week===currentWeek?" active":"")+(locked?" locked":"")+(g.bye?" bye":"");b.onclick=()=>selectWeek(g.week);const s=g.bye?"No game":(g.away==="Buffalo Bills"?`at ${shortName(g.home)}`:`vs ${shortName(g.away)}`);b.innerHTML=`Week ${g.week}<span>${s}</span>`;wrap.appendChild(b)});
 }
+async function selectWeek(w){currentWeek=w;renderWeekTabs();await renderWeek()}
 
-async function selectWeek(w){
- currentWeek=w;renderWeekTabs();await renderWeek();
- const a=document.querySelector(".week-btn.active");if(a)a.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
-}
-
-async function loadProps(week){
- const {data,error}=await db.from("prop_questions").select("*").eq("week",week).order("position");
- if(error){console.error(error);return[]}
- return data||[];
-}
+async function loadProps(week){const {data}=await db.from("prop_questions").select("*").eq("week",week).order("position");return data||[]}
 
 async function renderWeek(){
+ if(!currentLeague)return;
  const game=schedule.find(g=>g.week===currentWeek),matchup=document.getElementById("matchup"),bye=document.getElementById("byeBox"),props=document.getElementById("propsGrid"),submitCard=document.getElementById("submitCard"),lockBanner=document.getElementById("lockBanner");
  if(game.bye){matchup.style.display="none";props.style.display="none";submitCard.style.display="none";lockBanner.style.display="none";bye.style.display="block";return}
  bye.style.display="none";matchup.style.display="block";props.style.display="grid";submitCard.style.display="flex";
- const open=unlocked(game.week);
- lockBanner.style.display=open?"none":"block";
+ const open=unlocked(game.week);lockBanner.style.display=open?"none":"block";
  matchup.style.background=`linear-gradient(135deg,#00338D 0 49%,${game.colors[0]} 49% 82%,${game.colors[1]} 100%)`;
  document.getElementById("leftTeam").innerHTML=`<small>${game.away==="Buffalo Bills"?"Buffalo":"Opponent"}</small>${game.away}`;
  document.getElementById("rightTeam").innerHTML=`<small>${game.home==="Buffalo Bills"?"Buffalo":"Opponent"}</small>${game.home}`;
- document.getElementById("gameMeta").innerHTML=`<span>Week ${game.week}</span><span>•</span><span>${game.date}</span><span>•</span><span>${game.time}</span><span>•</span><span>${game.network}</span><span>• ${open?"🔓 PICKS OPEN":"🔒 VIEW ONLY"}</span>`;
- currentProps=await loadProps(currentWeek);
- await loadAnswers();renderProps();
+ document.getElementById("gameMeta").innerHTML=`<span>${escapeHtml(currentLeague.name)}</span><span>•</span><span>Week ${game.week}</span><span>•</span><span>${game.date}</span><span>•</span><span>${game.time}</span><span>• ${open?"🔓 PICKS OPEN":"🔒 VIEW ONLY"}</span>`;
+ currentProps=await loadProps(currentWeek);await loadAnswers();renderProps();
 }
 
 async function loadAnswers(){
- answers={};if(!currentUser)return;
- const {data}=await db.from("picks").select("answers").eq("user_id",currentUser.id).eq("week",currentWeek).maybeSingle();
+ answers={};if(!currentUser||!currentLeague)return;
+ const {data}=await db.from("league_picks").select("answers").eq("league_id",currentLeague.id).eq("user_id",currentUser.id).eq("week",currentWeek).maybeSingle();
  if(data?.answers)answers={...data.answers};
 }
 
 function renderProps(){
  const open=unlocked(currentWeek),grid=document.getElementById("propsGrid");grid.innerHTML="";
- currentProps.forEach(p=>{
-   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b];
-   const card=document.createElement("article");card.className="card prop"+(open?"":" locked");
-   card.innerHTML=`<div class="prop-top"><span class="category">PROP ${p.position}</span><span class="points">${p.points} POINT${p.points===1?"":"S"}</span></div><h3>${escapeHtml(p.question)}</h3><p>${escapeHtml(p.description||"")}</p><div class="choices">${choices.map(v=>`<button class="choice ${answers[p.prop_key]===v?"selected":""}" ${open?"":"disabled"} data-key="${escapeHtml(p.prop_key)}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div><div class="status">${answers[p.prop_key]?"✓ Saved selection":(open?"":"🔒 Week locked")}</div>`;
-   card.querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>choose(p.prop_key,btn,btn.dataset.value));
-   grid.appendChild(card);
- });
- document.getElementById("resetBtn").disabled=!open;
- document.getElementById("submitBtn").disabled=!open;
- updateCount();updateSaveState();
+ currentProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],card=document.createElement("article");card.className="card prop"+(open?"":" locked");card.innerHTML=`<div class="prop-top"><span class="category">PROP ${p.position}</span><span class="points">${p.points} POINT${p.points===1?"":"S"}</span></div><h3>${escapeHtml(p.question)}</h3><p>${escapeHtml(p.description||"")}</p><div class="choices">${choices.map(v=>`<button class="choice ${answers[p.prop_key]===v?"selected":""}" ${open?"":"disabled"} data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div><div class="status">${answers[p.prop_key]?"✓ Saved selection":(open?"":"🔒 Week locked")}</div>`;card.querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>choose(p.prop_key,btn,btn.dataset.value));grid.appendChild(card)});
+ document.getElementById("resetBtn").disabled=!open;document.getElementById("submitBtn").disabled=!open;updateCount();updateSaveState();
 }
-
-function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-
-function choose(id,button,value){
- if(!unlocked(currentWeek))return;
- if(!currentUser){alert("Sign in first.");document.getElementById("authBox").scrollIntoView({behavior:"smooth"});return}
- answers[id]=value;const card=button.closest(".prop");
- card.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));button.classList.add("selected");
- card.querySelector(".status").textContent="✓ Pick selected";updateCount();
- document.getElementById("saveState").textContent="Changes not submitted yet.";
-}
-function updateCount(){
- const possible=currentProps.reduce((s,p)=>s+Number(p.points||0),0);
- document.getElementById("pickCount").textContent=`${Object.keys(answers).length} / ${currentProps.length}`;
- const small=document.getElementById("possiblePointsText");
- if(small) small.textContent=`props selected • ${possible} possible points`;
-}
-function updateSaveState(){
- const s=document.getElementById("saveState");
- if(!unlocked(currentWeek)){s.textContent="This week is locked and view-only.";return}
- s.textContent=currentUser?"Submit to save these picks to the shared database.":"Sign in to save picks.";
-}
+function choose(id,button,value){if(!unlocked(currentWeek))return;answers[id]=value;const card=button.closest(".prop");card.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));button.classList.add("selected");card.querySelector(".status").textContent="✓ Pick selected";updateCount();document.getElementById("saveState").textContent="Changes not submitted yet."}
+function updateCount(){const possible=currentProps.reduce((s,p)=>s+Number(p.points||0),0);document.getElementById("pickCount").textContent=`${Object.keys(answers).length} / ${currentProps.length}`;const small=document.getElementById("possiblePointsText");if(small)small.textContent=`props selected • ${possible} possible points`}
+function updateSaveState(){const s=document.getElementById("saveState");s.textContent=!unlocked(currentWeek)?"This week is locked and view-only.":"Submit to save these picks in this league."}
 
 async function submitPicks(){
- if(!currentUser){alert("Sign in first.");return}
- if(!unlocked(currentWeek)){alert("This week is locked.");return}
- if(Object.keys(answers).length<currentProps.length){alert(`Complete all ${currentProps.length} questions first.`);return}
+ if(!currentLeague)return;if(!unlocked(currentWeek)){alert("This week is locked.");return}if(Object.keys(answers).length<currentProps.length){alert(`Complete all ${currentProps.length} questions first.`);return}
  const now=new Date().toISOString();
- const {data:existing}=await db.from("picks").select("week").eq("user_id",currentUser.id).eq("week",currentWeek).maybeSingle();
- let error;
- if(existing){({error}=await db.from("picks").update({answers,submitted_at:now,updated_at:now}).eq("user_id",currentUser.id).eq("week",currentWeek))}
- else{({error}=await db.from("picks").insert({user_id:currentUser.id,week:currentWeek,answers,submitted_at:now,updated_at:now}))}
- if(error){alert(error.message);return}
- document.getElementById("saveState").textContent="✓ Picks saved to the shared database.";
- await renderLeaderboard();
+ const {data:existing}=await db.from("league_picks").select("week").eq("league_id",currentLeague.id).eq("user_id",currentUser.id).eq("week",currentWeek).maybeSingle();
+ let error;if(existing){({error}=await db.from("league_picks").update({answers,submitted_at:now,updated_at:now}).eq("league_id",currentLeague.id).eq("user_id",currentUser.id).eq("week",currentWeek))}
+ else{({error}=await db.from("league_picks").insert({league_id:currentLeague.id,user_id:currentUser.id,week:currentWeek,answers,submitted_at:now,updated_at:now}))}
+ if(error){alert(error.message);return}document.getElementById("saveState").textContent="✓ Picks saved.";await renderLeaderboard();
 }
-async function resetWeek(){if(!currentUser||!unlocked(currentWeek))return;answers={};renderProps()}
+async function resetWeek(){answers={};renderProps()}
 
 async function renderLeaderboard(){
- const rows=document.getElementById("leaderRows"),podium=document.getElementById("podium");
- if(!currentUser){
-   podium.innerHTML=`<div class="place second"><div class="medal">🥈</div><div class="name">2nd Place</div></div><div class="place first"><div class="medal">🥇</div><div class="name">Sign in to view</div></div><div class="place third"><div class="medal">🥉</div><div class="name">3rd Place</div></div>`;
-   rows.innerHTML=`<div class="empty">Sign in to view the shared leaderboard.</div>`;return;
- }
- const [{data:leaders},{data:profiles}]=await Promise.all([db.from("leaderboard").select("*").order("total_points",{ascending:false}).order("weeks_submitted",{ascending:false}),db.from("profiles").select("id,first_name,last_name")]);
- const pm={};(profiles||[]).forEach(p=>pm[p.id]=`${p.first_name} ${p.last_name}`);
- const board=(leaders||[]).map(x=>({...x,name:pm[x.user_id]||"Player"}));
- const blanks={name:"Open",total_points:0,weeks_submitted:0,weeks_scored:0};
- const first=board[0]||blanks,second=board[1]||blanks,third=board[2]||blanks;
- podium.innerHTML=`${podiumPlace(second,"second","🥈","2nd")}${podiumPlace(first,"first","🥇","1st")}${podiumPlace(third,"third","🥉","3rd")}`;
- rows.innerHTML=board.length?board.map((p,i)=>`<div class="leader-row"><span class="rank">${i+1}</span><span class="person">${escapeHtml(p.name)}<br><span style="font-size:11px;color:#98a2b3">${p.weeks_submitted} submitted • ${p.weeks_scored} scored</span></span><span class="score">${p.total_points} pts</span></div>`).join(""):`<div class="empty">No submitted picks yet.</div>`;
+ const rows=document.getElementById("leaderRows"),podium=document.getElementById("podium");if(!currentLeague)return;
+ const [{data:leaders},{data:profiles}]=await Promise.all([db.from("league_leaderboard").select("*").eq("league_id",currentLeague.id).order("total_points",{ascending:false}).order("weeks_submitted",{ascending:false}),db.from("profiles").select("id,first_name,last_name")]);
+ const pm={};(profiles||[]).forEach(p=>pm[p.id]=`${p.first_name} ${p.last_name}`);const board=(leaders||[]).map(x=>({...x,name:pm[x.user_id]||"Player"})),blank={name:"Open",total_points:0,weeks_submitted:0,weeks_scored:0};
+ const first=board[0]||blank,second=board[1]||blank,third=board[2]||blank;podium.innerHTML=`${podiumPlace(second,"second","🥈","2nd")}${podiumPlace(first,"first","🥇","1st")}${podiumPlace(third,"third","🥉","3rd")}`;
+ rows.innerHTML=board.length?board.map((p,i)=>`<div class="leader-row"><span class="rank">${i+1}</span><span class="person">${escapeHtml(p.name)}<br><span style="font-size:11px;color:#98a2b3">${p.weeks_submitted} submitted • ${p.weeks_scored} scored</span></span><span class="score">${p.total_points} pts</span></div>`).join(""):`<div class="empty">No submitted picks yet in ${escapeHtml(currentLeague.name)}.</div>`;
 }
 function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div class="medal">${medal}</div><div class="name">${escapeHtml(p.name)}</div><div class="pts">${p.total_points} pts</div><div class="weeks">${label} • ${p.weeks_scored} scored</div></div>`}
 
 function showAdminLogin(){document.getElementById("admin").classList.add("open");document.getElementById("admin").scrollIntoView({behavior:"smooth"});updateAdminVisibility()}
-function updateAdminVisibility(){
- const denied=document.getElementById("adminDenied"),controls=document.getElementById("adminControls");
- if(isAdmin){denied.style.display="none";controls.style.display="block";renderAdminWeeks();renderAdminWeek();loadAdminPlayers()}
- else{denied.style.display="block";controls.style.display="none"}
-}
+function updateAdminVisibility(){const denied=document.getElementById("adminDenied"),controls=document.getElementById("adminControls");if(isAdmin){denied.style.display="none";controls.style.display="block";renderAdminWeeks();renderAdminWeek();loadAdminPlayers()}else{denied.style.display="block";controls.style.display="none"}}
+function showAdminTab(name){document.querySelectorAll(".admin-tabbtn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".admin-tabpanel").forEach(p=>p.classList.toggle("active",p.id===`adminTab-${name}`));if(name==="players")loadAdminPlayers()}
+function renderAdminWeeks(){const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";schedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=`Week ${g.week}`;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})}
 
-function showAdminTab(name){
- document.querySelectorAll(".admin-tabbtn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
- document.querySelectorAll(".admin-tabpanel").forEach(p=>p.classList.toggle("active",p.id===`adminTab-${name}`));
- if(name==="players") loadAdminPlayers();
-}
-
-function renderAdminWeeks(){
- const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";
- schedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=`Week ${g.week}`;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})
+async function createAdminLeague(){
+ const name=document.getElementById("newLeagueName").value.trim(),description=document.getElementById("newLeagueDescription").value.trim();if(!name){alert("Enter a league name.");return}
+ const {data,error}=await db.rpc("admin_create_league",{p_name:name,p_description:description,p_is_public:true});if(error){alert(error.message);return}
+ document.getElementById("newLeagueName").value="";document.getElementById("newLeagueDescription").value="";await loadMyLeagues();alert("League created.");
 }
 
 async function renderAdminWeek(){
- if(!isAdmin)return;
- await loadWeekStatus();
- const g=schedule.find(x=>x.week===adminWeek);if(!g)return;
- document.getElementById("adminGameTitle").textContent=`Week ${g.week}: ${g.away} at ${g.home}`;
- document.getElementById("adminGameMeta").textContent=`${g.date} • ${g.time} • ${g.network}`;
-
- const meta=weekStatusMeta[adminWeek]||{};
- const auto=meta.auto_unlock_at?new Date(meta.auto_unlock_at):null;
- const override=meta.manual_override;
- const autoText=auto?auto.toLocaleString():"No automatic unlock time";
- let stateText;
- if(override===true) stateText=`Manual override: FORCE UNLOCKED. Auto schedule would unlock ${autoText}.`;
- else if(override===false) stateText=`Manual override: FORCE LOCKED. Auto schedule would unlock ${autoText}.`;
- else stateText=`Automatic mode: ${unlocked(adminWeek)?"OPEN":"LOCKED"}. Scheduled unlock: ${autoText}.`;
- document.getElementById("adminAutoStatus").textContent=stateText;
- document.getElementById("adminAutoStatus").className=override===null?"auto-status":"override-status";
-
- adminProps=await loadProps(adminWeek);
- renderAdminPropEditors();
-
- const {data:result}=await db.from("official_results").select("answers").eq("week",adminWeek).maybeSingle();
- adminAnswers=result?.answers?{...result.answers}:{};
- const area=document.getElementById("adminQuestions");area.innerHTML="";
- adminProps.forEach(p=>{
-   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],q=document.createElement("div");q.className="admin-question";
-   q.innerHTML=`<h4>${escapeHtml(p.question)} <span class="points">${p.points} POINT${p.points===1?"":"S"}</span></h4><div class="admin-answers">${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.prop_key]===v?"correct":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;
-   q.querySelectorAll(".admin-answer").forEach(btn=>btn.onclick=()=>setAdminAnswer(p.prop_key,btn,btn.dataset.value));
-   area.appendChild(q);
- });
- document.getElementById("adminStatus").textContent=result?`Week ${adminWeek} has official results saved.`:"No official results saved yet.";
+ if(!isAdmin)return;await loadWeekStatus();const g=schedule.find(x=>x.week===adminWeek);if(!g)return;
+ document.getElementById("adminGameTitle").textContent=`Week ${g.week}: ${g.away} at ${g.home}`;document.getElementById("adminGameMeta").textContent=`${g.date} • ${g.time} • ${g.network}`;
+ const meta=weekStatusMeta[adminWeek]||{},auto=meta.auto_unlock_at?new Date(meta.auto_unlock_at):null,override=meta.manual_override,autoText=auto?auto.toLocaleString():"No automatic unlock time";
+ document.getElementById("adminAutoStatus").textContent=override===true?`Manual override: FORCE UNLOCKED. Auto: ${autoText}`:override===false?`Manual override: FORCE LOCKED. Auto: ${autoText}`:`Automatic mode: ${unlocked(adminWeek)?"OPEN":"LOCKED"}. Scheduled unlock: ${autoText}`;
+ adminProps=await loadProps(adminWeek);renderAdminPropEditors();const {data:result}=await db.from("official_results").select("answers").eq("week",adminWeek).maybeSingle();adminAnswers=result?.answers?{...result.answers}:{};
+ const area=document.getElementById("adminQuestions");area.innerHTML="";adminProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],q=document.createElement("div");q.className="admin-question";q.innerHTML=`<h4>${escapeHtml(p.question)} <span class="points">${p.points} POINT${p.points===1?"":"S"}</span></h4><div class="admin-answers">${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.prop_key]===v?"correct":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;q.querySelectorAll(".admin-answer").forEach(btn=>btn.onclick=()=>{adminAnswers[p.prop_key]=btn.dataset.value;q.querySelectorAll(".admin-answer").forEach(x=>x.classList.remove("correct"));btn.classList.add("correct")});area.appendChild(q)});
 }
-
-function renderAdminPropEditors(){
- const wrap=document.getElementById("adminPropEditors");wrap.innerHTML="";
- adminProps.forEach(p=>{
-   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b];
-   const el=document.createElement("div");el.className="admin-prop-editor";el.dataset.key=p.prop_key;
-   el.innerHTML=`<h4>Prop ${p.position}</h4><div class="admin-edit-grid">
-      <div class="full"><label>Question</label><input class="edit-question" value="${escapeHtml(p.question)}"></div>
-      <div class="full"><label>Description</label><textarea class="edit-description">${escapeHtml(p.description||"")}</textarea></div>
-      <div class="full"><label>Answer Choices</label><div class="choice-editor-list"></div><button type="button" class="btn secondary add-choice-btn">+ Add Choice</button></div>
-      <div><label>Points</label><input class="edit-points" type="number" min="1" max="100" value="${p.points}"></div>
-   </div>`;
-   const list=el.querySelector(".choice-editor-list");
-   choices.forEach(v=>addChoiceEditorRow(list,v));
-   el.querySelector(".add-choice-btn").onclick=()=>{
-     if(list.children.length>=12){alert("Maximum 12 answer choices per prop.");return}
-     addChoiceEditorRow(list,"");
-   };
-   wrap.appendChild(el);
- });
-}
-
-function addChoiceEditorRow(list,value){
- const row=document.createElement("div");row.className="choice-editor-row";
- row.innerHTML=`<input class="edit-choice" value="${escapeHtml(value)}"><button type="button" class="btn secondary">−</button>`;
- row.querySelector("button").onclick=()=>{
-   if(list.children.length<=2){alert("Each prop must have at least 2 answer choices.");return}
-   row.remove();
- };
- list.appendChild(row);
-}
-
-async function saveAdminPropConfig(){
- if(!isAdmin)return;
- const editors=[...document.querySelectorAll("#adminPropEditors .admin-prop-editor")];
- for(const el of editors){
-   const key=el.dataset.key;
-   const choices=[...el.querySelectorAll(".edit-choice")].map(i=>i.value.trim()).filter(Boolean);
-   const row={
-     question:el.querySelector(".edit-question").value.trim(),
-     description:el.querySelector(".edit-description").value.trim(),
-     choices,
-     points:Number(el.querySelector(".edit-points").value),
-     updated_at:new Date().toISOString()
-   };
-   if(!row.question||choices.length<2||!Number.isFinite(row.points)||row.points<1){
-     alert("Every prop needs a question, at least 2 answer choices, and a point value of at least 1.");
-     return;
-   }
-   const {error}=await db.from("prop_questions").update(row).eq("week",adminWeek).eq("prop_key",key);
-   if(error){alert(error.message);return}
- }
- document.getElementById("adminStatus").textContent=`✓ Week ${adminWeek} questions, choices, and point values saved.`;
- await renderAdminWeek();
- if(currentWeek===adminWeek) await renderWeek();
- await renderLeaderboard();
-}
-
-function setAdminAnswer(id,b,v){adminAnswers[id]=v;const r=b.closest(".admin-question");r.querySelectorAll(".admin-answer").forEach(x=>x.classList.remove("correct"));b.classList.add("correct")}
-
-async function setAdminOverride(value){
- if(!isAdmin)return;
- const {error}=await db.rpc("set_week_override",{p_week:adminWeek,p_override:value});
- if(error){alert(error.message);return}
- await loadWeekStatus();
- await renderAdminWeek();
- if(currentWeek===adminWeek) await renderWeek();
- document.getElementById("adminStatus").textContent=value===true?`Week ${adminWeek} manually unlocked.`:value===false?`Week ${adminWeek} manually locked.`:`Week ${adminWeek} returned to automatic unlock timing.`;
-}
-
-async function saveOfficialResults(){
- if(!isAdmin)return;
- if(Object.keys(adminAnswers).length<adminProps.length){alert(`Mark all ${adminProps.length} correct answers first.`);return}
- let {error}=await db.rpc("set_week_override",{p_week:adminWeek,p_override:false});
- if(error){alert(error.message);return}
- const now=new Date().toISOString();
- const {data:existing}=await db.from("official_results").select("week").eq("week",adminWeek).maybeSingle();
- if(existing){({error}=await db.from("official_results").update({answers:adminAnswers,scored_at:now,scored_by:currentUser.id}).eq("week",adminWeek))}
- else{({error}=await db.from("official_results").insert({week:adminWeek,answers:adminAnswers,scored_at:now,scored_by:currentUser.id}))}
- if(error){alert(error.message);return}
- await loadWeekStatus();await renderAdminWeek();await renderLeaderboard();if(currentWeek===adminWeek)await renderWeek();
- document.getElementById("adminStatus").textContent=`✓ Week ${adminWeek} force-locked, scored, and leaderboard recalculated.`;
-}
-
-async function clearOfficialResults(){
- if(!isAdmin)return;
- const {error}=await db.from("official_results").delete().eq("week",adminWeek);
- if(error){alert(error.message);return}
- adminAnswers={};await renderAdminWeek();await renderLeaderboard();
- document.getElementById("adminStatus").textContent=`Week ${adminWeek} results cleared and scores recalculated.`;
-}
-
+function renderAdminPropEditors(){const wrap=document.getElementById("adminPropEditors");wrap.innerHTML="";adminProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],el=document.createElement("div");el.className="admin-prop-editor";el.dataset.key=p.prop_key;el.innerHTML=`<h4>Prop ${p.position}</h4><div class="admin-edit-grid"><div class="full"><label>Question</label><input class="edit-question" value="${escapeHtml(p.question)}"></div><div class="full"><label>Description</label><textarea class="edit-description">${escapeHtml(p.description||"")}</textarea></div><div class="full"><label>Answer Choices</label><div class="choice-editor-list"></div><button type="button" class="btn secondary add-choice-btn">+ Add Choice</button></div><div><label>Points</label><input class="edit-points" type="number" min="1" max="100" value="${p.points}"></div></div>`;const list=el.querySelector(".choice-editor-list");choices.forEach(v=>addChoiceEditorRow(list,v));el.querySelector(".add-choice-btn").onclick=()=>{if(list.children.length>=12)return;addChoiceEditorRow(list,"")};wrap.appendChild(el)})}
+function addChoiceEditorRow(list,value){const row=document.createElement("div");row.className="choice-editor-row";row.innerHTML=`<input class="edit-choice" value="${escapeHtml(value)}"><button type="button" class="btn secondary">−</button>`;row.querySelector("button").onclick=()=>{if(list.children.length<=2){alert("At least 2 choices required.");return}row.remove()};list.appendChild(row)}
+async function saveAdminPropConfig(){for(const el of document.querySelectorAll("#adminPropEditors .admin-prop-editor")){const choices=[...el.querySelectorAll(".edit-choice")].map(i=>i.value.trim()).filter(Boolean),row={question:el.querySelector(".edit-question").value.trim(),description:el.querySelector(".edit-description").value.trim(),choices,points:Number(el.querySelector(".edit-points").value),updated_at:new Date().toISOString()};const {error}=await db.from("prop_questions").update(row).eq("week",adminWeek).eq("prop_key",el.dataset.key);if(error){alert(error.message);return}}await renderAdminWeek();if(currentWeek===adminWeek)await renderWeek();await renderLeaderboard()}
+async function setAdminOverride(v){const {error}=await db.rpc("set_week_override",{p_week:adminWeek,p_override:v});if(error){alert(error.message);return}await loadWeekStatus();await renderAdminWeek();if(currentWeek===adminWeek)await renderWeek()}
+async function saveOfficialResults(){if(Object.keys(adminAnswers).length<adminProps.length){alert("Mark all correct answers first.");return}await db.rpc("set_week_override",{p_week:adminWeek,p_override:false});const now=new Date().toISOString(),{data:existing}=await db.from("official_results").select("week").eq("week",adminWeek).maybeSingle();let error;if(existing){({error}=await db.from("official_results").update({answers:adminAnswers,scored_at:now,scored_by:currentUser.id}).eq("week",adminWeek))}else{({error}=await db.from("official_results").insert({week:adminWeek,answers:adminAnswers,scored_at:now,scored_by:currentUser.id}))}if(error){alert(error.message);return}await renderLeaderboard();await renderAdminWeek()}
+async function clearOfficialResults(){await db.from("official_results").delete().eq("week",adminWeek);await renderLeaderboard();await renderAdminWeek()}
 
 async function loadAdminPlayers(){
- if(!isAdmin)return;
- const {data,error}=await db.rpc("admin_list_players");
- const list=document.getElementById("adminPlayerList");
- if(error){list.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}
- adminPlayers=data||[];
- if(!adminPlayers.length){
-   list.innerHTML='<div class="empty">No players have submitted picks yet.</div>';
-   document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">No submitted picks to manage yet.</div>';
-   return;
- }
- list.innerHTML="";
- adminPlayers.forEach(p=>{
-   const b=document.createElement("button");
-   b.className="player-row"+(selectedAdminPlayer?.user_id===p.user_id?" active":"");
-   b.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><span>${escapeHtml(p.email||"")} • ${p.weeks_submitted} submitted • ${p.total_points} pts</span>`;
-   b.onclick=()=>selectAdminPlayer(p);
-   list.appendChild(b);
- });
+ if(!isAdmin||!currentLeague)return;const {data,error}=await db.rpc("admin_list_league_players",{p_league_id:currentLeague.id});const list=document.getElementById("adminPlayerList");if(error){list.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}adminPlayers=data||[];list.innerHTML=adminPlayers.length?"":'<div class="empty">No submitted players in this league.</div>';
+ adminPlayers.forEach(p=>{const b=document.createElement("button");b.className="player-row";b.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><span>${p.weeks_submitted} submitted • ${p.total_points} pts</span>`;b.onclick=()=>selectAdminPlayer(p);list.appendChild(b)})
 }
-
-async function selectAdminPlayer(player){
- selectedAdminPlayer=player;
- selectedAdminPlayerWeek=null;
- adminPlayerAnswers={};
- await loadAdminPlayers();
- const {data,error}=await db.rpc("admin_get_player_picks",{p_user_id:player.user_id});
- const detail=document.getElementById("adminPlayerDetail");
- if(error){detail.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}
- const picks=data||[];
- if(!picks.length){detail.innerHTML='<div class="empty">This player has no submitted picks.</div>';return}
- detail.innerHTML=`
-   <div><strong>${escapeHtml(player.first_name)} ${escapeHtml(player.last_name)}</strong></div>
-   <div class="note">${escapeHtml(player.email||"")}</div>
-   <div class="player-week-tabs" id="adminPlayerWeekTabs"></div>
-   <div id="adminPlayerWeekDetail"></div>
- `;
- const tabs=detail.querySelector("#adminPlayerWeekTabs");
- picks.forEach(pk=>{
-   const b=document.createElement("button");
-   b.className="player-week-btn";
-   b.textContent=`Week ${pk.week}`;
-   b.onclick=()=>renderAdminPlayerWeek(pk,picks);
-   tabs.appendChild(b);
- });
- await renderAdminPlayerWeek(picks[0],picks);
-}
-
-async function renderAdminPlayerWeek(pick,picks){
- selectedAdminPlayerWeek=pick.week;
- adminPlayerAnswers={...(pick.answers||{})};
-
- document.querySelectorAll("#adminPlayerWeekTabs .player-week-btn").forEach(btn=>{
-   btn.classList.toggle("active",btn.textContent===`Week ${pick.week}`);
- });
-
- const props=await loadProps(pick.week);
- const wrap=document.getElementById("adminPlayerWeekDetail");
- const resultState=pick.points!=null?`${pick.points} pts currently awarded`:"Not scored";
- wrap.innerHTML=`<div class="note" style="margin-bottom:8px">Week ${pick.week} • ${resultState}</div>`;
-
- props.forEach(p=>{
-   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b];
-   const row=document.createElement("div");
-   row.className="admin-player-pick";
-   row.innerHTML=`<strong>${escapeHtml(p.question)}</strong><div class="note">${p.points} point${p.points===1?"":"s"}</div><div class="admin-player-options">${choices.map(v=>`<button class="admin-player-choice ${adminPlayerAnswers[p.prop_key]===v?"selected":""}" data-key="${escapeHtml(p.prop_key)}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;
-   row.querySelectorAll(".admin-player-choice").forEach(btn=>{
-     btn.onclick=()=>{
-       adminPlayerAnswers[p.prop_key]=btn.dataset.value;
-       row.querySelectorAll(".admin-player-choice").forEach(x=>x.classList.remove("selected"));
-       btn.classList.add("selected");
-     };
-   });
-   wrap.appendChild(row);
- });
-
- const save=document.createElement("div");
- save.className="admin-actions";
- save.innerHTML='<button class="btn">Save Edited Picks</button>';
- save.querySelector("button").onclick=saveAdminPlayerPicks;
- wrap.appendChild(save);
-
- const danger=document.createElement("div");
- danger.className="danger-box";
- danger.innerHTML=`<strong>Remove Player From Pool</strong><div class="note" style="margin:4px 0 10px">This deletes all submitted picks and removes the player from the leaderboard. Their sign-in account remains active, so they can rejoin later by submitting new picks.</div><button class="btn danger-btn">Delete Player Pool Data</button>`;
- danger.querySelector("button").onclick=deleteAdminPlayerPoolData;
- wrap.appendChild(danger);
-}
-
-async function saveAdminPlayerPicks(){
- if(!isAdmin||!selectedAdminPlayer||!selectedAdminPlayerWeek)return;
- const props=await loadProps(selectedAdminPlayerWeek);
- if(Object.keys(adminPlayerAnswers).length<props.length){
-   alert(`This card must have an answer for all ${props.length} props.`);
-   return;
- }
- const {error}=await db.rpc("admin_update_player_pick",{
-   p_user_id:selectedAdminPlayer.user_id,
-   p_week:selectedAdminPlayerWeek,
-   p_answers:adminPlayerAnswers
- });
- if(error){alert(error.message);return}
- alert("Player picks updated successfully.");
- await loadAdminPlayers();
- await selectAdminPlayer(selectedAdminPlayer);
- await renderLeaderboard();
-}
-
-
-async function deleteAdminPlayerPoolData(){
- if(!isAdmin||!selectedAdminPlayer)return;
- const name=`${selectedAdminPlayer.first_name} ${selectedAdminPlayer.last_name}`;
- if(!confirm(`Delete all picks and leaderboard data for ${name}? Their login account will remain available so they can rejoin later.`))return;
- const {error}=await db.rpc("admin_delete_player_pool_data",{p_user_id:selectedAdminPlayer.user_id});
- if(error){alert(error.message);return}
- alert(`${name} has been removed from the pool.`);
- selectedAdminPlayer=null;selectedAdminPlayerWeek=null;adminPlayerAnswers={};
- document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player to view their submitted picks.</div>';
- await loadAdminPlayers();
- await renderLeaderboard();
-}
+async function selectAdminPlayer(p){selectedAdminPlayer=p;const {data}=await db.rpc("admin_get_league_player_picks",{p_league_id:currentLeague.id,p_user_id:p.user_id});const picks=data||[],detail=document.getElementById("adminPlayerDetail");detail.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><div class="note">${escapeHtml(p.email||"")}</div><div class="player-week-tabs" id="adminPlayerWeekTabs"></div><div id="adminPlayerWeekDetail"></div>`;const tabs=detail.querySelector("#adminPlayerWeekTabs");picks.forEach(pk=>{const b=document.createElement("button");b.className="player-week-btn";b.textContent=`Week ${pk.week}`;b.onclick=()=>renderAdminPlayerWeek(pk);tabs.appendChild(b)});if(picks[0])await renderAdminPlayerWeek(picks[0])}
+async function renderAdminPlayerWeek(pick){selectedAdminPlayerWeek=pick.week;adminPlayerAnswers={...(pick.answers||{})};document.querySelectorAll("#adminPlayerWeekTabs .player-week-btn").forEach(btn=>btn.classList.toggle("active",btn.textContent===`Week ${pick.week}`));const props=await loadProps(pick.week),wrap=document.getElementById("adminPlayerWeekDetail");wrap.innerHTML=`<div class="note">Week ${pick.week} • ${pick.points} pts</div>`;props.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],row=document.createElement("div");row.className="admin-player-pick";row.innerHTML=`<strong>${escapeHtml(p.question)}</strong><div class="admin-player-options">${choices.map(v=>`<button class="admin-player-choice ${adminPlayerAnswers[p.prop_key]===v?"selected":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;row.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{adminPlayerAnswers[p.prop_key]=btn.dataset.value;row.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected")});wrap.appendChild(row)});const actions=document.createElement("div");actions.className="admin-actions";actions.innerHTML='<button class="btn" onclick="saveAdminPlayerPicks()">Save Edited Picks</button>';wrap.appendChild(actions);const danger=document.createElement("div");danger.className="danger-box";danger.innerHTML='<strong>Remove Player From This League</strong><div class="note" style="margin:4px 0 10px">Deletes their picks and leaderboard entry for this league only. They can join again later.</div><button class="btn danger-btn" onclick="deleteAdminPlayerPoolData()">Remove From League</button>';wrap.appendChild(danger)}
+async function saveAdminPlayerPicks(){const {error}=await db.rpc("admin_update_league_player_pick",{p_league_id:currentLeague.id,p_user_id:selectedAdminPlayer.user_id,p_week:selectedAdminPlayerWeek,p_answers:adminPlayerAnswers});if(error){alert(error.message);return}await loadAdminPlayers();await selectAdminPlayer(selectedAdminPlayer);await renderLeaderboard()}
+async function deleteAdminPlayerPoolData(){if(!confirm("Remove this player from the current league and delete all their league picks?"))return;const {error}=await db.rpc("admin_delete_league_player_pool_data",{p_league_id:currentLeague.id,p_user_id:selectedAdminPlayer.user_id});if(error){alert(error.message);return}selectedAdminPlayer=null;document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player.</div>';await loadAdminPlayers();await renderLeaderboard()}
 
 init();
 </script>
