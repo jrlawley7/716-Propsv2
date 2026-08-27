@@ -36,20 +36,31 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .week-result{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:#ecfdf3;color:#067647;font-size:10px;font-weight:900}
 @media(max-width:650px){.admin-login{grid-template-columns:1fr}.admin-head{flex-direction:column}}
 
+
+.admin-prop-editor{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;background:#fbfcfe}
+.admin-prop-editor h4{margin:0 0 10px}
+.admin-edit-grid{display:grid;grid-template-columns:1fr 1fr 110px;gap:10px}
+.admin-edit-grid .full{grid-column:1/-1}
+.admin-edit-grid textarea{width:100%;min-height:68px;border:1px solid #d0d7e2;border-radius:10px;padding:10px 12px;resize:vertical;font:inherit}
+.admin-edit-grid input{width:100%}
+.auto-status{margin-top:8px;padding:10px 12px;border-radius:10px;background:#eef6ff;color:#1849a9;font-size:12px;font-weight:800}
+.override-status{margin-top:8px;padding:10px 12px;border-radius:10px;background:#fff3f5;color:#9f1239;font-size:12px;font-weight:800}
+@media(max-width:650px){.admin-edit-grid{grid-template-columns:1fr}.admin-edit-grid .full{grid-column:auto}}
+
 footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
 @media(max-width:900px){.auth{grid-template-columns:1fr 1fr 1fr}.auth .auth-copy{grid-column:1/-1}.auth button{grid-column:3}.props-grid{grid-template-columns:1fr}.navlinks{display:none}}@media(max-width:650px){nav{padding:12px 15px}.hero{padding:48px 15px 68px}main{padding:0 15px 55px}.auth{grid-template-columns:1fr;margin-top:-42px}.auth button{grid-column:auto}.section-title{align-items:start;flex-direction:column}.podium{grid-template-columns:1fr 1fr 1fr;gap:7px}.place{padding:12px 5px}.place.first{min-height:170px}.place.second{min-height:145px}.place.third{min-height:128px}.medal{font-size:30px}.place .name{font-size:12px}.place .pts{font-size:18px}.matchup-inner{padding:22px 14px;gap:8px}.team{font-size:19px}.game-meta{padding:0 14px 18px}.submit-card{align-items:flex-start;flex-direction:column}.rules-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column}.profile-chip .emailText{display:none}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 </head>
 <body>
-<div class="topbar">🦬 716 PROPS • 2026 BUFFALO BILLS PROP CHALLENGE • 2 POINTS PER QUESTION</div>
+<div class="topbar">🦬 716 PROPS • 2026 BUFFALO BILLS PROP CHALLENGE • CUSTOM WEEKLY PROP VALUES</div>
 <header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a><a href="#admin" onclick="showAdminLogin()">Admin</a></div><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div></nav></header>
 <section class="hero"><div class="hero-inner"><div class="hero-badges"><span class="badge">🦬 Bills Mafia</span><span class="badge">🏈 Weekly Props</span><span class="badge">🏆 Season Podium</span></div><h1>Make the picks.<br>Claim the podium.</h1><p>Sign in once, make five picks each Bills week, and battle your group for the top three spots all season long.</p></div></section>
 <div class="hero-stripe"></div>
 <main>
 <section class="card auth" id="authBox"><div class="auth-copy"><h2>Player Sign In</h2><div class="note">Enter your first name, last name, and email. We’ll email you a secure sign-in link. Your picks then sync across every device.</div></div><div><label for="firstNameInput">First Name</label><input id="firstNameInput" type="text" placeholder="Jake"></div><div><label for="lastNameInput">Last Name</label><input id="lastNameInput" type="text" placeholder="Lawley"></div><div><label for="emailInput">Email</label><input id="emailInput" type="email" placeholder="you@example.com"></div><button class="btn" id="signInBtn" onclick="sendMagicLink()">Email Sign-In Link</button></section>
 <section class="section" id="leaderboard"><div class="section-title"><div><h2>Season Leaderboard</h2><p>Only players who have submitted at least one unlocked weekly card appear here.</p></div><span class="unlock-key">🏆 1st, 2nd & 3rd highlighted</span></div><div class="card leaderboard-card"><div class="podium" id="podium"></div><div class="full-board" id="leaderRows"></div></div></section>
-<section class="section" id="weeks"><div class="section-title"><div><h2>2026 Bills Regular Season</h2><p>Tap or swipe across the weeks. Locked weeks can be viewed, but picks cannot be submitted until you unlock them in the code.</p></div><span class="unlock-key">🔓 Week 1 unlocked</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="at">@</div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This week is view-only right now. The questions are visible, but picks and submissions are disabled until the week is unlocked.</div><div class="bye" id="byeBox"><h2 style="margin:0 0 5px">Week 7 — BYE</h2><div>No Bills game this week, so there are no props to submit.</div></div><div class="props-grid" id="propsGrid"></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT WEEK</div><div class="big" id="pickCount">0 / 5</div><div class="small">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset Picks</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit / Update Picks</button></div></div></section>
+<section class="section" id="weeks"><div class="section-title"><div><h2>2026 Bills Regular Season</h2><p>Tap or swipe across the weeks. Locked weeks can be viewed, but picks cannot be submitted until you unlock them in the code.</p></div><span class="unlock-key">🔓 Week 1 unlocked</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="at">@</div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This week is view-only right now. The questions are visible, but picks and submissions are disabled until the week is unlocked.</div><div class="bye" id="byeBox"><h2 style="margin:0 0 5px">Week 7 — BYE</h2><div>No Bills game this week, so there are no props to submit.</div></div><div class="props-grid" id="propsGrid"></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT WEEK</div><div class="big" id="pickCount">0 / 5</div><div class="small" id="possiblePointsText">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset Picks</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit / Update Picks</button></div></div></section>
 
 <div class="admin-launch"><button class="admin-link" onclick="showAdminLogin()">Administrator</button></div>
 
@@ -57,7 +68,7 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
   <div class="admin-head">
     <div>
       <h2>Administrator</h2>
-      <div class="note">Only the approved administrator account can unlock weeks, lock picks, and score official results.</div>
+      <div class="note">Edit weekly props, change point values, override automatic locks, and score official results.</div>
     </div>
     <span class="admin-badge">🔐 DATABASE PROTECTED</span>
   </div>
@@ -68,19 +79,41 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
     <div class="section-title" style="margin:0 0 10px">
       <div>
         <h2 style="font-size:20px">Manage Week</h2>
-        <p>Unlock a week for picks, lock it at kickoff, then save the five official answers after the game.</p>
+        <p>By default, each new week opens exactly 24 hours after the previous Bills game starts. Your manual override always takes priority.</p>
       </div>
     </div>
 
     <div class="admin-weekbar" id="adminWeekbar"></div>
     <div id="adminGameTitle" style="font-weight:950;margin:4px 0 2px"></div>
     <div class="note" id="adminGameMeta"></div>
+    <div id="adminAutoStatus" class="auto-status"></div>
 
     <div class="admin-actions">
-      <button class="btn" id="adminUnlockBtn" onclick="toggleAdminWeek()"></button>
+      <button class="btn" onclick="setAdminOverride(true)">🔓 Force Unlock</button>
+      <button class="btn secondary" onclick="setAdminOverride(false)">🔒 Force Lock</button>
+      <button class="btn secondary" onclick="setAdminOverride(null)">⏱ Return to Auto</button>
     </div>
 
-    <div id="adminQuestions" style="margin-top:12px"></div>
+    <div class="section-title" style="margin:20px 0 8px">
+      <div>
+        <h2 style="font-size:20px">Edit Questions & Points</h2>
+        <p>Changes save to the shared database and immediately become the player-facing questions for that week.</p>
+      </div>
+    </div>
+
+    <div id="adminPropEditors"></div>
+    <div class="admin-actions">
+      <button class="btn" onclick="saveAdminPropConfig()">Save Question Changes</button>
+    </div>
+
+    <div class="section-title" style="margin:22px 0 8px">
+      <div>
+        <h2 style="font-size:20px">Official Results</h2>
+        <p>Choose the correct answer for each prop. Saving results scores every submitted player using the point values above.</p>
+      </div>
+    </div>
+
+    <div id="adminQuestions"></div>
 
     <div class="admin-actions">
       <button class="btn" onclick="saveOfficialResults()">Lock Week & Save Correct Answers</button>
@@ -90,7 +123,7 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
   </div>
 </section>
 
-<section class="card rules" id="rules"><div class="rules-grid"><div class="rule"><b>2 points per prop</b>Five questions each game means 10 possible points per week.</div><div class="rule"><b>Weeks unlock in code</b>Change the <code>unlockedWeeks</code> array to open future weeks when you are ready.</div><div class="rule"><b>Admin scoring</b>The administrator marks the five correct answers after the game. Each correct pick automatically adds 2 points.</div></div></section>
+<section class="card rules" id="rules"><div class="rules-grid"><div class="rule"><b>2 points per prop</b>Five questions each game means 10 possible points per week.</div><div class="rule"><b>Automatic unlocks</b>Each week automatically opens 24 hours after the previous Bills game starts, unless the administrator overrides it.</div><div class="rule"><b>Flexible scoring</b>The administrator sets each prop’s point value and marks the correct answers after the game. The database calculates the leaderboard automatically.</div></div></section>
 </main>
 <footer><div class="footer-inner"><span>© 2026 716 Props • Built for Bills fans.</span><span>Shared picks and scores powered by Supabase. No real-money wagering.</span></div></footer>
 <script>
@@ -120,16 +153,9 @@ const schedule=[
 {week:18,away:"New York Jets",home:"Buffalo Bills",date:"Date TBD",time:"Time TBD",network:"TBD",opp:"New York Jets",colors:["#125740","#000000"]}
 ];
 
-const propTemplates=[
-{id:"allenPass",cat:"Josh Allen",q:"Josh Allen passing yards",d:"Will Allen finish over or under 265.5 passing yards?",a:["Over 265.5","Under 265.5"]},
-{id:"billsPoints",cat:"Bills Offense",q:"Buffalo total points",d:"Will the Bills score more than 27.5 points?",a:["Over 27.5","Under 27.5"]},
-{id:"allenTD",cat:"Touchdowns",q:"Josh Allen total touchdowns",d:"Will Allen record at least 3 combined passing + rushing touchdowns?",a:["3 or more","0–2"]},
-{id:"defSacks",cat:"Bills Defense",q:"Buffalo sacks",d:"Will the Bills defense record at least 3 sacks?",a:["3 or more","0–2"]},
-{id:"result",cat:"Game Result",q:"Who wins the game?",d:"Pick the winner of this week's Bills matchup.",dynamic:true}
-];
-
-let currentUser=null,currentProfile=null,currentWeek=1,answers={},weekStatus={},isAdmin=false;
-let adminWeek=1,adminAnswers={};
+let currentUser=null,currentProfile=null,currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false;
+let adminWeek=1,adminAnswers={},adminProps=[];
+let currentProps=[];
 
 function shortName(team){
  const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};
@@ -189,11 +215,14 @@ function applySignedIn(){
 }
 
 async function loadWeekStatus(){
- if(!currentUser){weekStatus={1:true};return}
- const {data,error}=await db.from("week_status").select("week,is_unlocked");
+ if(!currentUser){weekStatus={1:true};weekStatusMeta={};return}
+ const {data,error}=await db.rpc("get_week_status");
  if(error){console.error(error);return}
- weekStatus={};
- (data||[]).forEach(r=>weekStatus[r.week]=r.is_unlocked);
+ weekStatus={};weekStatusMeta={};
+ (data||[]).forEach(r=>{
+   weekStatus[r.week]=r.is_unlocked;
+   weekStatusMeta[r.week]={manual_override:r.manual_override,auto_unlock_at:r.auto_unlock_at};
+ });
  renderWeekTabs();
 }
 
@@ -214,6 +243,12 @@ async function selectWeek(w){
  const a=document.querySelector(".week-btn.active");if(a)a.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
 }
 
+async function loadProps(week){
+ const {data,error}=await db.from("prop_questions").select("*").eq("week",week).order("position");
+ if(error){console.error(error);return[]}
+ return data||[];
+}
+
 async function renderWeek(){
  const game=schedule.find(g=>g.week===currentWeek),matchup=document.getElementById("matchup"),bye=document.getElementById("byeBox"),props=document.getElementById("propsGrid"),submitCard=document.getElementById("submitCard"),lockBanner=document.getElementById("lockBanner");
  if(game.bye){matchup.style.display="none";props.style.display="none";submitCard.style.display="none";lockBanner.style.display="none";bye.style.display="block";return}
@@ -224,6 +259,7 @@ async function renderWeek(){
  document.getElementById("leftTeam").innerHTML=`<small>${game.away==="Buffalo Bills"?"Buffalo":"Opponent"}</small>${game.away}`;
  document.getElementById("rightTeam").innerHTML=`<small>${game.home==="Buffalo Bills"?"Buffalo":"Opponent"}</small>${game.home}`;
  document.getElementById("gameMeta").innerHTML=`<span>Week ${game.week}</span><span>•</span><span>${game.date}</span><span>•</span><span>${game.time}</span><span>•</span><span>${game.network}</span><span>• ${open?"🔓 PICKS OPEN":"🔒 VIEW ONLY"}</span>`;
+ currentProps=await loadProps(currentWeek);
  await loadAnswers();renderProps();
 }
 
@@ -234,18 +270,20 @@ async function loadAnswers(){
 }
 
 function renderProps(){
- const game=schedule.find(g=>g.week===currentWeek);if(game.bye)return;
- const open=unlocked(game.week),grid=document.getElementById("propsGrid");grid.innerHTML="";
- propTemplates.forEach(p=>{
-   const choices=p.dynamic?["Buffalo Bills",game.opp]:p.a;
+ const open=unlocked(currentWeek),grid=document.getElementById("propsGrid");grid.innerHTML="";
+ currentProps.forEach(p=>{
+   const choices=[p.choice_a,p.choice_b];
    const card=document.createElement("article");card.className="card prop"+(open?"":" locked");
-   card.innerHTML=`<div class="prop-top"><span class="category">${p.cat}</span><span class="points">2 POINTS</span></div><h3>${p.q}</h3><p>${p.d}</p><div class="choices">${choices.map(v=>`<button class="choice ${answers[p.id]===v?"selected":""}" ${open?"":"disabled"} onclick="choose('${p.id}',this,'${v.replace(/'/g,"\\'")}')">${v}</button>`).join("")}</div><div class="status">${answers[p.id]?"✓ Saved selection":(open?"":"🔒 Week locked")}</div>`;
+   card.innerHTML=`<div class="prop-top"><span class="category">PROP ${p.position}</span><span class="points">${p.points} POINT${p.points===1?"":"S"}</span></div><h3>${escapeHtml(p.question)}</h3><p>${escapeHtml(p.description||"")}</p><div class="choices">${choices.map(v=>`<button class="choice ${answers[p.prop_key]===v?"selected":""}" ${open?"":"disabled"} data-key="${escapeHtml(p.prop_key)}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div><div class="status">${answers[p.prop_key]?"✓ Saved selection":(open?"":"🔒 Week locked")}</div>`;
+   card.querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>choose(p.prop_key,btn,btn.dataset.value));
    grid.appendChild(card);
  });
  document.getElementById("resetBtn").disabled=!open;
  document.getElementById("submitBtn").disabled=!open;
  updateCount();updateSaveState();
 }
+
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 
 function choose(id,button,value){
  if(!unlocked(currentWeek))return;
@@ -255,7 +293,12 @@ function choose(id,button,value){
  card.querySelector(".status").textContent="✓ Pick selected";updateCount();
  document.getElementById("saveState").textContent="Changes not submitted yet.";
 }
-function updateCount(){document.getElementById("pickCount").textContent=`${Object.keys(answers).length} / 5`}
+function updateCount(){
+ const possible=currentProps.reduce((s,p)=>s+Number(p.points||0),0);
+ document.getElementById("pickCount").textContent=`${Object.keys(answers).length} / ${currentProps.length}`;
+ const small=document.getElementById("possiblePointsText");
+ if(small) small.textContent=`props selected • ${possible} possible points`;
+}
 function updateSaveState(){
  const s=document.getElementById("saveState");
  if(!unlocked(currentWeek)){s.textContent="This week is locked and view-only.";return}
@@ -265,20 +308,16 @@ function updateSaveState(){
 async function submitPicks(){
  if(!currentUser){alert("Sign in first.");return}
  if(!unlocked(currentWeek)){alert("This week is locked.");return}
- if(Object.keys(answers).length<5){alert(`Complete all 5 questions first. You have ${Object.keys(answers).length}/5.`);return}
+ if(Object.keys(answers).length<currentProps.length){alert(`Complete all ${currentProps.length} questions first.`);return}
  const now=new Date().toISOString();
  const {data:existing}=await db.from("picks").select("week").eq("user_id",currentUser.id).eq("week",currentWeek).maybeSingle();
  let error;
- if(existing){
-   ({error}=await db.from("picks").update({answers,submitted_at:now,updated_at:now}).eq("user_id",currentUser.id).eq("week",currentWeek));
- }else{
-   ({error}=await db.from("picks").insert({user_id:currentUser.id,week:currentWeek,answers,submitted_at:now,updated_at:now}));
- }
+ if(existing){({error}=await db.from("picks").update({answers,submitted_at:now,updated_at:now}).eq("user_id",currentUser.id).eq("week",currentWeek))}
+ else{({error}=await db.from("picks").insert({user_id:currentUser.id,week:currentWeek,answers,submitted_at:now,updated_at:now}))}
  if(error){alert(error.message);return}
  document.getElementById("saveState").textContent="✓ Picks saved to the shared database.";
  await renderLeaderboard();
 }
-
 async function resetWeek(){if(!currentUser||!unlocked(currentWeek))return;answers={};renderProps()}
 
 async function renderLeaderboard(){
@@ -287,18 +326,15 @@ async function renderLeaderboard(){
    podium.innerHTML=`<div class="place second"><div class="medal">🥈</div><div class="name">2nd Place</div></div><div class="place first"><div class="medal">🥇</div><div class="name">Sign in to view</div></div><div class="place third"><div class="medal">🥉</div><div class="name">3rd Place</div></div>`;
    rows.innerHTML=`<div class="empty">Sign in to view the shared leaderboard.</div>`;return;
  }
- const [{data:leaders},{data:profiles}]=await Promise.all([
-   db.from("leaderboard").select("*").order("total_points",{ascending:false}).order("weeks_submitted",{ascending:false}),
-   db.from("profiles").select("id,first_name,last_name")
- ]);
+ const [{data:leaders},{data:profiles}]=await Promise.all([db.from("leaderboard").select("*").order("total_points",{ascending:false}).order("weeks_submitted",{ascending:false}),db.from("profiles").select("id,first_name,last_name")]);
  const pm={};(profiles||[]).forEach(p=>pm[p.id]=`${p.first_name} ${p.last_name}`);
  const board=(leaders||[]).map(x=>({...x,name:pm[x.user_id]||"Player"}));
  const blanks={name:"Open",total_points:0,weeks_submitted:0,weeks_scored:0};
  const first=board[0]||blanks,second=board[1]||blanks,third=board[2]||blanks;
  podium.innerHTML=`${podiumPlace(second,"second","🥈","2nd")}${podiumPlace(first,"first","🥇","1st")}${podiumPlace(third,"third","🥉","3rd")}`;
- rows.innerHTML=board.length?board.map((p,i)=>`<div class="leader-row"><span class="rank">${i+1}</span><span class="person">${p.name}<br><span style="font-size:11px;color:#98a2b3">${p.weeks_submitted} submitted • ${p.weeks_scored} scored</span></span><span class="score">${p.total_points} pts</span></div>`).join(""):`<div class="empty">No submitted picks yet.</div>`;
+ rows.innerHTML=board.length?board.map((p,i)=>`<div class="leader-row"><span class="rank">${i+1}</span><span class="person">${escapeHtml(p.name)}<br><span style="font-size:11px;color:#98a2b3">${p.weeks_submitted} submitted • ${p.weeks_scored} scored</span></span><span class="score">${p.total_points} pts</span></div>`).join(""):`<div class="empty">No submitted picks yet.</div>`;
 }
-function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div class="medal">${medal}</div><div class="name">${p.name}</div><div class="pts">${p.total_points} pts</div><div class="weeks">${label} • ${p.weeks_scored} scored</div></div>`}
+function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div class="medal">${medal}</div><div class="name">${escapeHtml(p.name)}</div><div class="pts">${p.total_points} pts</div><div class="weeks">${label} • ${p.weeks_scored} scored</div></div>`}
 
 function showAdminLogin(){document.getElementById("admin").classList.add("open");document.getElementById("admin").scrollIntoView({behavior:"smooth"});updateAdminVisibility()}
 function updateAdminVisibility(){
@@ -310,44 +346,107 @@ function renderAdminWeeks(){
  const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";
  schedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=`Week ${g.week}`;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})
 }
+
 async function renderAdminWeek(){
- if(!isAdmin)return;const g=schedule.find(x=>x.week===adminWeek);if(!g)return;
+ if(!isAdmin)return;
+ await loadWeekStatus();
+ const g=schedule.find(x=>x.week===adminWeek);if(!g)return;
  document.getElementById("adminGameTitle").textContent=`Week ${g.week}: ${g.away} at ${g.home}`;
  document.getElementById("adminGameMeta").textContent=`${g.date} • ${g.time} • ${g.network}`;
+
+ const meta=weekStatusMeta[adminWeek]||{};
+ const auto=meta.auto_unlock_at?new Date(meta.auto_unlock_at):null;
+ const override=meta.manual_override;
+ const autoText=auto?auto.toLocaleString():"No automatic unlock time";
+ let stateText;
+ if(override===true) stateText=`Manual override: FORCE UNLOCKED. Auto schedule would unlock ${autoText}.`;
+ else if(override===false) stateText=`Manual override: FORCE LOCKED. Auto schedule would unlock ${autoText}.`;
+ else stateText=`Automatic mode: ${unlocked(adminWeek)?"OPEN":"LOCKED"}. Scheduled unlock: ${autoText}.`;
+ document.getElementById("adminAutoStatus").textContent=stateText;
+ document.getElementById("adminAutoStatus").className=override===null?"auto-status":"override-status";
+
+ adminProps=await loadProps(adminWeek);
+ renderAdminPropEditors();
+
  const {data:result}=await db.from("official_results").select("answers").eq("week",adminWeek).maybeSingle();
  adminAnswers=result?.answers?{...result.answers}:{};
  const area=document.getElementById("adminQuestions");area.innerHTML="";
- propTemplates.forEach(p=>{
-   const choices=p.dynamic?["Buffalo Bills",g.opp]:p.a,q=document.createElement("div");q.className="admin-question";
-   q.innerHTML=`<h4>${p.q} <span class="points">2 POINTS</span></h4><div class="admin-answers">${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.id]===v?"correct":""}" onclick="setAdminAnswer('${p.id}',this,'${v.replace(/'/g,"\\'")}')">${v}</button>`).join("")}</div>`;area.appendChild(q);
+ adminProps.forEach(p=>{
+   const choices=[p.choice_a,p.choice_b],q=document.createElement("div");q.className="admin-question";
+   q.innerHTML=`<h4>${escapeHtml(p.question)} <span class="points">${p.points} POINT${p.points===1?"":"S"}</span></h4><div class="admin-answers">${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.prop_key]===v?"correct":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;
+   q.querySelectorAll(".admin-answer").forEach(btn=>btn.onclick=()=>setAdminAnswer(p.prop_key,btn,btn.dataset.value));
+   area.appendChild(q);
  });
- const open=unlocked(adminWeek);
- const ub=document.getElementById("adminUnlockBtn");ub.textContent=open?"🔒 Lock Week":"🔓 Unlock Week";
  document.getElementById("adminStatus").textContent=result?`Week ${adminWeek} has official results saved.`:"No official results saved yet.";
 }
-function setAdminAnswer(id,b,v){adminAnswers[id]=v;const r=b.closest(".admin-question");r.querySelectorAll(".admin-answer").forEach(x=>x.classList.remove("correct"));b.classList.add("correct")}
-async function toggleAdminWeek(){
- if(!isAdmin)return;const next=!unlocked(adminWeek);
- const {error}=await db.from("week_status").update({is_unlocked:next,updated_at:new Date().toISOString()}).eq("week",adminWeek);
- if(error){alert(error.message);return}
- await loadWeekStatus();await renderAdminWeek();await renderWeek();
+
+function renderAdminPropEditors(){
+ const wrap=document.getElementById("adminPropEditors");wrap.innerHTML="";
+ adminProps.forEach(p=>{
+   const el=document.createElement("div");el.className="admin-prop-editor";el.dataset.key=p.prop_key;
+   el.innerHTML=`<h4>Prop ${p.position}</h4><div class="admin-edit-grid">
+      <div class="full"><label>Question</label><input class="edit-question" value="${escapeHtml(p.question)}"></div>
+      <div class="full"><label>Description</label><textarea class="edit-description">${escapeHtml(p.description||"")}</textarea></div>
+      <div><label>Answer A</label><input class="edit-a" value="${escapeHtml(p.choice_a)}"></div>
+      <div><label>Answer B</label><input class="edit-b" value="${escapeHtml(p.choice_b)}"></div>
+      <div><label>Points</label><input class="edit-points" type="number" min="1" max="100" value="${p.points}"></div>
+   </div>`;
+   wrap.appendChild(el);
+ });
 }
+
+async function saveAdminPropConfig(){
+ if(!isAdmin)return;
+ const editors=[...document.querySelectorAll("#adminPropEditors .admin-prop-editor")];
+ for(const el of editors){
+   const key=el.dataset.key;
+   const row={
+     question:el.querySelector(".edit-question").value.trim(),
+     description:el.querySelector(".edit-description").value.trim(),
+     choice_a:el.querySelector(".edit-a").value.trim(),
+     choice_b:el.querySelector(".edit-b").value.trim(),
+     points:Number(el.querySelector(".edit-points").value),
+     updated_at:new Date().toISOString()
+   };
+   if(!row.question||!row.choice_a||!row.choice_b||!Number.isFinite(row.points)||row.points<1){
+     alert("Every prop needs a question, two answer choices, and a point value of at least 1.");
+     return;
+   }
+   const {error}=await db.from("prop_questions").update(row).eq("week",adminWeek).eq("prop_key",key);
+   if(error){alert(error.message);return}
+ }
+ document.getElementById("adminStatus").textContent=`✓ Week ${adminWeek} questions and point values saved.`;
+ await renderAdminWeek();
+ if(currentWeek===adminWeek) await renderWeek();
+ await renderLeaderboard();
+}
+
+function setAdminAnswer(id,b,v){adminAnswers[id]=v;const r=b.closest(".admin-question");r.querySelectorAll(".admin-answer").forEach(x=>x.classList.remove("correct"));b.classList.add("correct")}
+
+async function setAdminOverride(value){
+ if(!isAdmin)return;
+ const {error}=await db.rpc("set_week_override",{p_week:adminWeek,p_override:value});
+ if(error){alert(error.message);return}
+ await loadWeekStatus();
+ await renderAdminWeek();
+ if(currentWeek===adminWeek) await renderWeek();
+ document.getElementById("adminStatus").textContent=value===true?`Week ${adminWeek} manually unlocked.`:value===false?`Week ${adminWeek} manually locked.`:`Week ${adminWeek} returned to automatic unlock timing.`;
+}
+
 async function saveOfficialResults(){
  if(!isAdmin)return;
- if(Object.keys(adminAnswers).length<5){alert("Mark all 5 correct answers first.");return}
+ if(Object.keys(adminAnswers).length<adminProps.length){alert(`Mark all ${adminProps.length} correct answers first.`);return}
+ let {error}=await db.rpc("set_week_override",{p_week:adminWeek,p_override:false});
+ if(error){alert(error.message);return}
  const now=new Date().toISOString();
- let {error}=await db.from("week_status").update({is_unlocked:false,updated_at:now}).eq("week",adminWeek);
- if(error){alert(error.message);return}
  const {data:existing}=await db.from("official_results").select("week").eq("week",adminWeek).maybeSingle();
- if(existing){
-   ({error}=await db.from("official_results").update({answers:adminAnswers,scored_at:now,scored_by:currentUser.id}).eq("week",adminWeek));
- }else{
-   ({error}=await db.from("official_results").insert({week:adminWeek,answers:adminAnswers,scored_at:now,scored_by:currentUser.id}));
- }
+ if(existing){({error}=await db.from("official_results").update({answers:adminAnswers,scored_at:now,scored_by:currentUser.id}).eq("week",adminWeek))}
+ else{({error}=await db.from("official_results").insert({week:adminWeek,answers:adminAnswers,scored_at:now,scored_by:currentUser.id}))}
  if(error){alert(error.message);return}
- await loadWeekStatus();await renderAdminWeek();await renderLeaderboard();await renderWeek();
- document.getElementById("adminStatus").textContent=`✓ Week ${adminWeek} locked, scored, and leaderboard recalculated.`;
+ await loadWeekStatus();await renderAdminWeek();await renderLeaderboard();if(currentWeek===adminWeek)await renderWeek();
+ document.getElementById("adminStatus").textContent=`✓ Week ${adminWeek} force-locked, scored, and leaderboard recalculated.`;
 }
+
 async function clearOfficialResults(){
  if(!isAdmin)return;
  const {error}=await db.from("official_results").delete().eq("week",adminWeek);
