@@ -72,6 +72,15 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .admin-player-choice.selected{background:#eaf1ff;border:2px solid var(--blue);color:var(--blue);padding:7px 9px}
 @media(max-width:800px){.admin-player-grid{grid-template-columns:1fr}}
 
+
+.admin-tabbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
+.admin-tabbtn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:900}
+.admin-tabbtn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.admin-tabpanel{display:none}
+.admin-tabpanel.active{display:block}
+.danger-btn{background:#b42318!important;color:#fff!important}
+.danger-box{margin-top:16px;padding:14px;border:1px solid #f3b5ad;background:#fff4f2;border-radius:12px}
+
 footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
 @media(max-width:900px){.auth{grid-template-columns:1fr 1fr 1fr}.auth .auth-copy{grid-column:1/-1}.auth button{grid-column:3}.props-grid{grid-template-columns:1fr}.navlinks{display:none}}@media(max-width:650px){nav{padding:12px 15px}.hero{padding:48px 15px 68px}main{padding:0 15px 55px}.auth{grid-template-columns:1fr;margin-top:-42px}.auth button{grid-column:auto}.section-title{align-items:start;flex-direction:column}.podium{grid-template-columns:1fr 1fr 1fr;gap:7px}.place{padding:12px 5px}.place.first{min-height:170px}.place.second{min-height:145px}.place.third{min-height:128px}.medal{font-size:30px}.place .name{font-size:12px}.place .pts{font-size:18px}.matchup-inner{padding:22px 14px;gap:8px}.team{font-size:19px}.game-meta{padding:0 14px 18px}.submit-card{align-items:flex-start;flex-direction:column}.rules-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column}.profile-chip .emailText{display:none}}
 </style>
@@ -93,7 +102,7 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
   <div class="admin-head">
     <div>
       <h2>Administrator</h2>
-      <div class="note">Edit weekly props, change point values, override automatic locks, and score official results.</div>
+      <div class="note">Manage the pool from one compact control center.</div>
     </div>
     <span class="admin-badge">🔐 DATABASE PROTECTED</span>
   </div>
@@ -101,59 +110,60 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
   <div id="adminDenied" class="note">Sign in with the administrator account to use these controls.</div>
 
   <div class="admin-controls" id="adminControls">
-    <div class="section-title" style="margin:0 0 10px">
-      <div>
-        <h2 style="font-size:20px">Manage Week</h2>
-        <p>By default, each new week opens exactly 24 hours after the previous Bills game starts. Your manual override always takes priority.</p>
-      </div>
+    <div class="admin-tabbar">
+      <button class="admin-tabbtn active" data-tab="weeks" onclick="showAdminTab('weeks')">Manage Weeks</button>
+      <button class="admin-tabbtn" data-tab="questions" onclick="showAdminTab('questions')">Edit Questions</button>
+      <button class="admin-tabbtn" data-tab="results" onclick="showAdminTab('results')">Submit Results</button>
+      <button class="admin-tabbtn" data-tab="players" onclick="showAdminTab('players')">Manage Players</button>
     </div>
 
     <div class="admin-weekbar" id="adminWeekbar"></div>
     <div id="adminGameTitle" style="font-weight:950;margin:4px 0 2px"></div>
     <div class="note" id="adminGameMeta"></div>
-    <div id="adminAutoStatus" class="auto-status"></div>
 
-    <div class="admin-actions">
-      <button class="btn" onclick="setAdminOverride(true)">🔓 Force Unlock</button>
-      <button class="btn secondary" onclick="setAdminOverride(false)">🔒 Force Lock</button>
-      <button class="btn secondary" onclick="setAdminOverride(null)">⏱ Return to Auto</button>
-    </div>
-
-    <div class="section-title" style="margin:20px 0 8px">
-      <div>
-        <h2 style="font-size:20px">Edit Questions & Points</h2>
-        <p>Changes save to the shared database and immediately become the player-facing questions for that week.</p>
+    <div class="admin-tabpanel active" id="adminTab-weeks">
+      <div id="adminAutoStatus" class="auto-status"></div>
+      <div class="admin-actions">
+        <button class="btn" onclick="setAdminOverride(true)">🔓 Force Unlock</button>
+        <button class="btn secondary" onclick="setAdminOverride(false)">🔒 Force Lock</button>
+        <button class="btn secondary" onclick="setAdminOverride(null)">⏱ Return to Auto</button>
       </div>
     </div>
 
-    <div id="adminPropEditors"></div>
-    <div class="admin-actions">
-      <button class="btn" onclick="saveAdminPropConfig()">Save Question Changes</button>
-    </div>
-
-    <div class="section-title" style="margin:22px 0 8px">
-      <div>
-        <h2 style="font-size:20px">Official Results</h2>
-        <p>Choose the correct answer for each prop. Saving results scores every submitted player using the point values above.</p>
-      </div>
-    </div>
-
-    <div id="adminQuestions"></div>
-
-    <div class="admin-actions">
-      <button class="btn" onclick="saveOfficialResults()">Lock Week & Save Correct Answers</button>
-      <button class="btn secondary" onclick="clearOfficialResults()">Clear Official Results</button>
-    </div>
-    <div class="admin-status" id="adminStatus"></div>
-
-    <div class="admin-player-section">
-      <div class="section-title" style="margin:0 0 10px">
+    <div class="admin-tabpanel" id="adminTab-questions">
+      <div class="section-title" style="margin:12px 0 8px">
         <div>
-          <h2 style="font-size:20px">Player Pick Management</h2>
-          <p>View everyone who has submitted picks, inspect their weekly cards, and edit a submitted answer if necessary.</p>
+          <h2 style="font-size:20px">Edit Questions & Points</h2>
+          <p>Change question text, answer choices, and point values for the selected week.</p>
         </div>
       </div>
+      <div id="adminPropEditors"></div>
+      <div class="admin-actions">
+        <button class="btn" onclick="saveAdminPropConfig()">Save Question Changes</button>
+      </div>
+    </div>
 
+    <div class="admin-tabpanel" id="adminTab-results">
+      <div class="section-title" style="margin:12px 0 8px">
+        <div>
+          <h2 style="font-size:20px">Official Results</h2>
+          <p>Mark the correct answer for each prop and score every submitted player.</p>
+        </div>
+      </div>
+      <div id="adminQuestions"></div>
+      <div class="admin-actions">
+        <button class="btn" onclick="saveOfficialResults()">Lock Week & Save Correct Answers</button>
+        <button class="btn secondary" onclick="clearOfficialResults()">Clear Official Results</button>
+      </div>
+    </div>
+
+    <div class="admin-tabpanel" id="adminTab-players">
+      <div class="section-title" style="margin:12px 0 10px">
+        <div>
+          <h2 style="font-size:20px">Player Pick Management</h2>
+          <p>Review players, inspect submitted cards, edit picks, or remove a player’s pool data.</p>
+        </div>
+      </div>
       <div class="admin-player-grid">
         <div class="player-list" id="adminPlayerList">
           <div class="empty">Loading players…</div>
@@ -163,6 +173,8 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
         </div>
       </div>
     </div>
+
+    <div class="admin-status" id="adminStatus"></div>
   </div>
 </section>
 
@@ -404,6 +416,13 @@ function updateAdminVisibility(){
  if(isAdmin){denied.style.display="none";controls.style.display="block";renderAdminWeeks();renderAdminWeek();loadAdminPlayers()}
  else{denied.style.display="block";controls.style.display="none"}
 }
+
+function showAdminTab(name){
+ document.querySelectorAll(".admin-tabbtn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+ document.querySelectorAll(".admin-tabpanel").forEach(p=>p.classList.toggle("active",p.id===`adminTab-${name}`));
+ if(name==="players") loadAdminPlayers();
+}
+
 function renderAdminWeeks(){
  const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";
  schedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=`Week ${g.week}`;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})
@@ -615,6 +634,12 @@ async function renderAdminPlayerWeek(pick,picks){
  save.innerHTML='<button class="btn">Save Edited Picks</button>';
  save.querySelector("button").onclick=saveAdminPlayerPicks;
  wrap.appendChild(save);
+
+ const danger=document.createElement("div");
+ danger.className="danger-box";
+ danger.innerHTML=`<strong>Remove Player From Pool</strong><div class="note" style="margin:4px 0 10px">This deletes all submitted picks and removes the player from the leaderboard. Their sign-in account remains active, so they can rejoin later by submitting new picks.</div><button class="btn danger-btn">Delete Player Pool Data</button>`;
+ danger.querySelector("button").onclick=deleteAdminPlayerPoolData;
+ wrap.appendChild(danger);
 }
 
 async function saveAdminPlayerPicks(){
@@ -633,6 +658,20 @@ async function saveAdminPlayerPicks(){
  alert("Player picks updated successfully.");
  await loadAdminPlayers();
  await selectAdminPlayer(selectedAdminPlayer);
+ await renderLeaderboard();
+}
+
+
+async function deleteAdminPlayerPoolData(){
+ if(!isAdmin||!selectedAdminPlayer)return;
+ const name=`${selectedAdminPlayer.first_name} ${selectedAdminPlayer.last_name}`;
+ if(!confirm(`Delete all picks and leaderboard data for ${name}? Their login account will remain available so they can rejoin later.`))return;
+ const {error}=await db.rpc("admin_delete_player_pool_data",{p_user_id:selectedAdminPlayer.user_id});
+ if(error){alert(error.message);return}
+ alert(`${name} has been removed from the pool.`);
+ selectedAdminPlayer=null;selectedAdminPlayerWeek=null;adminPlayerAnswers={};
+ document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player to view their submitted picks.</div>';
+ await loadAdminPlayers();
  await renderLeaderboard();
 }
 
