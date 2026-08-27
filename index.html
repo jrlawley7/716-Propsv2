@@ -52,6 +52,26 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .choice-editor-row button{padding:9px 10px}
 .add-choice-btn{margin-top:4px}
 
+
+.admin-player-section{margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.admin-player-grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
+.player-list{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.player-row{width:100%;border:0;border-bottom:1px solid var(--line);background:#fff;padding:12px 14px;text-align:left}
+.player-row:last-child{border-bottom:0}
+.player-row:hover,.player-row.active{background:#f3f7ff}
+.player-row strong{display:block}
+.player-row span{font-size:11px;color:var(--muted)}
+.player-detail{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff;min-height:220px}
+.player-week-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.player-week-btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;font-size:12px;font-weight:850}
+.player-week-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.admin-player-pick{padding:13px 0;border-bottom:1px solid var(--line)}
+.admin-player-pick:last-child{border-bottom:0}
+.admin-player-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.admin-player-choice{border:1px solid var(--line);background:#fafbfd;border-radius:9px;padding:8px 10px;font-size:12px;font-weight:800}
+.admin-player-choice.selected{background:#eaf1ff;border:2px solid var(--blue);color:var(--blue);padding:7px 9px}
+@media(max-width:800px){.admin-player-grid{grid-template-columns:1fr}}
+
 footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
 @media(max-width:900px){.auth{grid-template-columns:1fr 1fr 1fr}.auth .auth-copy{grid-column:1/-1}.auth button{grid-column:3}.props-grid{grid-template-columns:1fr}.navlinks{display:none}}@media(max-width:650px){nav{padding:12px 15px}.hero{padding:48px 15px 68px}main{padding:0 15px 55px}.auth{grid-template-columns:1fr;margin-top:-42px}.auth button{grid-column:auto}.section-title{align-items:start;flex-direction:column}.podium{grid-template-columns:1fr 1fr 1fr;gap:7px}.place{padding:12px 5px}.place.first{min-height:170px}.place.second{min-height:145px}.place.third{min-height:128px}.medal{font-size:30px}.place .name{font-size:12px}.place .pts{font-size:18px}.matchup-inner{padding:22px 14px;gap:8px}.team{font-size:19px}.game-meta{padding:0 14px 18px}.submit-card{align-items:flex-start;flex-direction:column}.rules-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column}.profile-chip .emailText{display:none}}
 </style>
@@ -125,6 +145,24 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
       <button class="btn secondary" onclick="clearOfficialResults()">Clear Official Results</button>
     </div>
     <div class="admin-status" id="adminStatus"></div>
+
+    <div class="admin-player-section">
+      <div class="section-title" style="margin:0 0 10px">
+        <div>
+          <h2 style="font-size:20px">Player Pick Management</h2>
+          <p>View everyone who has submitted picks, inspect their weekly cards, and edit a submitted answer if necessary.</p>
+        </div>
+      </div>
+
+      <div class="admin-player-grid">
+        <div class="player-list" id="adminPlayerList">
+          <div class="empty">Loading players…</div>
+        </div>
+        <div class="player-detail" id="adminPlayerDetail">
+          <div class="empty">Select a player to view their submitted picks.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -161,6 +199,7 @@ const schedule=[
 let currentUser=null,currentProfile=null,currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false;
 let adminWeek=1,adminAnswers={},adminProps=[];
 let currentProps=[];
+let adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={};
 
 function shortName(team){
  const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};
@@ -362,7 +401,7 @@ function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div c
 function showAdminLogin(){document.getElementById("admin").classList.add("open");document.getElementById("admin").scrollIntoView({behavior:"smooth"});updateAdminVisibility()}
 function updateAdminVisibility(){
  const denied=document.getElementById("adminDenied"),controls=document.getElementById("adminControls");
- if(isAdmin){denied.style.display="none";controls.style.display="block";renderAdminWeeks();renderAdminWeek()}
+ if(isAdmin){denied.style.display="none";controls.style.display="block";renderAdminWeeks();renderAdminWeek();loadAdminPlayers()}
  else{denied.style.display="block";controls.style.display="none"}
 }
 function renderAdminWeeks(){
@@ -492,6 +531,109 @@ async function clearOfficialResults(){
  if(error){alert(error.message);return}
  adminAnswers={};await renderAdminWeek();await renderLeaderboard();
  document.getElementById("adminStatus").textContent=`Week ${adminWeek} results cleared and scores recalculated.`;
+}
+
+
+async function loadAdminPlayers(){
+ if(!isAdmin)return;
+ const {data,error}=await db.rpc("admin_list_players");
+ const list=document.getElementById("adminPlayerList");
+ if(error){list.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}
+ adminPlayers=data||[];
+ if(!adminPlayers.length){
+   list.innerHTML='<div class="empty">No players have submitted picks yet.</div>';
+   document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">No submitted picks to manage yet.</div>';
+   return;
+ }
+ list.innerHTML="";
+ adminPlayers.forEach(p=>{
+   const b=document.createElement("button");
+   b.className="player-row"+(selectedAdminPlayer?.user_id===p.user_id?" active":"");
+   b.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><span>${escapeHtml(p.email||"")} • ${p.weeks_submitted} submitted • ${p.total_points} pts</span>`;
+   b.onclick=()=>selectAdminPlayer(p);
+   list.appendChild(b);
+ });
+}
+
+async function selectAdminPlayer(player){
+ selectedAdminPlayer=player;
+ selectedAdminPlayerWeek=null;
+ adminPlayerAnswers={};
+ await loadAdminPlayers();
+ const {data,error}=await db.rpc("admin_get_player_picks",{p_user_id:player.user_id});
+ const detail=document.getElementById("adminPlayerDetail");
+ if(error){detail.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}
+ const picks=data||[];
+ if(!picks.length){detail.innerHTML='<div class="empty">This player has no submitted picks.</div>';return}
+ detail.innerHTML=`
+   <div><strong>${escapeHtml(player.first_name)} ${escapeHtml(player.last_name)}</strong></div>
+   <div class="note">${escapeHtml(player.email||"")}</div>
+   <div class="player-week-tabs" id="adminPlayerWeekTabs"></div>
+   <div id="adminPlayerWeekDetail"></div>
+ `;
+ const tabs=detail.querySelector("#adminPlayerWeekTabs");
+ picks.forEach(pk=>{
+   const b=document.createElement("button");
+   b.className="player-week-btn";
+   b.textContent=`Week ${pk.week}`;
+   b.onclick=()=>renderAdminPlayerWeek(pk,picks);
+   tabs.appendChild(b);
+ });
+ await renderAdminPlayerWeek(picks[0],picks);
+}
+
+async function renderAdminPlayerWeek(pick,picks){
+ selectedAdminPlayerWeek=pick.week;
+ adminPlayerAnswers={...(pick.answers||{})};
+
+ document.querySelectorAll("#adminPlayerWeekTabs .player-week-btn").forEach(btn=>{
+   btn.classList.toggle("active",btn.textContent===`Week ${pick.week}`);
+ });
+
+ const props=await loadProps(pick.week);
+ const wrap=document.getElementById("adminPlayerWeekDetail");
+ const resultState=pick.points!=null?`${pick.points} pts currently awarded`:"Not scored";
+ wrap.innerHTML=`<div class="note" style="margin-bottom:8px">Week ${pick.week} • ${resultState}</div>`;
+
+ props.forEach(p=>{
+   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b];
+   const row=document.createElement("div");
+   row.className="admin-player-pick";
+   row.innerHTML=`<strong>${escapeHtml(p.question)}</strong><div class="note">${p.points} point${p.points===1?"":"s"}</div><div class="admin-player-options">${choices.map(v=>`<button class="admin-player-choice ${adminPlayerAnswers[p.prop_key]===v?"selected":""}" data-key="${escapeHtml(p.prop_key)}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;
+   row.querySelectorAll(".admin-player-choice").forEach(btn=>{
+     btn.onclick=()=>{
+       adminPlayerAnswers[p.prop_key]=btn.dataset.value;
+       row.querySelectorAll(".admin-player-choice").forEach(x=>x.classList.remove("selected"));
+       btn.classList.add("selected");
+     };
+   });
+   wrap.appendChild(row);
+ });
+
+ const save=document.createElement("div");
+ save.className="admin-actions";
+ save.innerHTML='<button class="btn">Save Edited Picks</button>';
+ save.querySelector("button").onclick=saveAdminPlayerPicks;
+ wrap.appendChild(save);
+}
+
+async function saveAdminPlayerPicks(){
+ if(!isAdmin||!selectedAdminPlayer||!selectedAdminPlayerWeek)return;
+ const props=await loadProps(selectedAdminPlayerWeek);
+ if(Object.keys(adminPlayerAnswers).length<props.length){
+   alert(`This card must have an answer for all ${props.length} props.`);
+   return;
+ }
+ const {error}=await db.rpc("admin_update_player_pick",{
+   p_user_id:selectedAdminPlayer.user_id,
+   p_week:selectedAdminPlayerWeek,
+   p_answers:adminPlayerAnswers
+ });
+ if(error){alert(error.message);return}
+ alert("Player picks updated successfully.");
+ await loadAdminPlayers();
+ await selectAdminPlayer(selectedAdminPlayer);
+ await renderLeaderboard();
 }
 
 init();
