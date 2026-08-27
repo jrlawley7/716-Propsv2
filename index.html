@@ -47,6 +47,11 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .override-status{margin-top:8px;padding:10px 12px;border-radius:10px;background:#fff3f5;color:#9f1239;font-size:12px;font-weight:800}
 @media(max-width:650px){.admin-edit-grid{grid-template-columns:1fr}.admin-edit-grid .full{grid-column:auto}}
 
+
+.choice-editor-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px}
+.choice-editor-row button{padding:9px 10px}
+.add-choice-btn{margin-top:4px}
+
 footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
 @media(max-width:900px){.auth{grid-template-columns:1fr 1fr 1fr}.auth .auth-copy{grid-column:1/-1}.auth button{grid-column:3}.props-grid{grid-template-columns:1fr}.navlinks{display:none}}@media(max-width:650px){nav{padding:12px 15px}.hero{padding:48px 15px 68px}main{padding:0 15px 55px}.auth{grid-template-columns:1fr;margin-top:-42px}.auth button{grid-column:auto}.section-title{align-items:start;flex-direction:column}.podium{grid-template-columns:1fr 1fr 1fr;gap:7px}.place{padding:12px 5px}.place.first{min-height:170px}.place.second{min-height:145px}.place.third{min-height:128px}.medal{font-size:30px}.place .name{font-size:12px}.place .pts{font-size:18px}.matchup-inner{padding:22px 14px;gap:8px}.team{font-size:19px}.game-meta{padding:0 14px 18px}.submit-card{align-items:flex-start;flex-direction:column}.rules-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column}.profile-chip .emailText{display:none}}
 </style>
@@ -54,7 +59,7 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
 </head>
 <body>
 <div class="topbar">🦬 716 PROPS • 2026 BUFFALO BILLS PROP CHALLENGE • CUSTOM WEEKLY PROP VALUES</div>
-<header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a><a href="#admin" onclick="showAdminLogin()">Admin</a></div><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div></nav></header>
+<header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a><a href="#admin" onclick="showAdminLogin()">Admin</a></div><div style="display:flex;align-items:center;gap:8px"><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div><button class="btn secondary" id="logoutBtn" style="display:none;padding:9px 12px" onclick="logoutUser()">Log Out</button></div></nav></header>
 <section class="hero"><div class="hero-inner"><div class="hero-badges"><span class="badge">🦬 Bills Mafia</span><span class="badge">🏈 Weekly Props</span><span class="badge">🏆 Season Podium</span></div><h1>Make the picks.<br>Claim the podium.</h1><p>Sign in once, make five picks each Bills week, and battle your group for the top three spots all season long.</p></div></section>
 <div class="hero-stripe"></div>
 <main>
@@ -185,6 +190,23 @@ async function sendMagicLink(){
  alert("Check your email for the secure 716 Props sign-in link.");
 }
 
+
+async function logoutUser(){
+ const {error}=await db.auth.signOut();
+ if(error){alert(error.message);return}
+ currentUser=null;currentProfile=null;isAdmin=false;answers={};
+ document.getElementById("profileChip").style.display="none";
+ document.getElementById("logoutBtn").style.display="none";
+ document.getElementById("firstNameInput").value="";
+ document.getElementById("lastNameInput").value="";
+ document.getElementById("emailInput").value="";
+ document.getElementById("signInBtn").textContent="Email Sign-In Link";
+ updateAdminVisibility();
+ await renderWeek();
+ await renderLeaderboard();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
 async function handleSession(session){
  currentUser=session.user;
  const pending=JSON.parse(localStorage.getItem("props716_pending_profile")||"null");
@@ -212,6 +234,7 @@ function applySignedIn(){
  document.getElementById("lastNameInput").value=currentProfile.last_name;
  document.getElementById("emailInput").value=currentUser.email;
  document.getElementById("signInBtn").textContent="Email Another Sign-In Link";
+ document.getElementById("logoutBtn").style.display="inline-block";
 }
 
 async function loadWeekStatus(){
@@ -272,7 +295,7 @@ async function loadAnswers(){
 function renderProps(){
  const open=unlocked(currentWeek),grid=document.getElementById("propsGrid");grid.innerHTML="";
  currentProps.forEach(p=>{
-   const choices=[p.choice_a,p.choice_b];
+   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b];
    const card=document.createElement("article");card.className="card prop"+(open?"":" locked");
    card.innerHTML=`<div class="prop-top"><span class="category">PROP ${p.position}</span><span class="points">${p.points} POINT${p.points===1?"":"S"}</span></div><h3>${escapeHtml(p.question)}</h3><p>${escapeHtml(p.description||"")}</p><div class="choices">${choices.map(v=>`<button class="choice ${answers[p.prop_key]===v?"selected":""}" ${open?"":"disabled"} data-key="${escapeHtml(p.prop_key)}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div><div class="status">${answers[p.prop_key]?"✓ Saved selection":(open?"":"🔒 Week locked")}</div>`;
    card.querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>choose(p.prop_key,btn,btn.dataset.value));
@@ -372,7 +395,7 @@ async function renderAdminWeek(){
  adminAnswers=result?.answers?{...result.answers}:{};
  const area=document.getElementById("adminQuestions");area.innerHTML="";
  adminProps.forEach(p=>{
-   const choices=[p.choice_a,p.choice_b],q=document.createElement("div");q.className="admin-question";
+   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],q=document.createElement("div");q.className="admin-question";
    q.innerHTML=`<h4>${escapeHtml(p.question)} <span class="points">${p.points} POINT${p.points===1?"":"S"}</span></h4><div class="admin-answers">${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.prop_key]===v?"correct":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;
    q.querySelectorAll(".admin-answer").forEach(btn=>btn.onclick=()=>setAdminAnswer(p.prop_key,btn,btn.dataset.value));
    area.appendChild(q);
@@ -383,16 +406,32 @@ async function renderAdminWeek(){
 function renderAdminPropEditors(){
  const wrap=document.getElementById("adminPropEditors");wrap.innerHTML="";
  adminProps.forEach(p=>{
+   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b];
    const el=document.createElement("div");el.className="admin-prop-editor";el.dataset.key=p.prop_key;
    el.innerHTML=`<h4>Prop ${p.position}</h4><div class="admin-edit-grid">
       <div class="full"><label>Question</label><input class="edit-question" value="${escapeHtml(p.question)}"></div>
       <div class="full"><label>Description</label><textarea class="edit-description">${escapeHtml(p.description||"")}</textarea></div>
-      <div><label>Answer A</label><input class="edit-a" value="${escapeHtml(p.choice_a)}"></div>
-      <div><label>Answer B</label><input class="edit-b" value="${escapeHtml(p.choice_b)}"></div>
+      <div class="full"><label>Answer Choices</label><div class="choice-editor-list"></div><button type="button" class="btn secondary add-choice-btn">+ Add Choice</button></div>
       <div><label>Points</label><input class="edit-points" type="number" min="1" max="100" value="${p.points}"></div>
    </div>`;
+   const list=el.querySelector(".choice-editor-list");
+   choices.forEach(v=>addChoiceEditorRow(list,v));
+   el.querySelector(".add-choice-btn").onclick=()=>{
+     if(list.children.length>=12){alert("Maximum 12 answer choices per prop.");return}
+     addChoiceEditorRow(list,"");
+   };
    wrap.appendChild(el);
  });
+}
+
+function addChoiceEditorRow(list,value){
+ const row=document.createElement("div");row.className="choice-editor-row";
+ row.innerHTML=`<input class="edit-choice" value="${escapeHtml(value)}"><button type="button" class="btn secondary">−</button>`;
+ row.querySelector("button").onclick=()=>{
+   if(list.children.length<=2){alert("Each prop must have at least 2 answer choices.");return}
+   row.remove();
+ };
+ list.appendChild(row);
 }
 
 async function saveAdminPropConfig(){
@@ -400,22 +439,22 @@ async function saveAdminPropConfig(){
  const editors=[...document.querySelectorAll("#adminPropEditors .admin-prop-editor")];
  for(const el of editors){
    const key=el.dataset.key;
+   const choices=[...el.querySelectorAll(".edit-choice")].map(i=>i.value.trim()).filter(Boolean);
    const row={
      question:el.querySelector(".edit-question").value.trim(),
      description:el.querySelector(".edit-description").value.trim(),
-     choice_a:el.querySelector(".edit-a").value.trim(),
-     choice_b:el.querySelector(".edit-b").value.trim(),
+     choices,
      points:Number(el.querySelector(".edit-points").value),
      updated_at:new Date().toISOString()
    };
-   if(!row.question||!row.choice_a||!row.choice_b||!Number.isFinite(row.points)||row.points<1){
-     alert("Every prop needs a question, two answer choices, and a point value of at least 1.");
+   if(!row.question||choices.length<2||!Number.isFinite(row.points)||row.points<1){
+     alert("Every prop needs a question, at least 2 answer choices, and a point value of at least 1.");
      return;
    }
    const {error}=await db.from("prop_questions").update(row).eq("week",adminWeek).eq("prop_key",key);
    if(error){alert(error.message);return}
  }
- document.getElementById("adminStatus").textContent=`✓ Week ${adminWeek} questions and point values saved.`;
+ document.getElementById("adminStatus").textContent=`✓ Week ${adminWeek} questions, choices, and point values saved.`;
  await renderAdminWeek();
  if(currentWeek===adminWeek) await renderWeek();
  await renderLeaderboard();
