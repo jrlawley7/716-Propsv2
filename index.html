@@ -12,25 +12,106 @@
 main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 6px 20px rgba(16,24,40,.05)}.auth{margin-top:-48px;position:relative;z-index:5;padding:20px;display:grid;grid-template-columns:1.25fr .8fr .8fr 1fr auto;gap:12px;align-items:end}.auth h2{margin:0 0 4px;font-size:21px}.note{font-size:12px;color:var(--muted)}label{display:block;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#475467;margin-bottom:6px}input{width:100%;border:1px solid #d0d7e2;border-radius:10px;padding:11px 12px;background:#fff;color:var(--ink);outline:none}input:focus{border-color:#7b9bd2;box-shadow:0 0 0 3px rgba(0,51,141,.08)}.btn{border:0;border-radius:10px;padding:11px 16px;background:var(--blue);color:#fff;font-weight:900}.btn:hover{filter:brightness(1.06)}.btn.secondary{background:#edf2fa;color:var(--blue)}.section{margin-top:26px}.section-title{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:14px}.section-title h2{margin:0;font-size:27px;letter-spacing:-.7px}.section-title p{margin:3px 0 0;color:var(--muted);font-size:13px}
 .leaderboard-card{padding:22px;border-top:6px solid var(--red)}.podium{display:grid;grid-template-columns:1fr 1.05fr 1fr;gap:12px;align-items:end;margin:22px auto 10px;max-width:760px}.place{text-align:center;border-radius:16px 16px 8px 8px;padding:15px 10px 12px;border:1px solid var(--line);background:linear-gradient(#fff,#f8fafc)}.place.first{min-height:180px;border-top:6px solid var(--gold)}.place.second{min-height:150px;border-top:6px solid var(--silver)}.place.third{min-height:132px;border-top:6px solid var(--bronze)}.medal{font-size:38px;line-height:1}.place .name{font-weight:950;margin-top:6px}.place .pts{font-size:22px;font-weight:950;color:var(--blue)}.place .weeks{font-size:11px;color:var(--muted)}.full-board{margin-top:17px;border-top:1px solid var(--line)}.leader-row{display:flex;gap:10px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line);font-size:13px}.leader-row:last-child{border-bottom:0}.rank{width:30px;font-weight:950;color:var(--blue)}.person{flex:1;font-weight:800}.score{font-weight:950}.empty{text-align:center;color:var(--muted);padding:24px 8px;font-size:13px}
 .week-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity;scrollbar-width:thin}.week-btn{flex:0 0 auto;min-width:105px;scroll-snap-align:start;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;text-align:left;font-size:12px;font-weight:900;color:#475467}.week-btn span{display:block;font-size:10px;font-weight:700;color:#98a2b3;margin-top:2px}.week-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 5px 14px rgba(0,51,141,.2)}.week-btn.active span{color:#dbe7ff}.week-btn.locked::after{content:" 🔒";font-size:10px}.week-btn.bye::after{content:" • BYE";font-size:10px}.unlock-key{display:inline-flex;align-items:center;gap:6px;background:#fff3f5;border:1px solid #f4c4ce;color:#9f1239;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:850}
-.matchup{overflow:hidden;margin-top:8px;border-radius:18px;color:#fff;position:relative}.matchup-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:27px 28px}.team{font-weight:950;font-size:clamp(22px,4vw,40px);line-height:1}.team small{display:block;font-size:11px;font-weight:850;opacity:.8;letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}.team.right{text-align:right}.at{font-weight:950;background:#fff;color:#101828;border-radius:999px;padding:8px 10px;font-size:11px}.game-meta{display:flex;gap:11px;flex-wrap:wrap;padding:0 28px 20px;color:rgba(255,255,255,.9);font-size:12px;font-weight:800}.lock-banner{display:none;margin:12px 0 0;padding:13px 15px;border-radius:12px;background:#fff3f5;border:1px solid #f5c2cc;color:#9f1239;font-size:13px;font-weight:800}.bye{display:none;padding:28px;text-align:center;background:#fff;border:1px dashed #cbd5e1;border-radius:16px;color:#475467}.props-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}.prop{padding:19px;position:relative}.prop.locked{opacity:.72}.prop-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.category{font-size:11px;font-weight:900;color:var(--red);text-transform:uppercase;letter-spacing:.7px}.points{font-size:11px;font-weight:950;color:var(--blue);background:#edf2fb;padding:5px 8px;border-radius:999px}.prop h3{font-size:18px;margin:10px 0 5px}.prop p{font-size:13px;color:var(--muted);margin:0 0 14px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:9px}.choice{border:1px solid var(--line);background:#fafbfd;border-radius:10px;padding:12px 9px;font-size:13px;font-weight:850}.choice:hover:not(:disabled){border-color:#a8b7d0}.choice.selected{background:#eaf1ff;color:var(--blue);border:2px solid var(--blue);padding:11px 8px}.choice:disabled{cursor:not-allowed;background:#f4f5f7;color:#98a2b3}.status{min-height:18px;margin-top:9px;color:var(--success);font-size:12px;font-weight:800}.submit-card{margin-top:14px;padding:20px;display:flex;justify-content:space-between;gap:18px;align-items:center}.big{font-size:36px;line-height:1;font-weight:950;color:var(--blue)}.small{font-size:12px;color:var(--muted);font-weight:700}.save-state{font-size:12px;color:var(--success);font-weight:800;margin-top:8px}.submit-card.locked-submit .btn{opacity:.5;cursor:not-allowed}.rules{margin-top:18px;padding:22px;background:#101828;color:#fff;border-left:7px solid var(--red)}.rules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.rule{font-size:12px;color:#d0d5dd}.rule b{display:block;color:#fff;margin-bottom:4px}footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
+.matchup{overflow:hidden;margin-top:8px;border-radius:18px;color:#fff;position:relative}.matchup-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:27px 28px}.team{font-weight:950;font-size:clamp(22px,4vw,40px);line-height:1}.team small{display:block;font-size:11px;font-weight:850;opacity:.8;letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}.team.right{text-align:right}.at{font-weight:950;background:#fff;color:#101828;border-radius:999px;padding:8px 10px;font-size:11px}.game-meta{display:flex;gap:11px;flex-wrap:wrap;padding:0 28px 20px;color:rgba(255,255,255,.9);font-size:12px;font-weight:800}.lock-banner{display:none;margin:12px 0 0;padding:13px 15px;border-radius:12px;background:#fff3f5;border:1px solid #f5c2cc;color:#9f1239;font-size:13px;font-weight:800}.bye{display:none;padding:28px;text-align:center;background:#fff;border:1px dashed #cbd5e1;border-radius:16px;color:#475467}.props-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}.prop{padding:19px;position:relative}.prop.locked{opacity:.72}.prop-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.category{font-size:11px;font-weight:900;color:var(--red);text-transform:uppercase;letter-spacing:.7px}.points{font-size:11px;font-weight:950;color:var(--blue);background:#edf2fb;padding:5px 8px;border-radius:999px}.prop h3{font-size:18px;margin:10px 0 5px}.prop p{font-size:13px;color:var(--muted);margin:0 0 14px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:9px}.choice{border:1px solid var(--line);background:#fafbfd;border-radius:10px;padding:12px 9px;font-size:13px;font-weight:850}.choice:hover:not(:disabled){border-color:#a8b7d0}.choice.selected{background:#eaf1ff;color:var(--blue);border:2px solid var(--blue);padding:11px 8px}.choice:disabled{cursor:not-allowed;background:#f4f5f7;color:#98a2b3}.status{min-height:18px;margin-top:9px;color:var(--success);font-size:12px;font-weight:800}.submit-card{margin-top:14px;padding:20px;display:flex;justify-content:space-between;gap:18px;align-items:center}.big{font-size:36px;line-height:1;font-weight:950;color:var(--blue)}.small{font-size:12px;color:var(--muted);font-weight:700}.save-state{font-size:12px;color:var(--success);font-weight:800;margin-top:8px}.submit-card.locked-submit .btn{opacity:.5;cursor:not-allowed}.rules{margin-top:18px;padding:22px;background:#101828;color:#fff;border-left:7px solid var(--red)}.rules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.rule{font-size:12px;color:#d0d5dd}.rule b{display:block;color:#fff;margin-bottom:4px}
+.admin-launch{margin-top:18px;text-align:right}
+.admin-link{border:0;background:transparent;color:#667085;font-size:12px;font-weight:800;text-decoration:underline;padding:6px}
+.admin-panel{display:none;margin-top:18px;padding:22px;border-top:6px solid var(--red)}
+.admin-panel.open{display:block}
+.admin-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}
+.admin-head h2{margin:0 0 4px;font-size:24px}
+.admin-badge{background:#fff3f5;border:1px solid #f5c2cc;color:#9f1239;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900}
+.admin-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:470px}
+.admin-controls{display:none}
+.admin-weekbar{display:flex;gap:8px;overflow-x:auto;padding:3px 0 12px}
+.admin-weekbtn{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:850}
+.admin-weekbtn.active{background:var(--red);border-color:var(--red);color:#fff}
+.admin-question{padding:15px 0;border-bottom:1px solid var(--line)}
+.admin-question:last-child{border-bottom:0}
+.admin-question h4{margin:0 0 8px;font-size:14px}
+.admin-answers{display:flex;gap:8px;flex-wrap:wrap}
+.admin-answer{border:1px solid var(--line);background:#fafbfd;border-radius:9px;padding:9px 11px;font-size:12px;font-weight:850}
+.admin-answer.correct{background:#ecfdf3;border:2px solid #12b76a;color:#067647;padding:8px 10px}
+.admin-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.admin-status{font-size:12px;color:var(--success);font-weight:800;margin-top:10px;min-height:18px}
+.week-result{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:#ecfdf3;color:#067647;font-size:10px;font-weight:900}
+@media(max-width:650px){.admin-login{grid-template-columns:1fr}.admin-head{flex-direction:column}}
+
+footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
 @media(max-width:900px){.auth{grid-template-columns:1fr 1fr 1fr}.auth .auth-copy{grid-column:1/-1}.auth button{grid-column:3}.props-grid{grid-template-columns:1fr}.navlinks{display:none}}@media(max-width:650px){nav{padding:12px 15px}.hero{padding:48px 15px 68px}main{padding:0 15px 55px}.auth{grid-template-columns:1fr;margin-top:-42px}.auth button{grid-column:auto}.section-title{align-items:start;flex-direction:column}.podium{grid-template-columns:1fr 1fr 1fr;gap:7px}.place{padding:12px 5px}.place.first{min-height:170px}.place.second{min-height:145px}.place.third{min-height:128px}.medal{font-size:30px}.place .name{font-size:12px}.place .pts{font-size:18px}.matchup-inner{padding:22px 14px;gap:8px}.team{font-size:19px}.game-meta{padding:0 14px 18px}.submit-card{align-items:flex-start;flex-direction:column}.rules-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column}.profile-chip .emailText{display:none}}
 </style>
 </head>
 <body>
 <div class="topbar">🦬 716 PROPS • 2026 BUFFALO BILLS PROP CHALLENGE • 2 POINTS PER QUESTION</div>
-<header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a></div><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div></nav></header>
+<header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a><a href="#admin" onclick="showAdminLogin()">Admin</a></div><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div></nav></header>
 <section class="hero"><div class="hero-inner"><div class="hero-badges"><span class="badge">🦬 Bills Mafia</span><span class="badge">🏈 Weekly Props</span><span class="badge">🏆 Season Podium</span></div><h1>Make the picks.<br>Claim the podium.</h1><p>Sign in once, make five picks each Bills week, and battle your group for the top three spots all season long.</p></div></section>
 <div class="hero-stripe"></div>
 <main>
 <section class="card auth" id="authBox"><div class="auth-copy"><h2>Player Sign In</h2><div class="note">This is the only place you enter your name. Every weekly submission is tied to this profile.</div></div><div><label for="firstNameInput">First Name</label><input id="firstNameInput" type="text" placeholder="Jake"></div><div><label for="lastNameInput">Last Name</label><input id="lastNameInput" type="text" placeholder="Lawley"></div><div><label for="emailInput">Email</label><input id="emailInput" type="email" placeholder="you@example.com"></div><button class="btn" id="signInBtn" onclick="signIn()">Sign In / Continue</button></section>
 <section class="section" id="leaderboard"><div class="section-title"><div><h2>Season Leaderboard</h2><p>Only players who have submitted at least one unlocked weekly card appear here.</p></div><span class="unlock-key">🏆 1st, 2nd & 3rd highlighted</span></div><div class="card leaderboard-card"><div class="podium" id="podium"></div><div class="full-board" id="leaderRows"></div></div></section>
 <section class="section" id="weeks"><div class="section-title"><div><h2>2026 Bills Regular Season</h2><p>Tap or swipe across the weeks. Locked weeks can be viewed, but picks cannot be submitted until you unlock them in the code.</p></div><span class="unlock-key">🔓 Week 1 unlocked</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="at">@</div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This week is view-only right now. The questions are visible, but picks and submissions are disabled until the week is unlocked.</div><div class="bye" id="byeBox"><h2 style="margin:0 0 5px">Week 7 — BYE</h2><div>No Bills game this week, so there are no props to submit.</div></div><div class="props-grid" id="propsGrid"></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT WEEK</div><div class="big" id="pickCount">0 / 5</div><div class="small">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset Picks</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit / Update Picks</button></div></div></section>
-<section class="card rules" id="rules"><div class="rules-grid"><div class="rule"><b>2 points per prop</b>Five questions each game means 10 possible points per week.</div><div class="rule"><b>Weeks unlock in code</b>Change the <code>unlockedWeeks</code> array to open future weeks when you are ready.</div><div class="rule"><b>Edit while unlocked</b>Players can return to an unlocked week, change their answers, and submit the updated card.</div></div></section>
+
+<div class="admin-launch"><button class="admin-link" onclick="showAdminLogin()">Administrator</button></div>
+
+<section class="card admin-panel" id="admin">
+  <div class="admin-head">
+    <div>
+      <h2>Administrator Scoring</h2>
+      <div class="note">Mark the correct answer for each prop. Saving results automatically awards 2 points per correct answer and refreshes the leaderboard.</div>
+    </div>
+    <span class="admin-badge">🔐 ADMIN ONLY</span>
+  </div>
+
+  <div id="adminLoginArea">
+    <label for="adminPin">Admin PIN</label>
+    <div class="admin-login">
+      <input id="adminPin" type="password" inputmode="numeric" placeholder="Enter admin PIN">
+      <button class="btn" onclick="adminLogin()">Open Admin Mode</button>
+    </div>
+    <div class="note" style="margin-top:8px">Prototype PIN: change <code>ADMIN_PIN</code> in the HTML before publishing.</div>
+  </div>
+
+  <div class="admin-controls" id="adminControls">
+    <div class="section-title" style="margin:0 0 10px">
+      <div>
+        <h2 style="font-size:20px">Score a Week</h2>
+        <p>Select a game week, then mark all five correct answers.</p>
+      </div>
+      <button class="btn secondary" onclick="adminLogout()">Exit Admin</button>
+    </div>
+
+    <div class="admin-weekbar" id="adminWeekbar"></div>
+    <div id="adminGameTitle" style="font-weight:950;margin:4px 0 2px"></div>
+    <div class="note" id="adminGameMeta"></div>
+    <div id="adminQuestions" style="margin-top:12px"></div>
+
+    <div class="admin-actions">
+      <button class="btn" onclick="saveOfficialResults()">Save Correct Answers & Score Players</button>
+      <button class="btn secondary" onclick="clearOfficialResults()">Clear Results for This Week</button>
+    </div>
+    <div class="admin-status" id="adminStatus"></div>
+  </div>
+</section>
+
+<section class="card rules" id="rules"><div class="rules-grid"><div class="rule"><b>2 points per prop</b>Five questions each game means 10 possible points per week.</div><div class="rule"><b>Weeks unlock in code</b>Change the <code>unlockedWeeks</code> array to open future weeks when you are ready.</div><div class="rule"><b>Admin scoring</b>The administrator marks the five correct answers after the game. Each correct pick automatically adds 2 points.</div></div></section>
 </main>
 <footer><div class="footer-inner"><span>© 2026 716 Props • Built for Bills fans.</span><span>Prototype uses browser storage. No real-money wagering.</span></div></footer>
 <script>
 /* WEEK LOCK CONTROL: Add week numbers here when ready. Example: [1,2] */
 const unlockedWeeks=[1];
+
+/* ADMIN SETTINGS
+   Change this PIN before publishing the prototype.
+   IMPORTANT: a PIN stored in a single HTML file is not secure against someone
+   who knows how to inspect page source. Use a backend for real admin security.
+*/
+const ADMIN_PIN="6969";
+let adminAuthenticated=false;
+let adminWeek=1;
+let adminAnswers={};
+
+const resultsKey=()=>"props716_official_results_v1";
+const loadResults=()=>JSON.parse(localStorage.getItem(resultsKey())||"{}");
+const saveResults=x=>localStorage.setItem(resultsKey(),JSON.stringify(x));
 const schedule=[
 {week:1,away:"Buffalo Bills",home:"Houston Texans",date:"Sunday, Sept. 13",time:"1:00 PM",network:"CBS",opp:"Houston Texans",colors:["#03202F","#A71930"]},
 {week:2,away:"Detroit Lions",home:"Buffalo Bills",date:"Thursday, Sept. 17",time:"8:15 PM",network:"Prime Video",opp:"Detroit Lions",colors:["#0076B6","#B0B7BC"]},
@@ -60,7 +141,7 @@ const propTemplates=[
 ];
 let currentUser=null,currentWeek=1,answers={};
 const usersKey=()=>"props716_users_v4";const submissionsKey=()=>"props716_submissions_v4";const loadUsers=()=>JSON.parse(localStorage.getItem(usersKey())||"{}");const saveUsers=x=>localStorage.setItem(usersKey(),JSON.stringify(x));const loadSubs=()=>JSON.parse(localStorage.getItem(submissionsKey())||"{}");const saveSubs=x=>localStorage.setItem(submissionsKey(),JSON.stringify(x));const isUnlocked=w=>unlockedWeeks.includes(w);
-function init(){renderWeekTabs();const remembered=localStorage.getItem("props716_current_email");if(remembered){const users=loadUsers();if(users[remembered]){currentUser=users[remembered];applySignedIn()}}renderWeek();renderLeaderboard()}
+function init(){renderWeekTabs();renderAdminWeeks();const remembered=localStorage.getItem("props716_current_email");if(remembered){const users=loadUsers();if(users[remembered]){currentUser=users[remembered];applySignedIn()}}renderWeek();renderLeaderboard()}
 function renderWeekTabs(){const wrap=document.getElementById("weekTabs");wrap.innerHTML="";schedule.forEach(g=>{const btn=document.createElement("button"),locked=!g.bye&&!isUnlocked(g.week);btn.className="week-btn"+(g.week===currentWeek?" active":"")+(locked?" locked":"")+(g.bye?" bye":"");btn.onclick=()=>selectWeek(g.week);const short=g.bye?"No game":(g.away==="Buffalo Bills"?`at ${shortName(g.home)}`:`vs ${shortName(g.away)}`);btn.innerHTML=`Week ${g.week}<span>${short}</span>`;wrap.appendChild(btn)})}
 function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||team}
 function selectWeek(week){currentWeek=week;renderWeekTabs();renderWeek();const active=document.querySelector(".week-btn.active");if(active)active.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"})}
@@ -72,9 +153,175 @@ function renderProps(){const game=schedule.find(g=>g.week===currentWeek);if(game
 function choose(id,button,value){if(!isUnlocked(currentWeek))return;if(!currentUser){alert("Sign in first so your picks can be saved.");document.getElementById("authBox").scrollIntoView({behavior:"smooth"});return}answers[id]=value;const card=button.closest(".prop");card.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));button.classList.add("selected");card.querySelector(".status").textContent="✓ Pick selected";updateCount();document.getElementById("saveState").textContent="Changes not submitted yet."}
 function updateCount(){document.getElementById("pickCount").textContent=`${Object.keys(answers).length} / 5`}
 function updateSaveState(){const state=document.getElementById("saveState");if(!isUnlocked(currentWeek)){state.textContent="This week is locked and view-only.";return}if(!currentUser){state.textContent="Sign in to save this week's picks.";return}const saved=loadSubs()[currentUser.email]?.[currentWeek];state.textContent=saved?`Last submitted: ${saved.updated}`:"No submission yet for this week."}
-function submitPicks(){if(!isUnlocked(currentWeek)){alert("This week is locked.");return}if(!currentUser){alert("Sign in first.");return}if(Object.keys(answers).length<5){alert(`Complete all 5 questions before submitting. You have ${Object.keys(answers).length}/5 selected.`);return}const subs=loadSubs();if(!subs[currentUser.email])subs[currentUser.email]={};subs[currentUser.email][currentWeek]={first:currentUser.first,last:currentUser.last,displayName:currentUser.displayName,email:currentUser.email,answers:{...answers},updated:new Date().toLocaleString(),points:subs[currentUser.email][currentWeek]?.points||0};saveSubs(subs);updateSaveState();renderLeaderboard();alert("Your picks have been submitted. You can change and resubmit them while this week remains unlocked.")}
+function submitPicks(){
+  if(!isUnlocked(currentWeek)){alert("This week is locked.");return}
+  if(!currentUser){alert("Sign in first.");return}
+  if(Object.keys(answers).length<5){alert(`Complete all 5 questions before submitting. You have ${Object.keys(answers).length}/5 selected.`);return}
+
+  const subs=loadSubs();
+  if(!subs[currentUser.email]) subs[currentUser.email]={};
+
+  const entry={
+    first:currentUser.first,
+    last:currentUser.last,
+    displayName:currentUser.displayName,
+    email:currentUser.email,
+    answers:{...answers},
+    updated:new Date().toLocaleString(),
+    points:0
+  };
+
+  const official=loadResults()[currentWeek];
+  if(official) entry.points=scoreAnswers(entry.answers,official.answers);
+
+  subs[currentUser.email][currentWeek]=entry;
+  saveSubs(subs);
+  updateSaveState();
+  renderLeaderboard();
+  alert("Your picks have been submitted. You can change and resubmit them while this week remains unlocked.");
+}
 function resetWeek(){if(!isUnlocked(currentWeek))return;if(!currentUser){alert("Sign in first.");return}answers={};renderProps();document.getElementById("saveState").textContent="Selections cleared locally. Make new picks and submit again."}
-function renderLeaderboard(){const subs=loadSubs(),users=loadUsers();let board=[];Object.keys(subs).forEach(email=>{const weeks=Object.values(subs[email]);if(!weeks.length)return;const points=weeks.reduce((sum,w)=>sum+(Number(w.points)||0),0);board.push({name:users[email]?.displayName||weeks[0]?.displayName||email,points,submitted:weeks.length})});board.sort((a,b)=>b.points-a.points||b.submitted-a.submitted||a.name.localeCompare(b.name));const podium=document.getElementById("podium"),rows=document.getElementById("leaderRows");if(!board.length){podium.innerHTML=`<div class="place second"><div class="medal">🥈</div><div class="name">2nd Place</div><div class="weeks">Waiting for picks</div></div><div class="place first"><div class="medal">🥇</div><div class="name">1st Place</div><div class="weeks">Waiting for picks</div></div><div class="place third"><div class="medal">🥉</div><div class="name">3rd Place</div><div class="weeks">Waiting for picks</div></div>`;rows.innerHTML=`<div class="empty">No one has submitted picks yet.</div>`;return}const first=board[0]||{name:"Open",points:0,submitted:0},second=board[1]||{name:"Open",points:0,submitted:0},third=board[2]||{name:"Open",points:0,submitted:0};podium.innerHTML=`${podiumPlace(second,"second","🥈","2nd")}${podiumPlace(first,"first","🥇","1st")}${podiumPlace(third,"third","🥉","3rd")}`;rows.innerHTML=board.map((p,i)=>`<div class="leader-row"><span class="rank">${i+1}</span><span class="person">${p.name}<br><span style="font-size:11px;color:#98a2b3">${p.submitted} week${p.submitted===1?"":"s"} submitted</span></span><span class="score">${p.points} pts</span></div>`).join("")}
+
+function scoreAnswers(playerAnswers,correctAnswers){
+  let total=0;
+  propTemplates.forEach(p=>{
+    if(playerAnswers?.[p.id]!==undefined &&
+       correctAnswers?.[p.id]!==undefined &&
+       playerAnswers[p.id]===correctAnswers[p.id]) total+=2;
+  });
+  return total;
+}
+
+function rescoreAllPlayers(){
+  const subs=loadSubs();
+  const official=loadResults();
+
+  Object.keys(subs).forEach(email=>{
+    Object.keys(subs[email]).forEach(week=>{
+      const result=official[week];
+      subs[email][week].points=result ? scoreAnswers(subs[email][week].answers,result.answers) : 0;
+    });
+  });
+
+  saveSubs(subs);
+  renderLeaderboard();
+}
+
+function showAdminLogin(){
+  const panel=document.getElementById("admin");
+  panel.classList.add("open");
+  panel.scrollIntoView({behavior:"smooth",block:"start"});
+  if(adminAuthenticated) renderAdminWeek();
+}
+
+function adminLogin(){
+  const pin=document.getElementById("adminPin").value;
+  if(pin!==ADMIN_PIN){
+    alert("Incorrect admin PIN.");
+    return;
+  }
+  adminAuthenticated=true;
+  document.getElementById("adminLoginArea").style.display="none";
+  document.getElementById("adminControls").style.display="block";
+  renderAdminWeeks();
+  renderAdminWeek();
+}
+
+function adminLogout(){
+  adminAuthenticated=false;
+  adminAnswers={};
+  document.getElementById("adminPin").value="";
+  document.getElementById("adminLoginArea").style.display="block";
+  document.getElementById("adminControls").style.display="none";
+  document.getElementById("adminStatus").textContent="";
+}
+
+function renderAdminWeeks(){
+  const bar=document.getElementById("adminWeekbar");
+  if(!bar) return;
+  const results=loadResults();
+  bar.innerHTML="";
+  schedule.filter(g=>!g.bye).forEach(g=>{
+    const btn=document.createElement("button");
+    btn.className="admin-weekbtn"+(g.week===adminWeek?" active":"");
+    btn.innerHTML=`Week ${g.week}${results[g.week]?'<span class="week-result">Scored</span>':''}`;
+    btn.onclick=()=>{adminWeek=g.week;renderAdminWeeks();if(adminAuthenticated)renderAdminWeek()};
+    bar.appendChild(btn);
+  });
+}
+
+function renderAdminWeek(){
+  if(!adminAuthenticated) return;
+  const game=schedule.find(g=>g.week===adminWeek);
+  if(!game || game.bye) return;
+
+  const stored=loadResults()[adminWeek];
+  adminAnswers=stored?.answers ? {...stored.answers} : {};
+
+  document.getElementById("adminGameTitle").textContent=`Week ${game.week}: ${game.away} at ${game.home}`;
+  document.getElementById("adminGameMeta").textContent=`${game.date} • ${game.time} • ${game.network}`;
+
+  const area=document.getElementById("adminQuestions");
+  area.innerHTML="";
+
+  propTemplates.forEach(p=>{
+    const choices=p.dynamic?["Buffalo Bills",game.opp]:p.a;
+    const q=document.createElement("div");
+    q.className="admin-question";
+    q.innerHTML=`
+      <h4>${p.q} <span class="points">2 POINTS</span></h4>
+      <div class="admin-answers">
+        ${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.id]===v?"correct":""}" onclick="setAdminAnswer('${p.id}',this,'${v.replace(/'/g,"\\'")}')">${v}</button>`).join("")}
+      </div>`;
+    area.appendChild(q);
+  });
+
+  document.getElementById("adminStatus").textContent=stored
+    ? `Results saved for Week ${adminWeek}. You can change an answer and save again to rescore everyone.`
+    : `No official results saved for Week ${adminWeek} yet.`;
+}
+
+function setAdminAnswer(id,button,value){
+  if(!adminAuthenticated) return;
+  adminAnswers[id]=value;
+  const row=button.closest(".admin-question");
+  row.querySelectorAll(".admin-answer").forEach(b=>b.classList.remove("correct"));
+  button.classList.add("correct");
+  document.getElementById("adminStatus").textContent="Unsaved result changes.";
+}
+
+function saveOfficialResults(){
+  if(!adminAuthenticated) return;
+  if(Object.keys(adminAnswers).length<5){
+    alert(`Mark all 5 correct answers before scoring. You have ${Object.keys(adminAnswers).length}/5 marked.`);
+    return;
+  }
+
+  const results=loadResults();
+  results[adminWeek]={
+    answers:{...adminAnswers},
+    scoredAt:new Date().toLocaleString()
+  };
+  saveResults(results);
+  rescoreAllPlayers();
+  renderAdminWeeks();
+  renderAdminWeek();
+  document.getElementById("adminStatus").textContent=`✓ Week ${adminWeek} results saved. All submitted players were rescored automatically.`;
+}
+
+function clearOfficialResults(){
+  if(!adminAuthenticated) return;
+  const results=loadResults();
+  delete results[adminWeek];
+  saveResults(results);
+  adminAnswers={};
+  rescoreAllPlayers();
+  renderAdminWeeks();
+  renderAdminWeek();
+  document.getElementById("adminStatus").textContent=`Week ${adminWeek} official results were cleared and leaderboard scores were recalculated.`;
+}
+
+function renderLeaderboard(){const subs=loadSubs(),users=loadUsers();let board=[];Object.keys(subs).forEach(email=>{const weeks=Object.values(subs[email]);if(!weeks.length)return;const points=weeks.reduce((sum,w)=>sum+(Number(w.points)||0),0);const graded=Object.keys(subs[email]).filter(w=>loadResults()[w]).length;board.push({name:users[email]?.displayName||weeks[0]?.displayName||email,points,submitted:weeks.length,graded})});board.sort((a,b)=>b.points-a.points||b.submitted-a.submitted||a.name.localeCompare(b.name));const podium=document.getElementById("podium"),rows=document.getElementById("leaderRows");if(!board.length){podium.innerHTML=`<div class="place second"><div class="medal">🥈</div><div class="name">2nd Place</div><div class="weeks">Waiting for picks</div></div><div class="place first"><div class="medal">🥇</div><div class="name">1st Place</div><div class="weeks">Waiting for picks</div></div><div class="place third"><div class="medal">🥉</div><div class="name">3rd Place</div><div class="weeks">Waiting for picks</div></div>`;rows.innerHTML=`<div class="empty">No one has submitted picks yet.</div>`;return}const first=board[0]||{name:"Open",points:0,submitted:0},second=board[1]||{name:"Open",points:0,submitted:0},third=board[2]||{name:"Open",points:0,submitted:0};podium.innerHTML=`${podiumPlace(second,"second","🥈","2nd")}${podiumPlace(first,"first","🥇","1st")}${podiumPlace(third,"third","🥉","3rd")}`;rows.innerHTML=board.map((p,i)=>`<div class="leader-row"><span class="rank">${i+1}</span><span class="person">${p.name}<br><span style="font-size:11px;color:#98a2b3">${p.submitted} week${p.submitted===1?"":"s"} submitted • ${p.graded||0} scored</span></span><span class="score">${p.points} pts</span></div>`).join("")}
 function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div class="medal">${medal}</div><div class="name">${p.name}</div><div class="pts">${p.points} pts</div><div class="weeks">${label} • ${p.submitted} week${p.submitted===1?"":"s"}</div></div>`}
 init();
 </script>
