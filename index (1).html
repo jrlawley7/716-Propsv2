@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>716 Props — Buffalo Bills Prop Challenge</title>
+<style>
+:root{--blue:#00338D;--red:#C60C30;--ink:#101828;--muted:#667085;--bg:#f4f7fb;--card:#fff;--line:#e4e9f1;--gold:#f6c945;--silver:#c8ced8;--bronze:#c47b3f;--success:#067647}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 0%,rgba(198,12,48,.08),transparent 26%),radial-gradient(circle at 95% 12%,rgba(0,51,141,.09),transparent 30%),var(--bg);line-height:1.5}button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.topbar{padding:8px 16px;text-align:center;background:linear-gradient(90deg,var(--red),var(--blue),var(--red));color:#fff;font-size:12px;font-weight:900;letter-spacing:.45px}header{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}nav{max-width:1160px;margin:auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:950}.brand-mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--red));color:#fff;font-size:22px;box-shadow:0 5px 12px rgba(0,51,141,.18)}.brand strong{color:var(--blue)}.brand em{color:var(--red);font-style:normal}.navlinks{display:flex;gap:24px;color:#475467;font-size:14px;font-weight:800}.profile-chip{display:none;align-items:center;gap:9px;background:#f2f5fa;border:1px solid var(--line);padding:8px 10px;border-radius:999px;font-size:12px}.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:950}
+.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(118deg,#002b76 0%,#00338D 46%,#9a0a28 100%);padding:62px 20px 76px}.hero:before,.hero:after{content:"🦬";position:absolute;opacity:.07;filter:grayscale(1) brightness(5);pointer-events:none}.hero:before{font-size:270px;right:5%;top:-80px;transform:rotate(-8deg)}.hero:after{font-size:180px;left:-20px;bottom:-90px;transform:rotate(8deg)}.hero-inner{max-width:1160px;margin:auto;position:relative;z-index:2}.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.badge{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px}h1{font-size:clamp(40px,6vw,70px);line-height:.96;letter-spacing:-2.6px;margin:0 0 16px;max-width:760px}.hero p{max-width:720px;color:#e6efff;font-size:17px;margin:0}.hero-stripe{height:8px;background:linear-gradient(90deg,var(--red) 0 23%,#fff 23% 31%,var(--blue) 31% 100%)}
+main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 6px 20px rgba(16,24,40,.05)}.auth{margin-top:-48px;position:relative;z-index:5;padding:20px;display:grid;grid-template-columns:1.25fr .8fr .8fr 1fr auto;gap:12px;align-items:end}.auth h2{margin:0 0 4px;font-size:21px}.note{font-size:12px;color:var(--muted)}label{display:block;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#475467;margin-bottom:6px}input{width:100%;border:1px solid #d0d7e2;border-radius:10px;padding:11px 12px;background:#fff;color:var(--ink);outline:none}input:focus{border-color:#7b9bd2;box-shadow:0 0 0 3px rgba(0,51,141,.08)}.btn{border:0;border-radius:10px;padding:11px 16px;background:var(--blue);color:#fff;font-weight:900}.btn:hover{filter:brightness(1.06)}.btn.secondary{background:#edf2fa;color:var(--blue)}.section{margin-top:26px}.section-title{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:14px}.section-title h2{margin:0;font-size:27px;letter-spacing:-.7px}.section-title p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.leaderboard-card{padding:22px;border-top:6px solid var(--red)}.podium{display:grid;grid-template-columns:1fr 1.05fr 1fr;gap:12px;align-items:end;margin:22px auto 10px;max-width:760px}.place{text-align:center;border-radius:16px 16px 8px 8px;padding:15px 10px 12px;border:1px solid var(--line);background:linear-gradient(#fff,#f8fafc)}.place.first{min-height:180px;border-top:6px solid var(--gold)}.place.second{min-height:150px;border-top:6px solid var(--silver)}.place.third{min-height:132px;border-top:6px solid var(--bronze)}.medal{font-size:38px;line-height:1}.place .name{font-weight:950;margin-top:6px}.place .pts{font-size:22px;font-weight:950;color:var(--blue)}.place .weeks{font-size:11px;color:var(--muted)}.full-board{margin-top:17px;border-top:1px solid var(--line)}.leader-row{display:flex;gap:10px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line);font-size:13px}.leader-row:last-child{border-bottom:0}.rank{width:30px;font-weight:950;color:var(--blue)}.person{flex:1;font-weight:800}.score{font-weight:950}.empty{text-align:center;color:var(--muted);padding:24px 8px;font-size:13px}
+.week-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity;scrollbar-width:thin}.week-btn{flex:0 0 auto;min-width:105px;scroll-snap-align:start;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;text-align:left;font-size:12px;font-weight:900;color:#475467}.week-btn span{display:block;font-size:10px;font-weight:700;color:#98a2b3;margin-top:2px}.week-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 5px 14px rgba(0,51,141,.2)}.week-btn.active span{color:#dbe7ff}.week-btn.locked::after{content:" 🔒";font-size:10px}.week-btn.bye::after{content:" • BYE";font-size:10px}.unlock-key{display:inline-flex;align-items:center;gap:6px;background:#fff3f5;border:1px solid #f4c4ce;color:#9f1239;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:850}
+.matchup{overflow:hidden;margin-top:8px;border-radius:18px;color:#fff;position:relative}.matchup-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:27px 28px}.team{font-weight:950;font-size:clamp(22px,4vw,40px);line-height:1}.team small{display:block;font-size:11px;font-weight:850;opacity:.8;letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}.team.right{text-align:right}.at{font-weight:950;background:#fff;color:#101828;border-radius:999px;padding:8px 10px;font-size:11px}.game-meta{display:flex;gap:11px;flex-wrap:wrap;padding:0 28px 20px;color:rgba(255,255,255,.9);font-size:12px;font-weight:800}.lock-banner{display:none;margin:12px 0 0;padding:13px 15px;border-radius:12px;background:#fff3f5;border:1px solid #f5c2cc;color:#9f1239;font-size:13px;font-weight:800}.bye{display:none;padding:28px;text-align:center;background:#fff;border:1px dashed #cbd5e1;border-radius:16px;color:#475467}.props-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}.prop{padding:19px;position:relative}.prop.locked{opacity:.72}.prop-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.category{font-size:11px;font-weight:900;color:var(--red);text-transform:uppercase;letter-spacing:.7px}.points{font-size:11px;font-weight:950;color:var(--blue);background:#edf2fb;padding:5px 8px;border-radius:999px}.prop h3{font-size:18px;margin:10px 0 5px}.prop p{font-size:13px;color:var(--muted);margin:0 0 14px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:9px}.choice{border:1px solid var(--line);background:#fafbfd;border-radius:10px;padding:12px 9px;font-size:13px;font-weight:850}.choice:hover:not(:disabled){border-color:#a8b7d0}.choice.selected{background:#eaf1ff;color:var(--blue);border:2px solid var(--blue);padding:11px 8px}.choice:disabled{cursor:not-allowed;background:#f4f5f7;color:#98a2b3}.status{min-height:18px;margin-top:9px;color:var(--success);font-size:12px;font-weight:800}.submit-card{margin-top:14px;padding:20px;display:flex;justify-content:space-between;gap:18px;align-items:center}.big{font-size:36px;line-height:1;font-weight:950;color:var(--blue)}.small{font-size:12px;color:var(--muted);font-weight:700}.save-state{font-size:12px;color:var(--success);font-weight:800;margin-top:8px}.submit-card.locked-submit .btn{opacity:.5;cursor:not-allowed}.rules{margin-top:18px;padding:22px;background:#101828;color:#fff;border-left:7px solid var(--red)}.rules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.rule{font-size:12px;color:#d0d5dd}.rule b{display:block;color:#fff;margin-bottom:4px}
+.admin-launch{margin-top:18px;text-align:right}
+.admin-link{border:0;background:transparent;color:#667085;font-size:12px;font-weight:800;text-decoration:underline;padding:6px}
+.admin-panel{display:none;margin-top:18px;padding:22px;border-top:6px solid var(--red)}
+.admin-panel.open{display:block}
+.admin-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}
+.admin-head h2{margin:0 0 4px;font-size:24px}
+.admin-badge{background:#fff3f5;border:1px solid #f5c2cc;color:#9f1239;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900}
+.admin-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:470px}
+.admin-controls{display:none}
+.admin-weekbar{display:flex;gap:8px;overflow-x:auto;padding:3px 0 12px}
+.admin-weekbtn{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:850}
+.admin-weekbtn.active{background:var(--red);border-color:var(--red);color:#fff}
+.admin-question{padding:15px 0;border-bottom:1px solid var(--line)}
+.admin-question:last-child{border-bottom:0}
+.admin-question h4{margin:0 0 8px;font-size:14px}
+.admin-answers{display:flex;gap:8px;flex-wrap:wrap}
+.admin-answer{border:1px solid var(--line);background:#fafbfd;border-radius:9px;padding:9px 11px;font-size:12px;font-weight:850}
+.admin-answer.correct{background:#ecfdf3;border:2px solid #12b76a;color:#067647;padding:8px 10px}
+.admin-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.admin-status{font-size:12px;color:var(--success);font-weight:800;margin-top:10px;min-height:18px}
+.week-result{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:#ecfdf3;color:#067647;font-size:10px;font-weight:900}
+@media(max-width:650px){.admin-login{grid-template-columns:1fr}.admin-head{flex-direction:column}}
+
+
+.admin-prop-editor{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;background:#fbfcfe}
+.admin-prop-editor h4{margin:0 0 10px}
+.admin-edit-grid{display:grid;grid-template-columns:1fr 1fr 110px;gap:10px}
+.admin-edit-grid .full{grid-column:1/-1}
+.admin-edit-grid textarea{width:100%;min-height:68px;border:1px solid #d0d7e2;border-radius:10px;padding:10px 12px;resize:vertical;font:inherit}
+.admin-edit-grid input{width:100%}
+.auto-status{margin-top:8px;padding:10px 12px;border-radius:10px;background:#eef6ff;color:#1849a9;font-size:12px;font-weight:800}
+.override-status{margin-top:8px;padding:10px 12px;border-radius:10px;background:#fff3f5;color:#9f1239;font-size:12px;font-weight:800}
+@media(max-width:650px){.admin-edit-grid{grid-template-columns:1fr}.admin-edit-grid .full{grid-column:auto}}
+
+
+.choice-editor-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px}
+.choice-editor-row button{padding:9px 10px}
+.add-choice-btn{margin-top:4px}
+
+
+.admin-player-section{margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.admin-player-grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
+.player-list{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.player-row{width:100%;border:0;border-bottom:1px solid var(--line);background:#fff;padding:12px 14px;text-align:left}
+.player-row:last-child{border-bottom:0}
+.player-row:hover,.player-row.active{background:#f3f7ff}
+.player-row strong{display:block}
+.player-row span{font-size:11px;color:var(--muted)}
+.player-detail{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff;min-height:220px}
+.player-week-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.player-week-btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;font-size:12px;font-weight:850}
+.player-week-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.admin-player-pick{padding:13px 0;border-bottom:1px solid var(--line)}
+.admin-player-pick:last-child{border-bottom:0}
+.admin-player-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.admin-player-choice{border:1px solid var(--line);background:#fafbfd;border-radius:9px;padding:8px 10px;font-size:12px;font-weight:800}
+.admin-player-choice.selected{background:#eaf1ff;border:2px solid var(--blue);color:var(--blue);padding:7px 9px}
+@media(max-width:800px){.admin-player-grid{grid-template-columns:1fr}}
+
+
+.admin-tabbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
+.admin-tabbtn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:900}
+.admin-tabbtn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.admin-tabpanel{display:none}
+.admin-tabpanel.active{display:block}
+.danger-btn{background:#b42318!important;color:#fff!important}
+.danger-box{margin-top:16px;padding:14px;border:1px solid #f3b5ad;background:#fff4f2;border-radius:12px}
+
+
+.landing-wrap{max-width:980px;margin:-44px auto 0;padding:0 20px 34px;position:relative;z-index:6}
+.landing-card{padding:26px}
+.landing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+.info-tile{padding:16px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe}
+.info-tile b{display:block;margin-bottom:4px}
+.auth-stage{display:none}
+.auth-stage.active{display:block}
+.auth-mode-tabs{display:flex;gap:8px;margin:16px 0 14px}
+.auth-mode-btn{border:1px solid var(--line);background:#fff;color:#475467;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:900}
+.auth-mode-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.auth-form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.auth-form-grid .full{grid-column:1/-1}
+.auth-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.link-btn{border:0;background:transparent;color:var(--blue);padding:7px 2px;font-size:13px;font-weight:850;text-decoration:underline}
+.auth-message{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;background:#ecfdf3;color:#067647;font-size:13px;font-weight:800}
+.auth-message.error{background:#fff3f5;color:#9f1239}
+.auth-message.show{display:block}
+.password-note{margin-top:6px;color:var(--muted);font-size:11px}
+.hidden{display:none!important}
+.league-picker{display:none;margin-top:18px}
+.league-picker.active{display:block}
+.league-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+.league-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.league-card h3{margin:0 0 4px;font-size:17px}
+.league-card p{margin:0 0 10px;color:var(--muted);font-size:12px}
+.league-switcher{display:none;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.league-switcher select{width:auto;min-width:220px}
+.app-shell{display:none}
+.app-shell.active{display:block}
+.create-league-box{margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe}
+.create-league-grid{display:grid;grid-template-columns:1fr 1.5fr auto;gap:10px;align-items:end}
+@media(max-width:700px){.landing-grid,.league-list,.auth-form-grid{grid-template-columns:1fr}.auth-form-grid .full{grid-column:auto}.create-league-grid{grid-template-columns:1fr}.league-switcher select{width:100%}}
+
+
+.league-switcher{display:none;align-items:center;gap:12px;margin:14px 0 4px;flex-wrap:wrap}
+.league-switcher-label{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;color:#667085}
+.league-switch-track{display:flex;gap:9px;overflow-x:auto;scrollbar-width:thin;padding:3px 2px 7px;flex:1;min-width:0}
+.league-pill{
+  flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;
+  padding:10px 14px;font-size:13px;font-weight:900;color:#344054;
+  box-shadow:0 2px 8px rgba(16,24,40,.04);transition:.18s ease
+}
+.league-pill:hover{transform:translateY(-1px);border-color:#b7c6de}
+.league-pill.active{
+  color:#fff;border-color:transparent;
+  background:linear-gradient(90deg,var(--blue) 0 68%,var(--red) 68% 100%);
+  box-shadow:0 5px 14px rgba(0,51,141,.2)
+}
+.league-add-btn{
+  flex:0 0 auto;border:1px solid #f0b7c2;background:#fff3f5;color:#9f1239;
+  border-radius:999px;padding:10px 13px;font-size:12px;font-weight:900
+}
+@media(max-width:700px){
+  .league-switcher{display:block!important}
+  .league-switch-track{width:100%;margin:5px 0 4px}
+  .league-add-btn{width:100%;margin-top:2px}
+}
+
+footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:#667085;font-size:12px}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px}
+@media(max-width:900px){.auth{grid-template-columns:1fr 1fr 1fr}.auth .auth-copy{grid-column:1/-1}.auth button{grid-column:3}.props-grid{grid-template-columns:1fr}.navlinks{display:none}}@media(max-width:650px){nav{padding:12px 15px}.hero{padding:48px 15px 68px}main{padding:0 15px 55px}.auth{grid-template-columns:1fr;margin-top:-42px}.auth button{grid-column:auto}.section-title{align-items:start;flex-direction:column}.podium{grid-template-columns:1fr 1fr 1fr;gap:7px}.place{padding:12px 5px}.place.first{min-height:170px}.place.second{min-height:145px}.place.third{min-height:128px}.medal{font-size:30px}.place .name{font-size:12px}.place .pts{font-size:18px}.matchup-inner{padding:22px 14px;gap:8px}.team{font-size:19px}.game-meta{padding:0 14px 18px}.submit-card{align-items:flex-start;flex-direction:column}.rules-grid{grid-template-columns:1fr}.footer-inner{flex-direction:column}.profile-chip .emailText{display:none}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+</head>
+<body>
+<div class="topbar">🦬 716 PROPS • 2026 BUFFALO BILLS PROP CHALLENGE • CUSTOM WEEKLY PROP VALUES</div>
+<header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a><a href="#admin" onclick="showAdminLogin()">Admin</a></div><div style="display:flex;align-items:center;gap:8px"><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div><button class="btn secondary" id="logoutBtn" style="display:none;padding:9px 12px" onclick="logoutUser()">Log Out</button></div></nav></header>
+<section class="hero"><div class="hero-inner"><div class="hero-badges"><span class="badge">🦬 Bills Mafia</span><span class="badge">🏈 Weekly Props</span><span class="badge">🏆 Season Podium</span></div><h1>Make the picks.<br>Claim the podium.</h1><p>Sign in once, make five picks each Bills week, and battle your group for the top three spots all season long.</p></div></section>
+<div class="hero-stripe"></div>
+
+<main>
+  <div class="landing-wrap" id="landingWrap">
+    <section class="card landing-card" id="landingCard">
+      <h2 style="margin:0 0 6px;font-size:28px">Welcome to 716 Props</h2>
+      <p style="margin:0;color:var(--muted)">A weekly Buffalo Bills prediction game for friends, families, work groups, and leagues.</p>
+
+      <div class="landing-grid">
+        <div class="info-tile"><b>🏈 Make Weekly Picks</b><span>Answer the Bills prop questions before the week locks.</span></div>
+        <div class="info-tile"><b>🏆 Compete in Leagues</b><span>Join one or more groups and climb a separate leaderboard in each league.</span></div>
+        <div class="info-tile"><b>📊 Earn Points</b><span>Correct answers earn the point value assigned to each prop.</span></div>
+      </div>
+
+      <div class="auth-stage active" id="landingSignIn">
+        <h3 id="authHeading" style="margin:0">Your 716 Props account</h3>
+        <div class="auth-mode-tabs" id="authModeTabs">
+          <button class="auth-mode-btn active" id="loginTab" onclick="setAuthMode('login')">Sign In</button>
+          <button class="auth-mode-btn" id="signupTab" onclick="setAuthMode('signup')">Create Account</button>
+        </div>
+
+        <div id="loginForm">
+          <div class="auth-form-grid">
+            <div><label for="loginEmailInput">Email</label><input id="loginEmailInput" type="email" autocomplete="email" placeholder="you@example.com"></div>
+            <div><label for="loginPasswordInput">Password</label><input id="loginPasswordInput" type="password" autocomplete="current-password" placeholder="Your password"></div>
+          </div>
+          <div class="auth-actions">
+            <button class="btn" id="passwordSignInBtn" onclick="signInWithPassword()">Sign In</button>
+            <button class="link-btn" onclick="sendPasswordReset()">Forgot password?</button>
+          </div>
+          <p class="note" style="margin:10px 0 0">Previously used an email sign-in link? Choose “Forgot password?” once to create your password.</p>
+        </div>
+
+        <div class="hidden" id="signupForm">
+          <div class="auth-form-grid">
+            <div><label for="firstNameInput">First Name</label><input id="firstNameInput" type="text" autocomplete="given-name" placeholder="Jake"></div>
+            <div><label for="lastNameInput">Last Name</label><input id="lastNameInput" type="text" autocomplete="family-name" placeholder="Lawley"></div>
+            <div><label for="emailInput">Email</label><input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com"></div>
+            <div><label for="signupPasswordInput">Password</label><input id="signupPasswordInput" type="password" autocomplete="new-password" placeholder="At least 8 characters"><div class="password-note">Use at least 8 characters.</div></div>
+            <div class="full"><label for="confirmPasswordInput">Confirm Password</label><input id="confirmPasswordInput" type="password" autocomplete="new-password" placeholder="Type your password again"></div>
+          </div>
+          <div class="auth-actions"><button class="btn" id="createAccountBtn" onclick="createAccount()">Create Account</button></div>
+        </div>
+
+        <div class="hidden" id="recoveryForm">
+          <p class="note" style="margin:0 0 12px">Enter a new password for your 716 Props account.</p>
+          <div class="auth-form-grid">
+            <div><label for="recoveryPasswordInput">New Password</label><input id="recoveryPasswordInput" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>
+            <div><label for="recoveryConfirmInput">Confirm New Password</label><input id="recoveryConfirmInput" type="password" autocomplete="new-password" placeholder="Type it again"></div>
+          </div>
+          <div class="auth-actions"><button class="btn" id="savePasswordBtn" onclick="saveRecoveredPassword()">Save New Password</button></div>
+        </div>
+        <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="league-picker" id="leaguePicker">
+        <h3 style="margin:0">Choose a League</h3>
+        <p class="note">Join a public league to enter the prop sheet. You can join more than one and switch between them later.</p>
+        <div class="league-list" id="publicLeagueList"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="app-shell" id="appShell">
+    <div class="league-switcher" id="leagueSwitcher">
+      <div class="league-switcher-label">Your Leagues</div>
+      <div class="league-switch-track" id="leagueSwitchTrack"></div>
+      <button class="league-add-btn" onclick="showLeaguePicker()">+ Join Another League</button>
+    </div>
+
+<section class="section" id="leaderboard"><div class="section-title"><div><h2>Season Leaderboard</h2><p>Only players who have submitted at least one unlocked weekly card appear here.</p></div><span class="unlock-key">🏆 1st, 2nd & 3rd highlighted</span></div><div class="card leaderboard-card"><div class="podium" id="podium"></div><div class="full-board" id="leaderRows"></div></div></section>
+<section class="section" id="weeks"><div class="section-title"><div><h2>2026 Bills Regular Season</h2><p>Tap or swipe across the weeks. Locked weeks can be viewed, but picks cannot be submitted until you unlock them in the code.</p></div><span class="unlock-key">🔓 Week 1 unlocked</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="at">@</div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This week is view-only right now. The questions are visible, but picks and submissions are disabled until the week is unlocked.</div><div class="bye" id="byeBox"><h2 style="margin:0 0 5px">Week 7 — BYE</h2><div>No Bills game this week, so there are no props to submit.</div></div><div class="props-grid" id="propsGrid"></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT WEEK</div><div class="big" id="pickCount">0 / 5</div><div class="small" id="possiblePointsText">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset Picks</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit / Update Picks</button></div></div></section>
+
+<div class="admin-launch"><button class="admin-link" onclick="showAdminLogin()">Administrator</button></div>
+
+<section class="card admin-panel" id="admin">
+  <div class="admin-head">
+    <div>
+      <h2>Administrator</h2>
+      <div class="note">Manage the pool from one compact control center.</div>
+    </div>
+    <span class="admin-badge">🔐 DATABASE PROTECTED</span>
+  </div>
+
+  <div id="adminDenied" class="note">Sign in with the administrator account to use these controls.</div>
+
+  <div class="admin-controls" id="adminControls">
+    <div class="admin-tabbar">
+      <button class="admin-tabbtn active" data-tab="weeks" onclick="showAdminTab('weeks')">Manage Weeks</button>
+      <button class="admin-tabbtn" data-tab="questions" onclick="showAdminTab('questions')">Edit Questions</button>
+      <button class="admin-tabbtn" data-tab="results" onclick="showAdminTab('results')">Submit Results</button>
+      <button class="admin-tabbtn" data-tab="players" onclick="showAdminTab('players')">Manage Players</button>
+    </div>
+
+    <div class="admin-weekbar" id="adminWeekbar"></div>
+    <div id="adminGameTitle" style="font-weight:950;margin:4px 0 2px"></div>
+    <div class="note" id="adminGameMeta"></div>
+
+    <div class="admin-tabpanel active" id="adminTab-weeks">
+      <div class="create-league-box">
+        <strong>Create League</strong>
+        <div class="note" style="margin:3px 0 10px">New leagues are public for now. Private-league support can be enabled later.</div>
+        <div class="create-league-grid">
+          <div><label>League Name</label><input id="newLeagueName" placeholder="Sunday Crew"></div>
+          <div><label>Description</label><input id="newLeagueDescription" placeholder="Optional description"></div>
+          <button class="btn" onclick="createAdminLeague()">Create League</button>
+        </div>
+      </div>
+      <div id="adminAutoStatus" class="auto-status"></div>
+      <div class="admin-actions">
+        <button class="btn" onclick="setAdminOverride(true)">🔓 Force Unlock</button>
+        <button class="btn secondary" onclick="setAdminOverride(false)">🔒 Force Lock</button>
+        <button class="btn secondary" onclick="setAdminOverride(null)">⏱ Return to Auto</button>
+      </div>
+    </div>
+
+    <div class="admin-tabpanel" id="adminTab-questions">
+      <div class="section-title" style="margin:12px 0 8px">
+        <div>
+          <h2 style="font-size:20px">Edit Questions & Points</h2>
+          <p>Change question text, answer choices, and point values for the selected week.</p>
+        </div>
+      </div>
+      <div id="adminPropEditors"></div>
+      <div class="admin-actions">
+        <button class="btn" onclick="saveAdminPropConfig()">Save Question Changes</button>
+      </div>
+    </div>
+
+    <div class="admin-tabpanel" id="adminTab-results">
+      <div class="section-title" style="margin:12px 0 8px">
+        <div>
+          <h2 style="font-size:20px">Official Results</h2>
+          <p>Mark the correct answer for each prop and score every submitted player.</p>
+        </div>
+      </div>
+      <div id="adminQuestions"></div>
+      <div class="admin-actions">
+        <button class="btn" onclick="saveOfficialResults()">Lock Week & Save Correct Answers</button>
+        <button class="btn secondary" onclick="clearOfficialResults()">Clear Official Results</button>
+      </div>
+    </div>
+
+    <div class="admin-tabpanel" id="adminTab-players">
+      <div class="section-title" style="margin:12px 0 10px">
+        <div>
+          <h2 style="font-size:20px">Player Pick Management</h2>
+          <p>Review players, inspect submitted cards, edit picks, or remove a player’s pool data.</p>
+        </div>
+      </div>
+      <div class="admin-player-grid">
+        <div class="player-list" id="adminPlayerList">
+          <div class="empty">Loading players…</div>
+        </div>
+        <div class="player-detail" id="adminPlayerDetail">
+          <div class="empty">Select a player to view their submitted picks.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-status" id="adminStatus"></div>
+  </div>
+</section>
+
+<section class="card rules" id="rules"><div class="rules-grid"><div class="rule"><b>2 points per prop</b>Five questions each game means 10 possible points per week.</div><div class="rule"><b>Automatic unlocks</b>Each week automatically opens 24 hours after the previous Bills game starts, unless the administrator overrides it.</div><div class="rule"><b>Flexible scoring</b>The administrator sets each prop’s point value and marks the correct answers after the game. The database calculates the leaderboard automatically.</div></div></section>
+
+  </div>
+</main>
+<footer><div class="footer-inner"><span>© 2026 716 Props • Built for Bills fans.</span><span>Shared picks and scores powered by Supabase. No real-money wagering.</span></div></footer>
+<script>
+const SUPABASE_URL="https://gmqwudewspaqbzxyabhe.supabase.co";
+const SUPABASE_KEY="sb_publishable_TzcN11InlMA-qJAvy3IEpQ_IKCnSOet";
+const { createClient }=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const schedule=[
+{week:1,away:"Buffalo Bills",home:"Houston Texans",date:"Sunday, Sept. 13",time:"1:00 PM",network:"CBS",opp:"Houston Texans",colors:["#03202F","#A71930"]},
+{week:2,away:"Detroit Lions",home:"Buffalo Bills",date:"Thursday, Sept. 17",time:"8:15 PM",network:"Prime Video",opp:"Detroit Lions",colors:["#0076B6","#B0B7BC"]},
+{week:3,away:"Los Angeles Chargers",home:"Buffalo Bills",date:"Sunday, Sept. 27",time:"1:00 PM",network:"FOX",opp:"Los Angeles Chargers",colors:["#0080C6","#FFC20E"]},
+{week:4,away:"New England Patriots",home:"Buffalo Bills",date:"Sunday, Oct. 4",time:"1:00 PM",network:"CBS",opp:"New England Patriots",colors:["#002244","#C60C30"]},
+{week:5,away:"Buffalo Bills",home:"Los Angeles Rams",date:"Monday, Oct. 12",time:"8:15 PM",network:"ESPN",opp:"Los Angeles Rams",colors:["#003594","#FFA300"]},
+{week:6,away:"Buffalo Bills",home:"Las Vegas Raiders",date:"Sunday, Oct. 18",time:"4:25 PM",network:"CBS",opp:"Las Vegas Raiders",colors:["#000000","#A5ACAF"]},
+{week:7,bye:true},
+{week:8,away:"Baltimore Ravens",home:"Buffalo Bills",date:"Sunday, Nov. 1",time:"1:00 PM",network:"CBS",opp:"Baltimore Ravens",colors:["#241773","#9E7C0C"]},
+{week:9,away:"Buffalo Bills",home:"Minnesota Vikings",date:"Monday, Nov. 9",time:"8:15 PM",network:"ESPN",opp:"Minnesota Vikings",colors:["#4F2683","#FFC62F"]},
+{week:10,away:"Buffalo Bills",home:"New York Jets",date:"Sunday, Nov. 15",time:"1:00 PM",network:"CBS",opp:"New York Jets",colors:["#125740","#000000"]},
+{week:11,away:"Miami Dolphins",home:"Buffalo Bills",date:"Sunday, Nov. 22",time:"1:00 PM",network:"FOX",opp:"Miami Dolphins",colors:["#008E97","#FC4C02"]},
+{week:12,away:"Kansas City Chiefs",home:"Buffalo Bills",date:"Thursday, Nov. 26",time:"8:20 PM",network:"NBC • Thanksgiving",opp:"Kansas City Chiefs",colors:["#E31837","#FFB81C"]},
+{week:13,away:"Buffalo Bills",home:"New England Patriots",date:"Sunday, Dec. 6",time:"4:25 PM",network:"CBS",opp:"New England Patriots",colors:["#002244","#C60C30"]},
+{week:14,away:"Buffalo Bills",home:"Green Bay Packers",date:"Sunday, Dec. 13",time:"8:20 PM",network:"NBC",opp:"Green Bay Packers",colors:["#203731","#FFB612"]},
+{week:15,away:"Chicago Bears",home:"Buffalo Bills",date:"Saturday, Dec. 19",time:"8:20 PM",network:"CBS",opp:"Chicago Bears",colors:["#0B162A","#C83803"]},
+{week:16,away:"Buffalo Bills",home:"Denver Broncos",date:"Friday, Dec. 25",time:"4:30 PM",network:"Netflix • Christmas Day",opp:"Denver Broncos",colors:["#FB4F14","#002244"]},
+{week:17,away:"Buffalo Bills",home:"Miami Dolphins",date:"Sunday, Jan. 3, 2027",time:"1:00 PM",network:"CBS",opp:"Miami Dolphins",colors:["#008E97","#FC4C02"]},
+{week:18,away:"New York Jets",home:"Buffalo Bills",date:"Date TBD",time:"Time TBD",network:"TBD",opp:"New York Jets",colors:["#125740","#000000"]}
+];
+
+let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false,recoveryMode=false;
+let currentProps=[],adminWeek=1,adminAnswers={},adminProps=[],adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={};
+
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||team}
+function unlocked(w){return !!weekStatus[w]}
+
+async function init(){
+ renderWeekTabs();
+ db.auth.onAuthStateChange((event,session)=>{
+   setTimeout(async()=>{
+     if(event==="PASSWORD_RECOVERY"){showPasswordRecovery();return}
+     if(session&&(!currentUser||currentUser.id!==session.user.id))await handleSession(session);
+   },0);
+ });
+ const {data:{session}}=await db.auth.getSession();
+ if(session) await handleSession(session);
+ else showLanding();
+}
+
+function showLanding(){
+ document.getElementById("landingWrap").style.display="block";
+ document.getElementById("landingSignIn").classList.add("active");
+ document.getElementById("leaguePicker").classList.remove("active");
+ document.getElementById("appShell").classList.remove("active");
+ document.getElementById("leagueSwitcher").style.display="none";
+}
+
+function authRedirectUrl(){return window.location.origin+window.location.pathname}
+function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
+function setAuthMessage(message,isError=false){
+ const el=document.getElementById("authMessage");
+ el.textContent=message||"";el.classList.toggle("show",!!message);el.classList.toggle("error",!!message&&isError);
+}
+function setAuthMode(mode){
+ recoveryMode=false;
+ document.getElementById("authHeading").textContent="Your 716 Props account";
+ document.getElementById("authModeTabs").classList.remove("hidden");
+ document.getElementById("loginForm").classList.toggle("hidden",mode!=="login");
+ document.getElementById("signupForm").classList.toggle("hidden",mode!=="signup");
+ document.getElementById("recoveryForm").classList.add("hidden");
+ document.getElementById("loginTab").classList.toggle("active",mode==="login");
+ document.getElementById("signupTab").classList.toggle("active",mode==="signup");
+ setAuthMessage("");
+}
+function setAuthBusy(buttonId,busy,busyText,readyText){
+ const button=document.getElementById(buttonId);button.disabled=busy;button.textContent=busy?busyText:readyText;
+}
+
+async function signInWithPassword(){
+ const email=document.getElementById("loginEmailInput").value.trim().toLowerCase(),password=document.getElementById("loginPasswordInput").value;
+ if(!validEmail(email)||!password){setAuthMessage("Enter your email address and password.",true);return}
+ setAuthBusy("passwordSignInBtn",true,"Signing In…","Sign In");setAuthMessage("");
+ const {data,error}=await db.auth.signInWithPassword({email,password});
+ setAuthBusy("passwordSignInBtn",false,"Signing In…","Sign In");
+ if(error){setAuthMessage("Email or password is incorrect. If you previously used email links, choose Forgot password?",true);return}
+ if(data.session&&(!currentUser||currentUser.id!==data.session.user.id))await handleSession(data.session);
+}
+
+async function createAccount(){
+ const first=document.getElementById("firstNameInput").value.trim(),last=document.getElementById("lastNameInput").value.trim(),email=document.getElementById("emailInput").value.trim().toLowerCase(),password=document.getElementById("signupPasswordInput").value,confirm=document.getElementById("confirmPasswordInput").value;
+ if(!first||!last||!validEmail(email)){setAuthMessage("Enter your first name, last name, and a valid email address.",true);return}
+ if(password.length<8){setAuthMessage("Your password must have at least 8 characters.",true);return}
+ if(password!==confirm){setAuthMessage("The two passwords do not match.",true);return}
+ localStorage.setItem("props716_pending_profile",JSON.stringify({first,last,email}));
+ setAuthBusy("createAccountBtn",true,"Creating Account…","Create Account");setAuthMessage("");
+ const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:authRedirectUrl(),data:{first_name:first,last_name:last}}});
+ setAuthBusy("createAccountBtn",false,"Creating Account…","Create Account");
+ if(error){setAuthMessage(error.message,true);return}
+ if(data.session){await handleSession(data.session);return}
+ setAuthMessage("Account created. Check your email and click the confirmation link, then sign in with your password.");
+}
+
+async function sendPasswordReset(){
+ const email=document.getElementById("loginEmailInput").value.trim().toLowerCase();
+ if(!validEmail(email)){setAuthMessage("Enter your email address first, then choose Forgot password?",true);return}
+ const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:authRedirectUrl()});
+ if(error){setAuthMessage(error.message,true);return}
+ setAuthMessage("Password email sent. Open it and follow the link to choose a new password.");
+}
+
+function showPasswordRecovery(){
+ recoveryMode=true;showLanding();
+ document.getElementById("authHeading").textContent="Choose a new password";
+ document.getElementById("authModeTabs").classList.add("hidden");
+ document.getElementById("loginForm").classList.add("hidden");
+ document.getElementById("signupForm").classList.add("hidden");
+ document.getElementById("recoveryForm").classList.remove("hidden");
+ setAuthMessage("");window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function saveRecoveredPassword(){
+ const password=document.getElementById("recoveryPasswordInput").value,confirm=document.getElementById("recoveryConfirmInput").value;
+ if(password.length<8){setAuthMessage("Your password must have at least 8 characters.",true);return}
+ if(password!==confirm){setAuthMessage("The two passwords do not match.",true);return}
+ setAuthBusy("savePasswordBtn",true,"Saving…","Save New Password");
+ const {error}=await db.auth.updateUser({password});
+ setAuthBusy("savePasswordBtn",false,"Saving…","Save New Password");
+ if(error){setAuthMessage(error.message,true);return}
+ recoveryMode=false;setAuthMessage("Password saved. Signing you in…");
+ const {data:{session}}=await db.auth.getSession();
+ if(session)await handleSession(session);else setAuthMode("login");
+}
+
+async function logoutUser(){
+ await db.auth.signOut();currentUser=null;currentProfile=null;currentLeague=null;myLeagues=[];isAdmin=false;answers={};
+ document.getElementById("profileChip").style.display="none";document.getElementById("logoutBtn").style.display="none";
+ ["firstNameInput","lastNameInput","emailInput","signupPasswordInput","confirmPasswordInput","loginEmailInput","loginPasswordInput","recoveryPasswordInput","recoveryConfirmInput"].forEach(id=>document.getElementById(id).value="");
+ setAuthMode("login");showLanding();window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function handleSession(session){
+ currentUser=session.user;
+ const pending=JSON.parse(localStorage.getItem("props716_pending_profile")||"null");
+ let {data:profile}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
+ if(!profile){
+   const meta=currentUser.user_metadata||{},source=pending&&pending.email===currentUser.email?pending:{first:meta.first_name,last:meta.last_name};
+   if(source.first&&source.last){await db.from("profiles").upsert({id:currentUser.id,first_name:source.first,last_name:source.last,updated_at:new Date().toISOString()});({data:profile}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle())}
+ }
+ if(pending&&pending.email===currentUser.email)localStorage.removeItem("props716_pending_profile");
+ currentProfile=profile;
+ if(currentProfile)applySignedIn();
+ await loadWeekStatus();
+ const {data:adminFlag}=await db.rpc("is_admin");isAdmin=!!adminFlag;
+ await loadMyLeagues();
+ if(!myLeagues.length){await showLeaguePicker()}else{
+   const remembered=localStorage.getItem("props716_current_league");
+   currentLeague=myLeagues.find(l=>l.id===remembered)||myLeagues[0];
+   await enterApp();
+ }
+ updateAdminVisibility();
+}
+
+function applySignedIn(){
+ document.getElementById("profileChip").style.display="flex";document.getElementById("logoutBtn").style.display="inline-block";
+ document.getElementById("profileName").textContent=`${currentProfile.first_name} ${currentProfile.last_name}`;
+ document.getElementById("profileEmail").textContent=currentUser.email;
+ document.getElementById("avatar").textContent=currentProfile.first_name[0].toUpperCase();
+ document.getElementById("firstNameInput").value=currentProfile.first_name;document.getElementById("lastNameInput").value=currentProfile.last_name;document.getElementById("emailInput").value=currentUser.email;
+}
+
+async function loadMyLeagues(){
+ const {data:members}=await db.from("league_memberships").select("league_id").eq("user_id",currentUser.id);
+ const ids=(members||[]).map(x=>x.league_id);
+ if(!ids.length){myLeagues=[];return}
+ const {data}=await db.from("leagues").select("*").in("id",ids).order("name");
+ myLeagues=data||[];
+ renderLeagueSwitcher();
+}
+
+async function showLeaguePicker(){
+ document.getElementById("landingWrap").style.display="block";document.getElementById("landingSignIn").classList.remove("active");document.getElementById("leaguePicker").classList.add("active");document.getElementById("appShell").classList.remove("active");
+ const {data,error}=await db.from("leagues").select("*").eq("is_public",true).order("name");
+ const wrap=document.getElementById("publicLeagueList");wrap.innerHTML="";
+ if(error){wrap.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}
+ (data||[]).forEach(l=>{
+   const joined=myLeagues.some(x=>x.id===l.id);
+   const card=document.createElement("div");card.className="league-card";
+   card.innerHTML=`<h3>${escapeHtml(l.name)}</h3><p>${escapeHtml(l.description||"Public league")}</p><button class="btn ${joined?"secondary":""}">${joined?"Open League":"Join League"}</button>`;
+   card.querySelector("button").onclick=async()=>{if(!joined){const {error}=await db.rpc("join_public_league",{p_league_id:l.id});if(error){alert(error.message);return}await loadMyLeagues()}currentLeague=(await db.from("leagues").select("*").eq("id",l.id).single()).data;localStorage.setItem("props716_current_league",l.id);await enterApp()};
+   wrap.appendChild(card);
+ });
+}
+
+function renderLeagueSwitcher(){
+ const track=document.getElementById("leagueSwitchTrack");
+ if(!track)return;
+ track.innerHTML="";
+ myLeagues.forEach(l=>{
+   const b=document.createElement("button");
+   b.className="league-pill"+(currentLeague?.id===l.id?" active":"");
+   b.textContent=l.name;
+   b.onclick=()=>switchLeague(l.id);
+   track.appendChild(b);
+ });
+}
+
+async function switchLeague(id){
+ currentLeague=myLeagues.find(l=>l.id===id)||null;if(!currentLeague)return;
+ localStorage.setItem("props716_current_league",id);renderLeagueSwitcher();await renderWeek();await renderLeaderboard();if(isAdmin)loadAdminPlayers();
+}
+
+async function enterApp(){
+ document.getElementById("landingWrap").style.display="none";document.getElementById("appShell").classList.add("active");document.getElementById("leagueSwitcher").style.display="flex";
+ renderLeagueSwitcher();await renderWeek();await renderLeaderboard();updateAdminVisibility();
+}
+
+async function loadWeekStatus(){
+ const {data}=await db.rpc("get_week_status");weekStatus={};weekStatusMeta={};(data||[]).forEach(r=>{weekStatus[r.week]=r.is_unlocked;weekStatusMeta[r.week]={manual_override:r.manual_override,auto_unlock_at:r.auto_unlock_at}});renderWeekTabs()
+}
+
+function renderWeekTabs(){
+ const wrap=document.getElementById("weekTabs");if(!wrap)return;wrap.innerHTML="";
+ schedule.forEach(g=>{const locked=!g.bye&&!unlocked(g.week),b=document.createElement("button");b.className="week-btn"+(g.week===currentWeek?" active":"")+(locked?" locked":"")+(g.bye?" bye":"");b.onclick=()=>selectWeek(g.week);const s=g.bye?"No game":(g.away==="Buffalo Bills"?`at ${shortName(g.home)}`:`vs ${shortName(g.away)}`);b.innerHTML=`Week ${g.week}<span>${s}</span>`;wrap.appendChild(b)});
+}
+async function selectWeek(w){currentWeek=w;renderWeekTabs();await renderWeek()}
+
+async function loadProps(week){const {data}=await db.from("prop_questions").select("*").eq("week",week).order("position");return data||[]}
+
+async function renderWeek(){
+ if(!currentLeague)return;
+ const game=schedule.find(g=>g.week===currentWeek),matchup=document.getElementById("matchup"),bye=document.getElementById("byeBox"),props=document.getElementById("propsGrid"),submitCard=document.getElementById("submitCard"),lockBanner=document.getElementById("lockBanner");
+ if(game.bye){matchup.style.display="none";props.style.display="none";submitCard.style.display="none";lockBanner.style.display="none";bye.style.display="block";return}
+ bye.style.display="none";matchup.style.display="block";props.style.display="grid";submitCard.style.display="flex";
+ const open=unlocked(game.week);lockBanner.style.display=open?"none":"block";
+ matchup.style.background=`linear-gradient(135deg,#00338D 0 49%,${game.colors[0]} 49% 82%,${game.colors[1]} 100%)`;
+ document.getElementById("leftTeam").innerHTML=`<small>${game.away==="Buffalo Bills"?"Buffalo":"Opponent"}</small>${game.away}`;
+ document.getElementById("rightTeam").innerHTML=`<small>${game.home==="Buffalo Bills"?"Buffalo":"Opponent"}</small>${game.home}`;
+ document.getElementById("gameMeta").innerHTML=`<span>${escapeHtml(currentLeague.name)}</span><span>•</span><span>Week ${game.week}</span><span>•</span><span>${game.date}</span><span>•</span><span>${game.time}</span><span>• ${open?"🔓 PICKS OPEN":"🔒 VIEW ONLY"}</span>`;
+ currentProps=await loadProps(currentWeek);await loadAnswers();renderProps();
+}
+
+async function loadAnswers(){
+ answers={};if(!currentUser||!currentLeague)return;
+ const {data}=await db.from("league_picks").select("answers").eq("league_id",currentLeague.id).eq("user_id",currentUser.id).eq("week",currentWeek).maybeSingle();
+ if(data?.answers)answers={...data.answers};
+}
+
+function renderProps(){
+ const open=unlocked(currentWeek),grid=document.getElementById("propsGrid");grid.innerHTML="";
+ currentProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],card=document.createElement("article");card.className="card prop"+(open?"":" locked");card.innerHTML=`<div class="prop-top"><span class="category">PROP ${p.position}</span><span class="points">${p.points} POINT${p.points===1?"":"S"}</span></div><h3>${escapeHtml(p.question)}</h3><p>${escapeHtml(p.description||"")}</p><div class="choices">${choices.map(v=>`<button class="choice ${answers[p.prop_key]===v?"selected":""}" ${open?"":"disabled"} data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div><div class="status">${answers[p.prop_key]?"✓ Saved selection":(open?"":"🔒 Week locked")}</div>`;card.querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>choose(p.prop_key,btn,btn.dataset.value));grid.appendChild(card)});
+ document.getElementById("resetBtn").disabled=!open;document.getElementById("submitBtn").disabled=!open;updateCount();updateSaveState();
+}
+function choose(id,button,value){if(!unlocked(currentWeek))return;answers[id]=value;const card=button.closest(".prop");card.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));button.classList.add("selected");card.querySelector(".status").textContent="✓ Pick selected";updateCount();document.getElementById("saveState").textContent="Changes not submitted yet."}
+function updateCount(){const possible=currentProps.reduce((s,p)=>s+Number(p.points||0),0);document.getElementById("pickCount").textContent=`${Object.keys(answers).length} / ${currentProps.length}`;const small=document.getElementById("possiblePointsText");if(small)small.textContent=`props selected • ${possible} possible points`}
+function updateSaveState(){const s=document.getElementById("saveState");s.textContent=!unlocked(currentWeek)?"This week is locked and view-only.":"Submit to save these picks in this league."}
+
+async function submitPicks(){
+ if(!currentLeague)return;if(!unlocked(currentWeek)){alert("This week is locked.");return}if(Object.keys(answers).length<currentProps.length){alert(`Complete all ${currentProps.length} questions first.`);return}
+ const now=new Date().toISOString();
+ const {data:existing}=await db.from("league_picks").select("week").eq("league_id",currentLeague.id).eq("user_id",currentUser.id).eq("week",currentWeek).maybeSingle();
+ let error;if(existing){({error}=await db.from("league_picks").update({answers,submitted_at:now,updated_at:now}).eq("league_id",currentLeague.id).eq("user_id",currentUser.id).eq("week",currentWeek))}
+ else{({error}=await db.from("league_picks").insert({league_id:currentLeague.id,user_id:currentUser.id,week:currentWeek,answers,submitted_at:now,updated_at:now}))}
+ if(error){alert(error.message);return}document.getElementById("saveState").textContent="✓ Picks saved.";await renderLeaderboard();
+}
+async function resetWeek(){answers={};renderProps()}
+
+async function renderLeaderboard(){
+ const rows=document.getElementById("leaderRows"),podium=document.getElementById("podium");if(!currentLeague)return;
+ const [{data:leaders},{data:profiles}]=await Promise.all([db.from("league_leaderboard").select("*").eq("league_id",currentLeague.id).order("total_points",{ascending:false}).order("weeks_submitted",{ascending:false}),db.from("profiles").select("id,first_name,last_name")]);
+ const pm={};(profiles||[]).forEach(p=>pm[p.id]=`${p.first_name} ${p.last_name}`);const board=(leaders||[]).map(x=>({...x,name:pm[x.user_id]||"Player"})),blank={name:"Open",total_points:0,weeks_submitted:0,weeks_scored:0};
+ const first=board[0]||blank,second=board[1]||blank,third=board[2]||blank;podium.innerHTML=`${podiumPlace(second,"second","🥈","2nd")}${podiumPlace(first,"first","🥇","1st")}${podiumPlace(third,"third","🥉","3rd")}`;
+ rows.innerHTML=board.length?board.map((p,i)=>`<div class="leader-row"><span class="rank">${i+1}</span><span class="person">${escapeHtml(p.name)}<br><span style="font-size:11px;color:#98a2b3">${p.weeks_submitted} submitted • ${p.weeks_scored} scored</span></span><span class="score">${p.total_points} pts</span></div>`).join(""):`<div class="empty">No submitted picks yet in ${escapeHtml(currentLeague.name)}.</div>`;
+}
+function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div class="medal">${medal}</div><div class="name">${escapeHtml(p.name)}</div><div class="pts">${p.total_points} pts</div><div class="weeks">${label} • ${p.weeks_scored} scored</div></div>`}
+
+function showAdminLogin(){document.getElementById("admin").classList.add("open");document.getElementById("admin").scrollIntoView({behavior:"smooth"});updateAdminVisibility()}
+function updateAdminVisibility(){const denied=document.getElementById("adminDenied"),controls=document.getElementById("adminControls");if(isAdmin){denied.style.display="none";controls.style.display="block";renderAdminWeeks();renderAdminWeek();loadAdminPlayers()}else{denied.style.display="block";controls.style.display="none"}}
+function showAdminTab(name){document.querySelectorAll(".admin-tabbtn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".admin-tabpanel").forEach(p=>p.classList.toggle("active",p.id===`adminTab-${name}`));if(name==="players")loadAdminPlayers()}
+function renderAdminWeeks(){const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";schedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=`Week ${g.week}`;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})}
+
+async function createAdminLeague(){
+ const name=document.getElementById("newLeagueName").value.trim(),description=document.getElementById("newLeagueDescription").value.trim();if(!name){alert("Enter a league name.");return}
+ const {data,error}=await db.rpc("admin_create_league",{p_name:name,p_description:description,p_is_public:true});if(error){alert(error.message);return}
+ document.getElementById("newLeagueName").value="";document.getElementById("newLeagueDescription").value="";await loadMyLeagues();alert("League created.");
+}
+
+async function renderAdminWeek(){
+ if(!isAdmin)return;await loadWeekStatus();const g=schedule.find(x=>x.week===adminWeek);if(!g)return;
+ document.getElementById("adminGameTitle").textContent=`Week ${g.week}: ${g.away} at ${g.home}`;document.getElementById("adminGameMeta").textContent=`${g.date} • ${g.time} • ${g.network}`;
+ const meta=weekStatusMeta[adminWeek]||{},auto=meta.auto_unlock_at?new Date(meta.auto_unlock_at):null,override=meta.manual_override,autoText=auto?auto.toLocaleString():"No automatic unlock time";
+ document.getElementById("adminAutoStatus").textContent=override===true?`Manual override: FORCE UNLOCKED. Auto: ${autoText}`:override===false?`Manual override: FORCE LOCKED. Auto: ${autoText}`:`Automatic mode: ${unlocked(adminWeek)?"OPEN":"LOCKED"}. Scheduled unlock: ${autoText}`;
+ adminProps=await loadProps(adminWeek);renderAdminPropEditors();const {data:result}=await db.from("official_results").select("answers").eq("week",adminWeek).maybeSingle();adminAnswers=result?.answers?{...result.answers}:{};
+ const area=document.getElementById("adminQuestions");area.innerHTML="";adminProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],q=document.createElement("div");q.className="admin-question";q.innerHTML=`<h4>${escapeHtml(p.question)} <span class="points">${p.points} POINT${p.points===1?"":"S"}</span></h4><div class="admin-answers">${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.prop_key]===v?"correct":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;q.querySelectorAll(".admin-answer").forEach(btn=>btn.onclick=()=>{adminAnswers[p.prop_key]=btn.dataset.value;q.querySelectorAll(".admin-answer").forEach(x=>x.classList.remove("correct"));btn.classList.add("correct")});area.appendChild(q)});
+}
+function renderAdminPropEditors(){const wrap=document.getElementById("adminPropEditors");wrap.innerHTML="";adminProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],el=document.createElement("div");el.className="admin-prop-editor";el.dataset.key=p.prop_key;el.innerHTML=`<h4>Prop ${p.position}</h4><div class="admin-edit-grid"><div class="full"><label>Question</label><input class="edit-question" value="${escapeHtml(p.question)}"></div><div class="full"><label>Description</label><textarea class="edit-description">${escapeHtml(p.description||"")}</textarea></div><div class="full"><label>Answer Choices</label><div class="choice-editor-list"></div><button type="button" class="btn secondary add-choice-btn">+ Add Choice</button></div><div><label>Points</label><input class="edit-points" type="number" min="1" max="100" value="${p.points}"></div></div>`;const list=el.querySelector(".choice-editor-list");choices.forEach(v=>addChoiceEditorRow(list,v));el.querySelector(".add-choice-btn").onclick=()=>{if(list.children.length>=12)return;addChoiceEditorRow(list,"")};wrap.appendChild(el)})}
+function addChoiceEditorRow(list,value){const row=document.createElement("div");row.className="choice-editor-row";row.innerHTML=`<input class="edit-choice" value="${escapeHtml(value)}"><button type="button" class="btn secondary">−</button>`;row.querySelector("button").onclick=()=>{if(list.children.length<=2){alert("At least 2 choices required.");return}row.remove()};list.appendChild(row)}
+async function saveAdminPropConfig(){for(const el of document.querySelectorAll("#adminPropEditors .admin-prop-editor")){const choices=[...el.querySelectorAll(".edit-choice")].map(i=>i.value.trim()).filter(Boolean),row={question:el.querySelector(".edit-question").value.trim(),description:el.querySelector(".edit-description").value.trim(),choices,points:Number(el.querySelector(".edit-points").value),updated_at:new Date().toISOString()};const {error}=await db.from("prop_questions").update(row).eq("week",adminWeek).eq("prop_key",el.dataset.key);if(error){alert(error.message);return}}await renderAdminWeek();if(currentWeek===adminWeek)await renderWeek();await renderLeaderboard()}
+async function setAdminOverride(v){const {error}=await db.rpc("set_week_override",{p_week:adminWeek,p_override:v});if(error){alert(error.message);return}await loadWeekStatus();await renderAdminWeek();if(currentWeek===adminWeek)await renderWeek()}
+async function saveOfficialResults(){if(Object.keys(adminAnswers).length<adminProps.length){alert("Mark all correct answers first.");return}await db.rpc("set_week_override",{p_week:adminWeek,p_override:false});const now=new Date().toISOString(),{data:existing}=await db.from("official_results").select("week").eq("week",adminWeek).maybeSingle();let error;if(existing){({error}=await db.from("official_results").update({answers:adminAnswers,scored_at:now,scored_by:currentUser.id}).eq("week",adminWeek))}else{({error}=await db.from("official_results").insert({week:adminWeek,answers:adminAnswers,scored_at:now,scored_by:currentUser.id}))}if(error){alert(error.message);return}await renderLeaderboard();await renderAdminWeek()}
+async function clearOfficialResults(){await db.from("official_results").delete().eq("week",adminWeek);await renderLeaderboard();await renderAdminWeek()}
+
+async function loadAdminPlayers(){
+ if(!isAdmin||!currentLeague)return;const {data,error}=await db.rpc("admin_list_league_players",{p_league_id:currentLeague.id});const list=document.getElementById("adminPlayerList");if(error){list.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}adminPlayers=data||[];list.innerHTML=adminPlayers.length?"":'<div class="empty">No submitted players in this league.</div>';
+ adminPlayers.forEach(p=>{const b=document.createElement("button");b.className="player-row";b.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><span>${p.weeks_submitted} submitted • ${p.total_points} pts</span>`;b.onclick=()=>selectAdminPlayer(p);list.appendChild(b)})
+}
+async function selectAdminPlayer(p){selectedAdminPlayer=p;const {data}=await db.rpc("admin_get_league_player_picks",{p_league_id:currentLeague.id,p_user_id:p.user_id});const picks=data||[],detail=document.getElementById("adminPlayerDetail");detail.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><div class="note">${escapeHtml(p.email||"")}</div><div class="player-week-tabs" id="adminPlayerWeekTabs"></div><div id="adminPlayerWeekDetail"></div>`;const tabs=detail.querySelector("#adminPlayerWeekTabs");picks.forEach(pk=>{const b=document.createElement("button");b.className="player-week-btn";b.textContent=`Week ${pk.week}`;b.onclick=()=>renderAdminPlayerWeek(pk);tabs.appendChild(b)});if(picks[0])await renderAdminPlayerWeek(picks[0])}
+async function renderAdminPlayerWeek(pick){selectedAdminPlayerWeek=pick.week;adminPlayerAnswers={...(pick.answers||{})};document.querySelectorAll("#adminPlayerWeekTabs .player-week-btn").forEach(btn=>btn.classList.toggle("active",btn.textContent===`Week ${pick.week}`));const props=await loadProps(pick.week),wrap=document.getElementById("adminPlayerWeekDetail");wrap.innerHTML=`<div class="note">Week ${pick.week} • ${pick.points} pts</div>`;props.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],row=document.createElement("div");row.className="admin-player-pick";row.innerHTML=`<strong>${escapeHtml(p.question)}</strong><div class="admin-player-options">${choices.map(v=>`<button class="admin-player-choice ${adminPlayerAnswers[p.prop_key]===v?"selected":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;row.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{adminPlayerAnswers[p.prop_key]=btn.dataset.value;row.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected")});wrap.appendChild(row)});const actions=document.createElement("div");actions.className="admin-actions";actions.innerHTML='<button class="btn" onclick="saveAdminPlayerPicks()">Save Edited Picks</button>';wrap.appendChild(actions);const danger=document.createElement("div");danger.className="danger-box";danger.innerHTML='<strong>Remove Player From This League</strong><div class="note" style="margin:4px 0 10px">Deletes their picks and leaderboard entry for this league only. They can join again later.</div><button class="btn danger-btn" onclick="deleteAdminPlayerPoolData()">Remove From League</button>';wrap.appendChild(danger)}
+async function saveAdminPlayerPicks(){const {error}=await db.rpc("admin_update_league_player_pick",{p_league_id:currentLeague.id,p_user_id:selectedAdminPlayer.user_id,p_week:selectedAdminPlayerWeek,p_answers:adminPlayerAnswers});if(error){alert(error.message);return}await loadAdminPlayers();await selectAdminPlayer(selectedAdminPlayer);await renderLeaderboard()}
+async function deleteAdminPlayerPoolData(){if(!confirm("Remove this player from the current league and delete all their league picks?"))return;const {error}=await db.rpc("admin_delete_league_player_pool_data",{p_league_id:currentLeague.id,p_user_id:selectedAdminPlayer.user_id});if(error){alert(error.message);return}selectedAdminPlayer=null;document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player.</div>';await loadAdminPlayers();await renderLeaderboard()}
+
+init();
+</script>
+</body>
+</html>
