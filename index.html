@@ -89,6 +89,18 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .info-tile b{display:block;margin-bottom:4px}
 .auth-stage{display:none}
 .auth-stage.active{display:block}
+.auth-mode-tabs{display:flex;gap:8px;margin:16px 0 14px}
+.auth-mode-btn{border:1px solid var(--line);background:#fff;color:#475467;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:900}
+.auth-mode-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.auth-form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.auth-form-grid .full{grid-column:1/-1}
+.auth-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.link-btn{border:0;background:transparent;color:var(--blue);padding:7px 2px;font-size:13px;font-weight:850;text-decoration:underline}
+.auth-message{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;background:#ecfdf3;color:#067647;font-size:13px;font-weight:800}
+.auth-message.error{background:#fff3f5;color:#9f1239}
+.auth-message.show{display:block}
+.password-note{margin-top:6px;color:var(--muted);font-size:11px}
+.hidden{display:none!important}
 .league-picker{display:none;margin-top:18px}
 .league-picker.active{display:block}
 .league-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
@@ -101,7 +113,7 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .app-shell.active{display:block}
 .create-league-box{margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe}
 .create-league-grid{display:grid;grid-template-columns:1fr 1.5fr auto;gap:10px;align-items:end}
-@media(max-width:700px){.landing-grid,.league-list{grid-template-columns:1fr}.create-league-grid{grid-template-columns:1fr}.league-switcher select{width:100%}}
+@media(max-width:700px){.landing-grid,.league-list,.auth-form-grid{grid-template-columns:1fr}.auth-form-grid .full{grid-column:auto}.create-league-grid{grid-template-columns:1fr}.league-switcher select{width:100%}}
 
 
 .league-switcher{display:none;align-items:center;gap:12px;margin:14px 0 4px;flex-wrap:wrap}
@@ -152,13 +164,44 @@ footer{border-top:1px solid var(--line);background:#fff;padding:26px 20px;color:
       </div>
 
       <div class="auth-stage active" id="landingSignIn">
-        <h3 style="margin:0 0 10px">Sign in to continue</h3>
-        <div class="auth" style="margin:0;box-shadow:none;border:0;padding:0;grid-template-columns:1fr 1fr 1.2fr auto">
-          <div><label for="firstNameInput">First Name</label><input id="firstNameInput" type="text" placeholder="Jake"></div>
-          <div><label for="lastNameInput">Last Name</label><input id="lastNameInput" type="text" placeholder="Lawley"></div>
-          <div><label for="emailInput">Email</label><input id="emailInput" type="email" placeholder="you@example.com"></div>
-          <button class="btn" id="signInBtn" onclick="sendMagicLink()">Email Sign-In Link</button>
+        <h3 id="authHeading" style="margin:0">Your 716 Props account</h3>
+        <div class="auth-mode-tabs" id="authModeTabs">
+          <button class="auth-mode-btn active" id="loginTab" onclick="setAuthMode('login')">Sign In</button>
+          <button class="auth-mode-btn" id="signupTab" onclick="setAuthMode('signup')">Create Account</button>
         </div>
+
+        <div id="loginForm">
+          <div class="auth-form-grid">
+            <div><label for="loginEmailInput">Email</label><input id="loginEmailInput" type="email" autocomplete="email" placeholder="you@example.com"></div>
+            <div><label for="loginPasswordInput">Password</label><input id="loginPasswordInput" type="password" autocomplete="current-password" placeholder="Your password"></div>
+          </div>
+          <div class="auth-actions">
+            <button class="btn" id="passwordSignInBtn" onclick="signInWithPassword()">Sign In</button>
+            <button class="link-btn" onclick="sendPasswordReset()">Forgot password?</button>
+          </div>
+          <p class="note" style="margin:10px 0 0">Previously used an email sign-in link? Choose “Forgot password?” once to create your password.</p>
+        </div>
+
+        <div class="hidden" id="signupForm">
+          <div class="auth-form-grid">
+            <div><label for="firstNameInput">First Name</label><input id="firstNameInput" type="text" autocomplete="given-name" placeholder="Jake"></div>
+            <div><label for="lastNameInput">Last Name</label><input id="lastNameInput" type="text" autocomplete="family-name" placeholder="Lawley"></div>
+            <div><label for="emailInput">Email</label><input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com"></div>
+            <div><label for="signupPasswordInput">Password</label><input id="signupPasswordInput" type="password" autocomplete="new-password" placeholder="At least 8 characters"><div class="password-note">Use at least 8 characters.</div></div>
+            <div class="full"><label for="confirmPasswordInput">Confirm Password</label><input id="confirmPasswordInput" type="password" autocomplete="new-password" placeholder="Type your password again"></div>
+          </div>
+          <div class="auth-actions"><button class="btn" id="createAccountBtn" onclick="createAccount()">Create Account</button></div>
+        </div>
+
+        <div class="hidden" id="recoveryForm">
+          <p class="note" style="margin:0 0 12px">Enter a new password for your 716 Props account.</p>
+          <div class="auth-form-grid">
+            <div><label for="recoveryPasswordInput">New Password</label><input id="recoveryPasswordInput" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>
+            <div><label for="recoveryConfirmInput">Confirm New Password</label><input id="recoveryConfirmInput" type="password" autocomplete="new-password" placeholder="Type it again"></div>
+          </div>
+          <div class="auth-actions"><button class="btn" id="savePasswordBtn" onclick="saveRecoveredPassword()">Save New Password</button></div>
+        </div>
+        <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
       </div>
 
       <div class="league-picker" id="leaguePicker">
@@ -302,7 +345,7 @@ const schedule=[
 {week:18,away:"New York Jets",home:"Buffalo Bills",date:"Date TBD",time:"Time TBD",network:"TBD",opp:"New York Jets",colors:["#125740","#000000"]}
 ];
 
-let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false;
+let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false,recoveryMode=false;
 let currentProps=[],adminWeek=1,adminAnswers={},adminProps=[],adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={};
 
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
@@ -311,10 +354,15 @@ function unlocked(w){return !!weekStatus[w]}
 
 async function init(){
  renderWeekTabs();
+ db.auth.onAuthStateChange((event,session)=>{
+   setTimeout(async()=>{
+     if(event==="PASSWORD_RECOVERY"){showPasswordRecovery();return}
+     if(session&&(!currentUser||currentUser.id!==session.user.id))await handleSession(session);
+   },0);
+ });
  const {data:{session}}=await db.auth.getSession();
  if(session) await handleSession(session);
  else showLanding();
- db.auth.onAuthStateChange(async(event,session)=>{if(session&&(!currentUser||currentUser.id!==session.user.id))await handleSession(session)});
 }
 
 function showLanding(){
@@ -325,27 +373,99 @@ function showLanding(){
  document.getElementById("leagueSwitcher").style.display="none";
 }
 
-async function sendMagicLink(){
- const first=document.getElementById("firstNameInput").value.trim(),last=document.getElementById("lastNameInput").value.trim(),email=document.getElementById("emailInput").value.trim().toLowerCase();
- if(!first||!last||!email||!email.includes("@")){alert("Enter your first name, last name, and a valid email.");return}
+function authRedirectUrl(){return window.location.origin+window.location.pathname}
+function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
+function setAuthMessage(message,isError=false){
+ const el=document.getElementById("authMessage");
+ el.textContent=message||"";el.classList.toggle("show",!!message);el.classList.toggle("error",!!message&&isError);
+}
+function setAuthMode(mode){
+ recoveryMode=false;
+ document.getElementById("authHeading").textContent="Your 716 Props account";
+ document.getElementById("authModeTabs").classList.remove("hidden");
+ document.getElementById("loginForm").classList.toggle("hidden",mode!=="login");
+ document.getElementById("signupForm").classList.toggle("hidden",mode!=="signup");
+ document.getElementById("recoveryForm").classList.add("hidden");
+ document.getElementById("loginTab").classList.toggle("active",mode==="login");
+ document.getElementById("signupTab").classList.toggle("active",mode==="signup");
+ setAuthMessage("");
+}
+function setAuthBusy(buttonId,busy,busyText,readyText){
+ const button=document.getElementById(buttonId);button.disabled=busy;button.textContent=busy?busyText:readyText;
+}
+
+async function signInWithPassword(){
+ const email=document.getElementById("loginEmailInput").value.trim().toLowerCase(),password=document.getElementById("loginPasswordInput").value;
+ if(!validEmail(email)||!password){setAuthMessage("Enter your email address and password.",true);return}
+ setAuthBusy("passwordSignInBtn",true,"Signing In…","Sign In");setAuthMessage("");
+ const {data,error}=await db.auth.signInWithPassword({email,password});
+ setAuthBusy("passwordSignInBtn",false,"Signing In…","Sign In");
+ if(error){setAuthMessage("Email or password is incorrect. If you previously used email links, choose Forgot password?",true);return}
+ if(data.session&&(!currentUser||currentUser.id!==data.session.user.id))await handleSession(data.session);
+}
+
+async function createAccount(){
+ const first=document.getElementById("firstNameInput").value.trim(),last=document.getElementById("lastNameInput").value.trim(),email=document.getElementById("emailInput").value.trim().toLowerCase(),password=document.getElementById("signupPasswordInput").value,confirm=document.getElementById("confirmPasswordInput").value;
+ if(!first||!last||!validEmail(email)){setAuthMessage("Enter your first name, last name, and a valid email address.",true);return}
+ if(password.length<8){setAuthMessage("Your password must have at least 8 characters.",true);return}
+ if(password!==confirm){setAuthMessage("The two passwords do not match.",true);return}
  localStorage.setItem("props716_pending_profile",JSON.stringify({first,last,email}));
- const {error}=await db.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
- if(error){alert(error.message);return}
- alert("Check your email for the secure 716 Props sign-in link.");
+ setAuthBusy("createAccountBtn",true,"Creating Account…","Create Account");setAuthMessage("");
+ const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:authRedirectUrl(),data:{first_name:first,last_name:last}}});
+ setAuthBusy("createAccountBtn",false,"Creating Account…","Create Account");
+ if(error){setAuthMessage(error.message,true);return}
+ if(data.session){await handleSession(data.session);return}
+ setAuthMessage("Account created. Check your email and click the confirmation link, then sign in with your password.");
+}
+
+async function sendPasswordReset(){
+ const email=document.getElementById("loginEmailInput").value.trim().toLowerCase();
+ if(!validEmail(email)){setAuthMessage("Enter your email address first, then choose Forgot password?",true);return}
+ const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:authRedirectUrl()});
+ if(error){setAuthMessage(error.message,true);return}
+ setAuthMessage("Password email sent. Open it and follow the link to choose a new password.");
+}
+
+function showPasswordRecovery(){
+ recoveryMode=true;showLanding();
+ document.getElementById("authHeading").textContent="Choose a new password";
+ document.getElementById("authModeTabs").classList.add("hidden");
+ document.getElementById("loginForm").classList.add("hidden");
+ document.getElementById("signupForm").classList.add("hidden");
+ document.getElementById("recoveryForm").classList.remove("hidden");
+ setAuthMessage("");window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function saveRecoveredPassword(){
+ const password=document.getElementById("recoveryPasswordInput").value,confirm=document.getElementById("recoveryConfirmInput").value;
+ if(password.length<8){setAuthMessage("Your password must have at least 8 characters.",true);return}
+ if(password!==confirm){setAuthMessage("The two passwords do not match.",true);return}
+ setAuthBusy("savePasswordBtn",true,"Saving…","Save New Password");
+ const {error}=await db.auth.updateUser({password});
+ setAuthBusy("savePasswordBtn",false,"Saving…","Save New Password");
+ if(error){setAuthMessage(error.message,true);return}
+ recoveryMode=false;setAuthMessage("Password saved. Signing you in…");
+ const {data:{session}}=await db.auth.getSession();
+ if(session)await handleSession(session);else setAuthMode("login");
 }
 
 async function logoutUser(){
  await db.auth.signOut();currentUser=null;currentProfile=null;currentLeague=null;myLeagues=[];isAdmin=false;answers={};
  document.getElementById("profileChip").style.display="none";document.getElementById("logoutBtn").style.display="none";
- document.getElementById("firstNameInput").value="";document.getElementById("lastNameInput").value="";document.getElementById("emailInput").value="";
- document.getElementById("signInBtn").textContent="Email Sign-In Link";showLanding();window.scrollTo({top:0,behavior:"smooth"});
+ ["firstNameInput","lastNameInput","emailInput","signupPasswordInput","confirmPasswordInput","loginEmailInput","loginPasswordInput","recoveryPasswordInput","recoveryConfirmInput"].forEach(id=>document.getElementById(id).value="");
+ setAuthMode("login");showLanding();window.scrollTo({top:0,behavior:"smooth"});
 }
 
 async function handleSession(session){
  currentUser=session.user;
  const pending=JSON.parse(localStorage.getItem("props716_pending_profile")||"null");
- if(pending&&pending.email===currentUser.email){await db.from("profiles").upsert({id:currentUser.id,first_name:pending.first,last_name:pending.last,updated_at:new Date().toISOString()});localStorage.removeItem("props716_pending_profile")}
- const {data:profile}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();currentProfile=profile;
+ let {data:profile}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
+ if(!profile){
+   const meta=currentUser.user_metadata||{},source=pending&&pending.email===currentUser.email?pending:{first:meta.first_name,last:meta.last_name};
+   if(source.first&&source.last){await db.from("profiles").upsert({id:currentUser.id,first_name:source.first,last_name:source.last,updated_at:new Date().toISOString()});({data:profile}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle())}
+ }
+ if(pending&&pending.email===currentUser.email)localStorage.removeItem("props716_pending_profile");
+ currentProfile=profile;
  if(currentProfile)applySignedIn();
  await loadWeekStatus();
  const {data:adminFlag}=await db.rpc("is_admin");isAdmin=!!adminFlag;
