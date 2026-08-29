@@ -259,11 +259,11 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 </head>
 <body>
-<div class="topbar">🦬 716 PROPS • 2026 BUFFALO BILLS PROP CHALLENGE • CUSTOM WEEKLY PROP VALUES</div>
+<div class="topbar" id="topbarText">🦬 716 PROPS • 2026 BUFFALO BILLS PROP CHALLENGE • CUSTOM WEEKLY PROP VALUES</div>
 <header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a><a href="#admin" onclick="showAdminLogin()">Admin</a></div><div style="display:flex;align-items:center;gap:8px"><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div><button class="btn secondary" id="logoutBtn" style="display:none;padding:9px 12px" onclick="logoutUser()">Log Out</button></div></nav></header>
 <div class="photo-border photo-border-left" aria-hidden="true"><img src="josh-allen-left.png" alt=""></div>
 <div class="photo-border photo-border-right" aria-hidden="true"><img src="josh-allen-right.png" alt=""></div>
-<section class="hero"><div class="hero-inner"><div class="hero-layout"><div class="hero-copy"><div class="hero-badges"><span class="badge">🦬 Bills Mafia</span><span class="badge">🏈 Weekly Props</span><span class="badge">🏆 Season Podium</span></div><h1>Make the picks.<br>Claim the podium.</h1><p>Sign in once, make five picks each Bills week, and battle your group for the top three spots all season long.</p></div><div class="hero-logo-wrap"><img class="hero-logo" src="bills-logo.png" alt="Buffalo Bills logo"></div></div></div></section>
+<section class="hero"><div class="hero-inner"><div class="hero-layout"><div class="hero-copy"><div class="hero-badges"><span class="badge" id="teamBadge">🦬 Bills Mafia</span><span class="badge" id="formatBadge">🏈 Weekly Props</span><span class="badge">🏆 Season Podium</span></div><h1>Make the picks.<br>Claim the podium.</h1><p id="heroDescription">Sign in once, make five picks each Bills week, and battle your group for the top three spots all season long.</p></div><div class="hero-logo-wrap"><img class="hero-logo" id="heroLogo" src="bills-logo.png" alt="Buffalo Bills logo"></div></div></div></section>
 <div class="hero-stripe"><span></span><span></span><span></span></div>
 
 <main>
@@ -335,7 +335,7 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
     </div>
 
 <section class="section" id="leaderboard"><div class="section-title"><div><h2>Season Leaderboard</h2><p>Only players who have submitted at least one unlocked weekly card appear here.</p></div><span class="unlock-key">🏆 1st, 2nd & 3rd highlighted</span></div><div class="card leaderboard-card"><div class="podium" id="podium"></div><div class="full-board" id="leaderRows"></div></div></section>
-<section class="section" id="weeks"><div class="section-title"><div><h2>2026 Bills Regular Season</h2><p>Tap or swipe across the weeks. Locked weeks can be viewed, but picks cannot be submitted until you unlock them in the code.</p></div><span class="unlock-key">🔓 Week 1 unlocked</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This week is view-only right now. The questions are visible, but picks and submissions are disabled until the week is unlocked.</div><div class="bye" id="byeBox"><h2 style="margin:0 0 5px">Week 7 — BYE</h2><div>No Bills game this week, so there are no props to submit.</div></div><div class="props-grid" id="propsGrid"></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT WEEK</div><div class="big" id="pickCount">0 / 5</div><div class="small" id="possiblePointsText">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset Picks</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit / Update Picks</button></div></div></section>
+<section class="section" id="weeks"><div class="section-title"><div><h2 id="competitionScheduleTitle">2026 Bills Regular Season</h2><p id="scheduleHelp">Tap or swipe across the weeks. Locked events can be viewed, but picks cannot be submitted until they open.</p></div><span class="unlock-key" id="unlockKey">🔓 Event status</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This event is view-only right now. The questions are visible, but picks and submissions are disabled until it opens.</div><div class="bye" id="byeBox"><h2 id="byeTitle" style="margin:0 0 5px">Bye</h2><div id="byeDescription">There are no props to submit for this event.</div></div><div class="props-grid" id="propsGrid"></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT EVENT</div><div class="big" id="pickCount">0 / 5</div><div class="small" id="possiblePointsText">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset Picks</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit / Update Picks</button></div></div></section>
 
 <div class="admin-launch"><button class="admin-link" onclick="showAdminLogin()">Administrator</button></div>
 
@@ -351,6 +351,11 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
   <div id="adminDenied" class="note">Sign in with the administrator account to use these controls.</div>
 
   <div class="admin-controls" id="adminControls">
+    <div class="admin-league-picker">
+      <div class="admin-league-label">Managing competition and submissions for</div>
+      <div class="admin-league-track" id="adminLeagueTrack"></div>
+      <div class="admin-league-summary" id="adminLeagueSummary">Loading leagues…</div>
+    </div>
     <div class="admin-tabbar">
       <button class="admin-tabbtn active" data-tab="weeks" onclick="showAdminTab('weeks')">Manage Weeks</button>
       <button class="admin-tabbtn" data-tab="questions" onclick="showAdminTab('questions')">Edit Questions</button>
@@ -414,11 +419,6 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
           <p>Review players, inspect submitted cards, edit picks, or remove a player’s pool data.</p>
         </div>
       </div>
-      <div class="admin-league-picker">
-        <div class="admin-league-label">Viewing submissions for</div>
-        <div class="admin-league-track" id="adminLeagueTrack"></div>
-        <div class="admin-league-summary" id="adminLeagueSummary">Loading leagues…</div>
-      </div>
       <div class="admin-player-grid">
         <div class="player-list" id="adminPlayerList">
           <div class="empty">Loading players…</div>
@@ -444,7 +444,7 @@ const SUPABASE_KEY="sb_publishable_TzcN11InlMA-qJAvy3IEpQ_IKCnSOet";
 const { createClient }=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const schedule=[
+const billsFallbackSchedule=[
 {week:1,away:"Buffalo Bills",home:"Houston Texans",date:"Sunday, Sept. 13",time:"1:00 PM",network:"CBS",opp:"Houston Texans",colors:["#03202F","#A71930"]},
 {week:2,away:"Detroit Lions",home:"Buffalo Bills",date:"Thursday, Sept. 17",time:"8:15 PM",network:"Prime Video",opp:"Detroit Lions",colors:["#0076B6","#B0B7BC"]},
 {week:3,away:"Los Angeles Chargers",home:"Buffalo Bills",date:"Sunday, Sept. 27",time:"1:00 PM",network:"FOX",opp:"Los Angeles Chargers",colors:["#0080C6","#FFC20E"]},
@@ -465,12 +465,60 @@ const schedule=[
 {week:18,away:"New York Jets",home:"Buffalo Bills",date:"Date TBD",time:"Time TBD",network:"TBD",opp:"New York Jets",colors:["#125740","#000000"]}
 ];
 
+let schedule=billsFallbackSchedule.map(g=>({...g,label:`Week ${g.week}`})),currentCompetition=null;
 let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false,recoveryMode=false;
-let currentProps=[],adminWeek=1,adminAnswers={},adminProps=[],adminLeagues=[],adminLeague=null,adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={};
+let currentProps=[],adminWeek=1,adminAnswers={},adminProps=[],adminLeagues=[],adminLeague=null,adminCompetition=null,adminSchedule=[],adminWeekStatus={},adminWeekStatusMeta={},adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={};
 
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||team}
+function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||String(team||"").split(" ").filter(Boolean).pop()||"Opponent"}
 function unlocked(w){return !!weekStatus[w]}
+
+function mapCompetitionEvent(e){return {week:Number(e.event_number),key:e.event_key,label:e.label||`Event ${e.event_number}`,away:e.away_team,home:e.home_team,date:e.display_date,time:e.display_time,network:e.network,colors:[e.opponent_primary_color||"#344054",e.opponent_secondary_color||"#667085"],bye:!!e.is_bye,startsAt:e.starts_at}}
+
+async function fetchCompetitionContext(competitionId){
+ if(!competitionId)return {competition:null,events:[]};
+ const [{data:competition,error:competitionError},{data:events,error:eventError}]=await Promise.all([
+   db.from("competitions").select("*").eq("id",competitionId).single(),
+   db.from("competition_events").select("*").eq("competition_id",competitionId).order("event_number")
+ ]);
+ if(competitionError)throw competitionError;
+ if(eventError)throw eventError;
+ return {competition,events:(events||[]).map(mapCompetitionEvent)};
+}
+
+function applyCompetitionTheme(competition){
+ if(!competition)return;
+ const root=document.documentElement,football=competition.sport==="football",teamName=competition.team_name||competition.name;
+ root.style.setProperty("--blue",competition.primary_color||"#00338D");
+ root.style.setProperty("--red",competition.secondary_color||"#C60C30");
+ root.style.setProperty("--bg",competition.page_background||"#F4F7FB");
+ document.title=`716 Props — ${competition.name}`;
+ document.getElementById("topbarText").textContent=`${football?"🦬":"⚔️"} 716 PROPS • ${String(competition.season_label||"").toUpperCase()} ${teamName.toUpperCase()} PROP CHALLENGE`;
+ document.querySelector(".brand-mark").textContent=football?"🦬":"🏒";
+ document.getElementById("teamBadge").textContent=football?"🦬 Bills Mafia":"⚔️ Sabres Hockey";
+ document.getElementById("formatBadge").textContent=football?"🏈 Weekly Props":"🏒 Featured Games";
+ document.getElementById("heroDescription").textContent=football?"Sign in once, make five picks each Bills week, and battle your group for the top three spots all season long.":"Make five picks for each featured Sabres game and battle your league for the top three spots all season long.";
+ document.getElementById("competitionScheduleTitle").textContent=`${competition.season_label} ${teamName} Schedule`;
+ const logo=document.getElementById("heroLogo");
+ if(competition.logo_path){logo.src=competition.logo_path;logo.alt=`${teamName} logo`;logo.style.display="block"}else logo.style.display="none";
+ document.querySelectorAll(".photo-border").forEach(el=>{if(football)el.style.removeProperty("display");else el.style.display="none"});
+}
+
+async function loadCompetitionContext(league){
+ const competitionId=league?.competition_id;
+ try{
+   const context=await fetchCompetitionContext(competitionId);
+   currentCompetition=context.competition;
+   schedule=context.events.length?context.events:billsFallbackSchedule.map(g=>({...g,label:`Week ${g.week}`}));
+ }catch(error){
+   console.error("Competition schedule could not be loaded",error);
+   currentCompetition={id:competitionId,slug:"bills-2026",name:"Buffalo Bills 2026",sport:"football",team_name:"Buffalo Bills",season_label:"2026",primary_color:"#00338D",secondary_color:"#C60C30",page_background:"#F4F7FB",logo_path:"bills-logo.png"};
+   schedule=billsFallbackSchedule.map(g=>({...g,label:`Week ${g.week}`}));
+ }
+ applyCompetitionTheme(currentCompetition);
+ if(!schedule.some(g=>g.week===currentWeek))currentWeek=(schedule.find(g=>!g.bye)||schedule[0]||{week:1}).week;
+ await loadWeekStatus();
+}
 
 async function init(){
  renderWeekTabs();
@@ -587,7 +635,6 @@ async function handleSession(session){
  if(pending&&pending.email===currentUser.email)localStorage.removeItem("props716_pending_profile");
  currentProfile=profile;
  if(currentProfile)applySignedIn();
- await loadWeekStatus();
  const {data:adminFlag}=await db.rpc("is_admin");isAdmin=!!adminFlag;
  await loadMyLeagues();
  if(!myLeagues.length){await showLeaguePicker()}else{
@@ -644,40 +691,46 @@ function renderLeagueSwitcher(){
 
 async function switchLeague(id){
  currentLeague=myLeagues.find(l=>l.id===id)||null;if(!currentLeague)return;
- localStorage.setItem("props716_current_league",id);renderLeagueSwitcher();await renderWeek();await renderLeaderboard();if(isAdmin)loadAdminPlayers();
+ localStorage.setItem("props716_current_league",id);renderLeagueSwitcher();await loadCompetitionContext(currentLeague);await renderWeek();await renderLeaderboard();if(isAdmin)loadAdminPlayers();
 }
 
 async function enterApp(){
  document.getElementById("landingWrap").style.display="none";document.getElementById("appShell").classList.add("active");document.getElementById("leagueSwitcher").style.display="flex";
- renderLeagueSwitcher();await renderWeek();await renderLeaderboard();updateAdminVisibility();
+ renderLeagueSwitcher();await loadCompetitionContext(currentLeague);await renderWeek();await renderLeaderboard();updateAdminVisibility();
 }
 
 async function loadWeekStatus(){
- const {data}=await db.rpc("get_week_status");weekStatus={};weekStatusMeta={};(data||[]).forEach(r=>{weekStatus[r.week]=r.is_unlocked;weekStatusMeta[r.week]={manual_override:r.manual_override,auto_unlock_at:r.auto_unlock_at}});renderWeekTabs()
+ let data=[],error=null;
+ if(currentCompetition?.id)({data,error}=await db.rpc("get_competition_week_status",{p_competition_id:currentCompetition.id}));
+ if(error||!currentCompetition?.id)({data}=await db.rpc("get_week_status"));
+ weekStatus={};weekStatusMeta={};(data||[]).forEach(r=>{weekStatus[r.week]=r.is_unlocked;weekStatusMeta[r.week]={manual_override:r.manual_override,auto_unlock_at:r.auto_unlock_at}});renderWeekTabs()
 }
 
 function renderWeekTabs(){
  const wrap=document.getElementById("weekTabs");if(!wrap)return;wrap.innerHTML="";
- schedule.forEach(g=>{const locked=!g.bye&&!unlocked(g.week),b=document.createElement("button");b.className="week-btn"+(g.week===currentWeek?" active":"")+(locked?" locked":"")+(g.bye?" bye":"");b.onclick=()=>selectWeek(g.week);const s=g.bye?"No game":(g.away==="Buffalo Bills"?`at ${shortName(g.home)}`:`vs ${shortName(g.away)}`);b.innerHTML=`Week ${g.week}<span>${s}</span>`;wrap.appendChild(b)});
+ const teamName=currentCompetition?.team_name||"Buffalo Bills";
+ schedule.forEach(g=>{const locked=!g.bye&&!unlocked(g.week),b=document.createElement("button");b.className="week-btn"+(g.week===currentWeek?" active":"")+(locked?" locked":"")+(g.bye?" bye":"");b.onclick=()=>selectWeek(g.week);const s=g.bye?"No game":(g.away===teamName?`at ${shortName(g.home)}`:`vs ${shortName(g.away)}`);b.innerHTML=`${escapeHtml(g.label||`Event ${g.week}`)}<span>${escapeHtml(s)}</span>`;wrap.appendChild(b)});
 }
 async function selectWeek(w){currentWeek=w;renderWeekTabs();await renderWeek()}
 
-async function loadProps(week){const {data}=await db.from("prop_questions").select("*").eq("week",week).order("position");return data||[]}
+async function loadProps(week,competitionId=currentCompetition?.id){let query=db.from("prop_questions").select("*").eq("week",week);if(competitionId)query=query.eq("competition_id",competitionId);const {data,error}=await query.order("position");if(error){console.error("Questions could not be loaded",error);return []}return data||[]}
 
 async function renderWeek(){
  if(!currentLeague)return;
  const game=schedule.find(g=>g.week===currentWeek),matchup=document.getElementById("matchup"),bye=document.getElementById("byeBox"),props=document.getElementById("propsGrid"),submitCard=document.getElementById("submitCard"),lockBanner=document.getElementById("lockBanner");
- if(game.bye){matchup.style.display="none";props.style.display="none";submitCard.style.display="none";lockBanner.style.display="none";bye.style.display="block";return}
+ if(!game){matchup.style.display="none";props.style.display="none";submitCard.style.display="none";lockBanner.style.display="none";bye.style.display="block";document.getElementById("byeTitle").textContent="Schedule unavailable";document.getElementById("byeDescription").textContent="No events are configured for this competition yet.";return}
+ if(game.bye){matchup.style.display="none";props.style.display="none";submitCard.style.display="none";lockBanner.style.display="none";bye.style.display="block";document.getElementById("byeTitle").textContent=`${game.label} — BYE`;document.getElementById("byeDescription").textContent=`No ${currentCompetition?.team_name||"team"} game is scheduled, so there are no props to submit.`;return}
  bye.style.display="none";matchup.style.display="block";props.style.display="grid";submitCard.style.display="flex";
  const open=unlocked(game.week);lockBanner.style.display=open?"none":"block";
- const billsColors=["#00338D","#C60C30"],opponentColors=game.colors||["#344054","#667085"];
- const awayColors=game.away==="Buffalo Bills"?billsColors:opponentColors,homeColors=game.home==="Buffalo Bills"?billsColors:opponentColors;
+ document.getElementById("unlockKey").textContent=open?`🔓 ${game.label} open`:`🔒 ${game.label} locked`;
+ const teamName=currentCompetition?.team_name||"Buffalo Bills",teamColors=[currentCompetition?.primary_color||"#00338D",currentCompetition?.secondary_color||"#C60C30"],opponentColors=game.colors||["#344054","#667085"];
+ const awayColors=game.away===teamName?teamColors:opponentColors,homeColors=game.home===teamName?teamColors:opponentColors;
  const leftTeam=document.getElementById("leftTeam"),rightTeam=document.getElementById("rightTeam");
  leftTeam.style.backgroundColor=awayColors[0];leftTeam.style.boxShadow=`inset 7px 0 0 ${awayColors[1]}`;
  rightTeam.style.backgroundColor=homeColors[0];rightTeam.style.boxShadow=`inset -7px 0 0 ${homeColors[1]}`;
  leftTeam.innerHTML=`<small>Away</small>${game.away}`;
  rightTeam.innerHTML=`<small>Home</small>${game.home}`;
- document.getElementById("gameMeta").innerHTML=`<span>${escapeHtml(currentLeague.name)}</span><span>•</span><span>Week ${game.week}</span><span>•</span><span>${game.date}</span><span>•</span><span>${game.time}</span><span>• ${open?"🔓 PICKS OPEN":"🔒 VIEW ONLY"}</span>`;
+ document.getElementById("gameMeta").innerHTML=`<span>${escapeHtml(currentLeague.name)}</span><span>•</span><span>${escapeHtml(game.label||`Event ${game.week}`)}</span><span>•</span><span>${escapeHtml(game.date)}</span><span>•</span><span>${escapeHtml(game.time)}</span><span>• ${open?"🔓 PICKS OPEN":"🔒 VIEW ONLY"}</span>`;
  currentProps=await loadProps(currentWeek);await loadAnswers();renderProps();
 }
 
@@ -716,27 +769,40 @@ async function renderLeaderboard(){
 function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div class="medal">${medal}</div><div class="name">${escapeHtml(p.name)}</div><div class="pts">${p.total_points} pts</div><div class="weeks">${label} • ${p.weeks_scored} scored</div></div>`}
 
 function showAdminLogin(){document.getElementById("admin").classList.add("open");document.getElementById("admin").scrollIntoView({behavior:"smooth"});updateAdminVisibility()}
-async function updateAdminVisibility(){const denied=document.getElementById("adminDenied"),controls=document.getElementById("adminControls");if(isAdmin){denied.style.display="none";controls.style.display="block";await loadAdminLeagues();renderAdminWeeks();renderAdminWeek()}else{denied.style.display="block";controls.style.display="none"}}
+async function updateAdminVisibility(){const denied=document.getElementById("adminDenied"),controls=document.getElementById("adminControls");if(isAdmin){denied.style.display="none";controls.style.display="block";await loadAdminLeagues()}else{denied.style.display="block";controls.style.display="none"}}
 function showAdminTab(name){document.querySelectorAll(".admin-tabbtn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".admin-tabpanel").forEach(p=>p.classList.toggle("active",p.id===`adminTab-${name}`));if(name==="players"){renderAdminLeagueSwitcher();loadAdminPlayers()}}
-function renderAdminWeeks(){const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";schedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=`Week ${g.week}`;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})}
+function renderAdminWeeks(){const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";adminSchedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=g.label||`Event ${g.week}`;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})}
+
+async function loadAdminCompetitionContext(){
+ adminCompetition=null;adminSchedule=[];adminWeekStatus={};adminWeekStatusMeta={};
+ if(!adminLeague?.competition_id){renderAdminWeeks();return}
+ try{
+   const context=await fetchCompetitionContext(adminLeague.competition_id);adminCompetition=context.competition;adminSchedule=context.events;
+   const {data,error}=await db.rpc("get_competition_week_status",{p_competition_id:adminCompetition.id});if(error)throw error;
+   (data||[]).forEach(r=>{adminWeekStatus[r.week]=r.is_unlocked;adminWeekStatusMeta[r.week]={manual_override:r.manual_override,auto_unlock_at:r.auto_unlock_at}});
+ }catch(error){console.error("Admin competition could not be loaded",error);if(currentCompetition?.id===adminLeague.competition_id){adminCompetition=currentCompetition;adminSchedule=[...schedule]}}
+ if(!adminSchedule.some(g=>g.week===adminWeek&&!g.bye))adminWeek=(adminSchedule.find(g=>!g.bye)||{week:1}).week;
+ renderAdminWeeks();await renderAdminWeek();
+}
 
 async function loadAdminLeagues(){
- const {data,error}=await db.from("leagues").select("id,name,description,is_public").order("name");
+ const {data,error}=await db.from("leagues").select("id,name,description,is_public,competition_id").order("name");
  const summary=document.getElementById("adminLeagueSummary");
  if(error){adminLeagues=[];adminLeague=null;if(summary)summary.textContent=error.message;renderAdminLeagueSwitcher();return}
  adminLeagues=data||[];
  const remembered=localStorage.getItem("props716_admin_league");
  adminLeague=adminLeagues.find(l=>l.id===adminLeague?.id)||adminLeagues.find(l=>l.id===remembered)||adminLeagues.find(l=>l.id===currentLeague?.id)||adminLeagues[0]||null;
  renderAdminLeagueSwitcher();
+ await loadAdminCompetitionContext();
  await loadAdminPlayers();
 }
 function renderAdminLeagueSwitcher(){
  const track=document.getElementById("adminLeagueTrack"),summary=document.getElementById("adminLeagueSummary");if(!track)return;track.innerHTML="";
  adminLeagues.forEach(l=>{const b=document.createElement("button");b.className="admin-league-btn"+(adminLeague?.id===l.id?" active":"");b.textContent=l.name;b.onclick=()=>selectAdminLeague(l.id);track.appendChild(b)});
- if(summary)summary.textContent=adminLeague?`Showing only ${adminLeague.name} submissions.`:"No leagues are available.";
+ if(summary)summary.textContent=adminLeague?`${adminLeague.name}${adminCompetition?` • ${adminCompetition.name}`:""}`:"No leagues are available.";
 }
 async function selectAdminLeague(id){
- const next=adminLeagues.find(l=>l.id===id);if(!next||next.id===adminLeague?.id)return;adminLeague=next;localStorage.setItem("props716_admin_league",id);selectedAdminPlayer=null;selectedAdminPlayerWeek=null;adminPlayerAnswers={};renderAdminLeagueSwitcher();document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player to view their submitted picks.</div>';await loadAdminPlayers();
+ const next=adminLeagues.find(l=>l.id===id);if(!next||next.id===adminLeague?.id)return;adminLeague=next;localStorage.setItem("props716_admin_league",id);selectedAdminPlayer=null;selectedAdminPlayerWeek=null;adminPlayerAnswers={};renderAdminLeagueSwitcher();document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player to view their submitted picks.</div>';await loadAdminCompetitionContext();renderAdminLeagueSwitcher();await loadAdminPlayers();
 }
 
 async function createAdminLeague(){
@@ -746,28 +812,29 @@ async function createAdminLeague(){
 }
 
 async function renderAdminWeek(){
- if(!isAdmin)return;await loadWeekStatus();const g=schedule.find(x=>x.week===adminWeek);if(!g)return;
- document.getElementById("adminGameTitle").textContent=`Week ${g.week}: ${g.away} at ${g.home}`;document.getElementById("adminGameMeta").textContent=`${g.date} • ${g.time} • ${g.network}`;
- const meta=weekStatusMeta[adminWeek]||{},auto=meta.auto_unlock_at?new Date(meta.auto_unlock_at):null,override=meta.manual_override,autoText=auto?auto.toLocaleString():"No automatic unlock time";
- document.getElementById("adminAutoStatus").textContent=override===true?`Manual override: FORCE UNLOCKED. Auto: ${autoText}`:override===false?`Manual override: FORCE LOCKED. Auto: ${autoText}`:`Automatic mode: ${unlocked(adminWeek)?"OPEN":"LOCKED"}. Scheduled unlock: ${autoText}`;
- adminProps=await loadProps(adminWeek);renderAdminPropEditors();const {data:result}=await db.from("official_results").select("answers").eq("week",adminWeek).maybeSingle();adminAnswers=result?.answers?{...result.answers}:{};
+ if(!isAdmin||!adminCompetition)return;const g=adminSchedule.find(x=>x.week===adminWeek);if(!g)return;
+ document.getElementById("adminGameTitle").textContent=`${g.label}: ${g.away} at ${g.home}`;document.getElementById("adminGameMeta").textContent=`${adminLeague.name} • ${g.date} • ${g.time} • ${g.network}`;
+ const meta=adminWeekStatusMeta[adminWeek]||{},auto=meta.auto_unlock_at?new Date(meta.auto_unlock_at):null,override=meta.manual_override,autoText=auto?auto.toLocaleString():"No automatic unlock time",isOpen=!!adminWeekStatus[adminWeek];
+ document.getElementById("adminAutoStatus").textContent=override===true?`Manual override: FORCE UNLOCKED. Auto: ${autoText}`:override===false?`Manual override: FORCE LOCKED. Auto: ${autoText}`:`Automatic mode: ${isOpen?"OPEN":"LOCKED"}. Scheduled unlock: ${autoText}`;
+ adminProps=await loadProps(adminWeek,adminCompetition.id);renderAdminPropEditors();const {data:result}=await db.from("official_results").select("answers").eq("competition_id",adminCompetition.id).eq("week",adminWeek).maybeSingle();adminAnswers=result?.answers?{...result.answers}:{};
  const area=document.getElementById("adminQuestions");area.innerHTML="";adminProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],q=document.createElement("div");q.className="admin-question";q.innerHTML=`<h4>${escapeHtml(p.question)} <span class="points">${p.points} POINT${p.points===1?"":"S"}</span></h4><div class="admin-answers">${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.prop_key]===v?"correct":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;q.querySelectorAll(".admin-answer").forEach(btn=>btn.onclick=()=>{adminAnswers[p.prop_key]=btn.dataset.value;q.querySelectorAll(".admin-answer").forEach(x=>x.classList.remove("correct"));btn.classList.add("correct")});area.appendChild(q)});
 }
 function renderAdminPropEditors(){const wrap=document.getElementById("adminPropEditors");wrap.innerHTML="";adminProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],el=document.createElement("div");el.className="admin-prop-editor";el.dataset.key=p.prop_key;el.innerHTML=`<h4>Prop ${p.position}</h4><div class="admin-edit-grid"><div class="full"><label>Question</label><input class="edit-question" value="${escapeHtml(p.question)}"></div><div class="full"><label>Description</label><textarea class="edit-description">${escapeHtml(p.description||"")}</textarea></div><div class="full"><label>Answer Choices</label><div class="choice-editor-list"></div><button type="button" class="btn secondary add-choice-btn">+ Add Choice</button></div><div><label>Points</label><input class="edit-points" type="number" min="1" max="100" value="${p.points}"></div></div>`;const list=el.querySelector(".choice-editor-list");choices.forEach(v=>addChoiceEditorRow(list,v));el.querySelector(".add-choice-btn").onclick=()=>{if(list.children.length>=12)return;addChoiceEditorRow(list,"")};wrap.appendChild(el)})}
 function addChoiceEditorRow(list,value){const row=document.createElement("div");row.className="choice-editor-row";row.innerHTML=`<input class="edit-choice" value="${escapeHtml(value)}"><button type="button" class="btn secondary">−</button>`;row.querySelector("button").onclick=()=>{if(list.children.length<=2){alert("At least 2 choices required.");return}row.remove()};list.appendChild(row)}
-async function saveAdminPropConfig(){for(const el of document.querySelectorAll("#adminPropEditors .admin-prop-editor")){const choices=[...el.querySelectorAll(".edit-choice")].map(i=>i.value.trim()).filter(Boolean),row={question:el.querySelector(".edit-question").value.trim(),description:el.querySelector(".edit-description").value.trim(),choices,points:Number(el.querySelector(".edit-points").value),updated_at:new Date().toISOString()};const {error}=await db.from("prop_questions").update(row).eq("week",adminWeek).eq("prop_key",el.dataset.key);if(error){alert(error.message);return}}await renderAdminWeek();if(currentWeek===adminWeek)await renderWeek();await renderLeaderboard()}
-async function setAdminOverride(v){const {error}=await db.rpc("set_week_override",{p_week:adminWeek,p_override:v});if(error){alert(error.message);return}await loadWeekStatus();await renderAdminWeek();if(currentWeek===adminWeek)await renderWeek()}
-async function saveOfficialResults(){if(Object.keys(adminAnswers).length<adminProps.length){alert("Mark all correct answers first.");return}await db.rpc("set_week_override",{p_week:adminWeek,p_override:false});const now=new Date().toISOString(),{data:existing}=await db.from("official_results").select("week").eq("week",adminWeek).maybeSingle();let error;if(existing){({error}=await db.from("official_results").update({answers:adminAnswers,scored_at:now,scored_by:currentUser.id}).eq("week",adminWeek))}else{({error}=await db.from("official_results").insert({week:adminWeek,answers:adminAnswers,scored_at:now,scored_by:currentUser.id}))}if(error){alert(error.message);return}await renderLeaderboard();await renderAdminWeek()}
-async function clearOfficialResults(){await db.from("official_results").delete().eq("week",adminWeek);await renderLeaderboard();await renderAdminWeek()}
+async function saveAdminPropConfig(){if(!adminCompetition)return;for(const el of document.querySelectorAll("#adminPropEditors .admin-prop-editor")){const choices=[...el.querySelectorAll(".edit-choice")].map(i=>i.value.trim()).filter(Boolean),row={question:el.querySelector(".edit-question").value.trim(),description:el.querySelector(".edit-description").value.trim(),choices,points:Number(el.querySelector(".edit-points").value),updated_at:new Date().toISOString()};const {error}=await db.from("prop_questions").update(row).eq("competition_id",adminCompetition.id).eq("week",adminWeek).eq("prop_key",el.dataset.key);if(error){alert(error.message);return}}await renderAdminWeek();if(currentCompetition?.id===adminCompetition.id&&currentWeek===adminWeek)await renderWeek();await renderLeaderboard()}
+async function setAdminOverride(v){if(!adminCompetition)return;const {error}=await db.rpc("set_competition_week_override",{p_competition_id:adminCompetition.id,p_week:adminWeek,p_override:v});if(error){alert(error.message);return}await loadAdminCompetitionContext();if(currentCompetition?.id===adminCompetition.id){await loadWeekStatus();if(currentWeek===adminWeek)await renderWeek()}}
+async function saveOfficialResults(){if(!adminCompetition)return;if(Object.keys(adminAnswers).length<adminProps.length){alert("Mark all correct answers first.");return}await db.rpc("set_competition_week_override",{p_competition_id:adminCompetition.id,p_week:adminWeek,p_override:false});const now=new Date().toISOString(),{data:existing}=await db.from("official_results").select("week").eq("competition_id",adminCompetition.id).eq("week",adminWeek).maybeSingle();let error;if(existing){({error}=await db.from("official_results").update({answers:adminAnswers,scored_at:now,scored_by:currentUser.id}).eq("competition_id",adminCompetition.id).eq("week",adminWeek))}else{({error}=await db.from("official_results").insert({competition_id:adminCompetition.id,week:adminWeek,answers:adminAnswers,scored_at:now,scored_by:currentUser.id}))}if(error){alert(error.message);return}await renderLeaderboard();await loadAdminCompetitionContext()}
+async function clearOfficialResults(){if(!adminCompetition)return;await db.from("official_results").delete().eq("competition_id",adminCompetition.id).eq("week",adminWeek);await renderLeaderboard();await renderAdminWeek()}
 
 async function loadAdminPlayers(){
  const list=document.getElementById("adminPlayerList"),summary=document.getElementById("adminLeagueSummary");if(!list||!isAdmin)return;if(!adminLeague){list.innerHTML='<div class="empty">No league selected.</div>';return}list.innerHTML='<div class="empty">Loading players…</div>';
  const {data,error}=await db.rpc("admin_list_league_players",{p_league_id:adminLeague.id});if(error){list.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}adminPlayers=data||[];list.innerHTML=adminPlayers.length?"":`<div class="empty">No submitted players in ${escapeHtml(adminLeague.name)}.</div>`;
- if(summary)summary.textContent=`${adminLeague.name} • ${adminPlayers.length} submitted player${adminPlayers.length===1?"":"s"}`;
+ if(summary)summary.textContent=`${adminLeague.name}${adminCompetition?` • ${adminCompetition.name}`:""} • ${adminPlayers.length} member${adminPlayers.length===1?"":"s"}`;
  adminPlayers.forEach(p=>{const b=document.createElement("button");b.className="player-row";b.dataset.userId=p.user_id;b.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><span>${p.weeks_submitted} submitted • ${p.total_points} pts</span>`;b.onclick=()=>selectAdminPlayer(p);list.appendChild(b)})
 }
-async function selectAdminPlayer(p){if(!adminLeague)return;selectedAdminPlayer=p;document.querySelectorAll("#adminPlayerList .player-row").forEach(b=>b.classList.toggle("active",b.dataset.userId===String(p.user_id)));const {data,error}=await db.rpc("admin_get_league_player_picks",{p_league_id:adminLeague.id,p_user_id:p.user_id});const detail=document.getElementById("adminPlayerDetail");if(error){detail.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}const picks=data||[];detail.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><div class="note">${escapeHtml(p.email||"")} • ${escapeHtml(adminLeague.name)}</div><div class="player-week-tabs" id="adminPlayerWeekTabs"></div><div id="adminPlayerWeekDetail"></div>`;const tabs=detail.querySelector("#adminPlayerWeekTabs");picks.forEach(pk=>{const b=document.createElement("button");b.className="player-week-btn";b.textContent=`Week ${pk.week}`;b.onclick=()=>renderAdminPlayerWeek(pk);tabs.appendChild(b)});if(picks[0])await renderAdminPlayerWeek(picks[0]);else detail.querySelector("#adminPlayerWeekDetail").innerHTML='<div class="empty">No submitted weeks in this league.</div>'}
-async function renderAdminPlayerWeek(pick){selectedAdminPlayerWeek=pick.week;adminPlayerAnswers={...(pick.answers||{})};document.querySelectorAll("#adminPlayerWeekTabs .player-week-btn").forEach(btn=>btn.classList.toggle("active",btn.textContent===`Week ${pick.week}`));const props=await loadProps(pick.week),wrap=document.getElementById("adminPlayerWeekDetail");wrap.innerHTML=`<div class="note">Week ${pick.week} • ${pick.points} pts</div>`;props.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],row=document.createElement("div");row.className="admin-player-pick";row.innerHTML=`<strong>${escapeHtml(p.question)}</strong><div class="admin-player-options">${choices.map(v=>`<button class="admin-player-choice ${adminPlayerAnswers[p.prop_key]===v?"selected":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;row.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{adminPlayerAnswers[p.prop_key]=btn.dataset.value;row.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected")});wrap.appendChild(row)});const actions=document.createElement("div");actions.className="admin-actions";actions.innerHTML='<button class="btn" onclick="saveAdminPlayerPicks()">Save Edited Picks</button>';wrap.appendChild(actions);const danger=document.createElement("div");danger.className="danger-box";danger.innerHTML='<strong>Remove Player From This League</strong><div class="note" style="margin:4px 0 10px">Deletes their picks and leaderboard entry for this league only. They can join again later.</div><button class="btn danger-btn" onclick="deleteAdminPlayerPoolData()">Remove From League</button>';wrap.appendChild(danger)}
+function adminEventLabel(week){return adminSchedule.find(g=>g.week===Number(week))?.label||`Event ${week}`}
+async function selectAdminPlayer(p){if(!adminLeague)return;selectedAdminPlayer=p;document.querySelectorAll("#adminPlayerList .player-row").forEach(b=>b.classList.toggle("active",b.dataset.userId===String(p.user_id)));const {data,error}=await db.rpc("admin_get_league_player_picks",{p_league_id:adminLeague.id,p_user_id:p.user_id});const detail=document.getElementById("adminPlayerDetail");if(error){detail.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}const picks=data||[];detail.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><div class="note">${escapeHtml(p.email||"")} • ${escapeHtml(adminLeague.name)}</div><div class="player-week-tabs" id="adminPlayerWeekTabs"></div><div id="adminPlayerWeekDetail"></div>`;const tabs=detail.querySelector("#adminPlayerWeekTabs");picks.forEach(pk=>{const b=document.createElement("button");b.className="player-week-btn";b.dataset.week=pk.week;b.textContent=adminEventLabel(pk.week);b.onclick=()=>renderAdminPlayerWeek(pk);tabs.appendChild(b)});if(picks[0])await renderAdminPlayerWeek(picks[0]);else detail.querySelector("#adminPlayerWeekDetail").innerHTML='<div class="empty">No submitted events in this league.</div>'}
+async function renderAdminPlayerWeek(pick){selectedAdminPlayerWeek=pick.week;adminPlayerAnswers={...(pick.answers||{})};document.querySelectorAll("#adminPlayerWeekTabs .player-week-btn").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.week)===Number(pick.week)));const props=await loadProps(pick.week,adminCompetition?.id),wrap=document.getElementById("adminPlayerWeekDetail");wrap.innerHTML=`<div class="note">${escapeHtml(adminEventLabel(pick.week))} • ${pick.points} pts</div>`;props.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],row=document.createElement("div");row.className="admin-player-pick";row.innerHTML=`<strong>${escapeHtml(p.question)}</strong><div class="admin-player-options">${choices.map(v=>`<button class="admin-player-choice ${adminPlayerAnswers[p.prop_key]===v?"selected":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;row.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{adminPlayerAnswers[p.prop_key]=btn.dataset.value;row.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected")});wrap.appendChild(row)});const actions=document.createElement("div");actions.className="admin-actions";actions.innerHTML='<button class="btn" onclick="saveAdminPlayerPicks()">Save Edited Picks</button>';wrap.appendChild(actions);const danger=document.createElement("div");danger.className="danger-box";danger.innerHTML='<strong>Remove Player From This League</strong><div class="note" style="margin:4px 0 10px">Deletes their picks and leaderboard entry for this league only. They can join again later.</div><button class="btn danger-btn" onclick="deleteAdminPlayerPoolData()">Remove From League</button>';wrap.appendChild(danger)}
 async function saveAdminPlayerPicks(){if(!adminLeague||!selectedAdminPlayer)return;const player=selectedAdminPlayer,{error}=await db.rpc("admin_update_league_player_pick",{p_league_id:adminLeague.id,p_user_id:player.user_id,p_week:selectedAdminPlayerWeek,p_answers:adminPlayerAnswers});if(error){alert(error.message);return}await loadAdminPlayers();await selectAdminPlayer(player);if(currentLeague?.id===adminLeague.id)await renderLeaderboard()}
 async function deleteAdminPlayerPoolData(){if(!adminLeague||!selectedAdminPlayer)return;if(!confirm(`Remove this player from ${adminLeague.name} and delete only their ${adminLeague.name} picks?`))return;const {error}=await db.rpc("admin_delete_league_player_pool_data",{p_league_id:adminLeague.id,p_user_id:selectedAdminPlayer.user_id});if(error){alert(error.message);return}selectedAdminPlayer=null;document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player.</div>';await loadAdminPlayers();if(currentLeague?.id===adminLeague.id)await renderLeaderboard()}
 
