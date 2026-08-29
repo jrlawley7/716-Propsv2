@@ -135,6 +135,10 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .featured-game-option strong,.featured-game-option span{display:block}
 .featured-game-option span{font-size:11px;color:var(--muted);margin-top:2px}
 .featured-game-option.selected{border:2px solid var(--blue);padding:10px 11px;background:#eef4ff;color:var(--blue)}
+.featured-game-option:disabled,.admin-weekbtn:disabled{cursor:wait;opacity:.62}
+.featured-save-status{min-height:18px;margin-top:9px;font-size:12px;font-weight:850;color:#176b3a}
+.featured-save-status.saving{color:var(--blue)}
+.featured-save-status.error{color:#a61b1b}
 .full-schedule{display:none;margin-top:16px;padding:18px}
 .full-schedule.show{display:block}
 .full-schedule summary{cursor:pointer;font-weight:950;color:var(--blue)}
@@ -404,6 +408,7 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
         <strong>Choose This Week's Featured Sabres Game</strong>
         <div class="note" style="margin-top:3px">You can change the game later. Existing questions, submitted answers, timestamps, and points will remain unchanged.</div>
         <div class="featured-game-list" id="featuredGameList"></div>
+        <div class="featured-save-status" id="featuredGameSaveStatus" aria-live="polite"></div>
       </div>
       <div id="adminAutoStatus" class="auto-status"></div>
       <div class="admin-actions">
@@ -495,7 +500,7 @@ const billsFallbackSchedule=[
 
 let schedule=billsFallbackSchedule.map(g=>({...g,label:`Week ${g.week}`})),currentCompetition=null,competitionGames=[];
 let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},weekStatus={},weekStatusMeta={},isAdmin=false,recoveryMode=false;
-let currentProps=[],adminWeek=1,adminAnswers={},adminProps=[],adminLeagues=[],adminLeague=null,adminCompetition=null,adminSchedule=[],adminCompetitionGames=[],adminWeekStatus={},adminWeekStatusMeta={},adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={},adminCompetitionOptions=[],newLeagueCompetitionId=null;
+let currentProps=[],adminWeek=1,adminAnswers={},adminProps=[],adminLeagues=[],adminLeague=null,adminCompetition=null,adminSchedule=[],adminCompetitionGames=[],adminWeekStatus={},adminWeekStatusMeta={},adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={},adminCompetitionOptions=[],newLeagueCompetitionId=null,featuredGameSaving=false;
 
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||String(team||"").split(" ").filter(Boolean).pop()||"Opponent"}
@@ -820,7 +825,7 @@ function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div c
 function showAdminLogin(){document.getElementById("admin").classList.add("open");document.getElementById("admin").scrollIntoView({behavior:"smooth"});updateAdminVisibility()}
 async function updateAdminVisibility(){const denied=document.getElementById("adminDenied"),controls=document.getElementById("adminControls");if(isAdmin){denied.style.display="none";controls.style.display="block";await loadAdminCompetitionOptions();await loadAdminLeagues()}else{denied.style.display="block";controls.style.display="none"}}
 function showAdminTab(name){document.querySelectorAll(".admin-tabbtn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".admin-tabpanel").forEach(p=>p.classList.toggle("active",p.id===`adminTab-${name}`));if(name==="players"){renderAdminLeagueSwitcher();loadAdminPlayers()}}
-function renderAdminWeeks(){const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";adminSchedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=g.label||`Event ${g.week}`;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})}
+function renderAdminWeeks(){const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";adminSchedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=g.label||`Event ${g.week}`;b.disabled=featuredGameSaving;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})}
 
 async function loadAdminCompetitionContext(){
  adminCompetition=null;adminSchedule=[];adminCompetitionGames=[];adminWeekStatus={};adminWeekStatusMeta={};
@@ -871,24 +876,40 @@ function renderLeagueTypeOptions(){
 
 async function renderAdminWeek(){
  if(!isAdmin||!adminCompetition)return;const g=adminSchedule.find(x=>x.week===adminWeek);if(!g)return;
- document.getElementById("adminGameTitle").textContent=g.away&&g.home?`${g.label}: ${g.away} at ${g.home}`:`${g.label}: Featured game not selected`;document.getElementById("adminGameMeta").textContent=`${adminLeague.name} • ${g.date} • ${g.time} • ${g.network}`;
+ renderAdminEventHeader(g);
  renderAdminFeaturedGameManager(g);
  const meta=adminWeekStatusMeta[adminWeek]||{},auto=meta.auto_unlock_at?new Date(meta.auto_unlock_at):null,override=meta.manual_override,autoText=auto?auto.toLocaleString():"No automatic unlock time",isOpen=!!adminWeekStatus[adminWeek];
  document.getElementById("adminAutoStatus").textContent=override===true?`Manual override: FORCE UNLOCKED. Auto: ${autoText}`:override===false?`Manual override: FORCE LOCKED. Auto: ${autoText}`:`Automatic mode: ${isOpen?"OPEN":"LOCKED"}. Scheduled unlock: ${autoText}`;
  adminProps=await loadProps(adminWeek,adminCompetition.id);renderAdminPropEditors();const {data:result}=await db.from("official_results").select("answers").eq("competition_id",adminCompetition.id).eq("week",adminWeek).maybeSingle();adminAnswers=result?.answers?{...result.answers}:{};
  const area=document.getElementById("adminQuestions");area.innerHTML="";adminProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],q=document.createElement("div");q.className="admin-question";q.innerHTML=`<h4>${escapeHtml(p.question)} <span class="points">${p.points} POINT${p.points===1?"":"S"}</span></h4><div class="admin-answers">${choices.map(v=>`<button class="admin-answer ${adminAnswers[p.prop_key]===v?"correct":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;q.querySelectorAll(".admin-answer").forEach(btn=>btn.onclick=()=>{adminAnswers[p.prop_key]=btn.dataset.value;q.querySelectorAll(".admin-answer").forEach(x=>x.classList.remove("correct"));btn.classList.add("correct")});area.appendChild(q)});
 }
+function renderAdminEventHeader(event){
+ document.getElementById("adminGameTitle").textContent=event.away&&event.home?`${event.label}: ${event.away} at ${event.home}`:`${event.label}: Featured game not selected`;
+ document.getElementById("adminGameMeta").textContent=`${adminLeague.name} • ${event.date} • ${event.time} • ${event.network}`;
+}
+function setFeaturedGameStatus(message,state=""){
+ const status=document.getElementById("featuredGameSaveStatus");if(!status)return;status.textContent=message;status.className=`featured-save-status${state?` ${state}`:""}`;
+}
 function renderAdminFeaturedGameManager(event){
  const manager=document.getElementById("featuredGameManager"),list=document.getElementById("featuredGameList");if(!manager||!list)return;
- if(adminCompetition?.schedule_mode!=="featured_games"){manager.classList.remove("show");list.innerHTML="";return}
+ if(adminCompetition?.schedule_mode!=="featured_games"){manager.classList.remove("show");list.innerHTML="";setFeaturedGameStatus("");return}
  const eligible=adminCompetitionGames.filter(g=>g.date>=event.periodStarts&&g.date<=event.periodEnds);manager.classList.add("show");list.innerHTML=eligible.length?"":'<div class="empty">No Sabres games are scheduled during this week.</div>';
- eligible.forEach(g=>{const b=document.createElement("button");b.type="button";b.className="featured-game-option"+(event.featuredGameId===g.id?" selected":"");b.innerHTML=`<strong>${escapeHtml(g.away)} at ${escapeHtml(g.home)}</strong><span>${escapeHtml(formatGameDate(g))}${g.network&&g.network!=="TBD"?` • ${escapeHtml(g.network)}`:""}</span>`;b.onclick=()=>selectAdminFeaturedGame(g.id);list.appendChild(b)});
+ eligible.forEach(g=>{const b=document.createElement("button");b.type="button";b.disabled=featuredGameSaving;b.className="featured-game-option"+(event.featuredGameId===g.id?" selected":"");b.innerHTML=`<strong>${escapeHtml(g.away)} at ${escapeHtml(g.home)}</strong><span>${escapeHtml(formatGameDate(g))}${g.network&&g.network!=="TBD"?` • ${escapeHtml(g.network)}`:""}</span>`;b.onclick=()=>selectAdminFeaturedGame(g.id);list.appendChild(b)});
 }
 async function selectAdminFeaturedGame(gameId){
- if(!adminCompetition)return;const event=adminSchedule.find(g=>g.week===adminWeek);if(!event)return;
+ if(!adminCompetition||featuredGameSaving)return;const selectedWeek=adminWeek,competitionId=adminCompetition.id,event=adminSchedule.find(g=>g.week===selectedWeek);if(!event)return;
+ if(event.featuredGameId===gameId){setFeaturedGameStatus(`${event.label} is already selected.`);return}
  if(event.featuredGameId&&event.featuredGameId!==gameId&&!confirm(`Change ${event.label}'s featured game? Existing questions and every user's submitted answers will remain unchanged.`))return;
- const {error}=await db.rpc("admin_set_featured_game",{p_competition_id:adminCompetition.id,p_week:adminWeek,p_game_id:gameId});if(error){alert(error.message);return}
- await loadAdminCompetitionContext();if(currentCompetition?.id===adminCompetition.id){await loadCompetitionContext(currentLeague);await renderWeek()}alert(`${event.label} featured game updated. Existing picks were preserved.`);
+ featuredGameSaving=true;renderAdminWeeks();renderAdminFeaturedGameManager(event);setFeaturedGameStatus(`Saving ${event.label}…`,"saving");
+ const {error}=await db.rpc("admin_set_featured_game",{p_competition_id:competitionId,p_week:selectedWeek,p_game_id:gameId});
+ if(error){featuredGameSaving=false;renderAdminWeeks();renderAdminFeaturedGameManager(adminSchedule.find(g=>g.week===adminWeek)||event);setFeaturedGameStatus(`Could not save: ${error.message}`,"error");return}
+ const {data:updatedRow,error:readError}=await db.from("competition_events").select("*").eq("competition_id",competitionId).eq("event_number",selectedWeek).single();
+ featuredGameSaving=false;
+ if(readError||!updatedRow){renderAdminWeeks();renderAdminFeaturedGameManager(adminSchedule.find(g=>g.week===adminWeek)||event);setFeaturedGameStatus(`${event.label} saved. Refresh the page to display the updated matchup.`,"error");return}
+ const updated=mapCompetitionEvent(updatedRow);adminSchedule=adminSchedule.map(g=>g.week===selectedWeek?updated:g);renderAdminWeeks();
+ if(adminWeek===selectedWeek){renderAdminEventHeader(updated);renderAdminFeaturedGameManager(updated)}else renderAdminFeaturedGameManager(adminSchedule.find(g=>g.week===adminWeek)||updated);
+ if(currentCompetition?.id===competitionId){schedule=schedule.map(g=>g.week===selectedWeek?updated:g);renderWeekTabs();renderFullCompetitionSchedule();if(currentWeek===selectedWeek)await renderWeek()}
+ setFeaturedGameStatus(`✓ ${event.label} saved. Existing picks were preserved.`);
 }
 function renderAdminPropEditors(){const wrap=document.getElementById("adminPropEditors");wrap.innerHTML="";adminProps.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],el=document.createElement("div");el.className="admin-prop-editor";el.dataset.key=p.prop_key;el.innerHTML=`<h4>Prop ${p.position}</h4><div class="admin-edit-grid"><div class="full"><label>Question</label><input class="edit-question" value="${escapeHtml(p.question)}"></div><div class="full"><label>Description</label><textarea class="edit-description">${escapeHtml(p.description||"")}</textarea></div><div class="full"><label>Answer Choices</label><div class="choice-editor-list"></div><button type="button" class="btn secondary add-choice-btn">+ Add Choice</button></div><div><label>Points</label><input class="edit-points" type="number" min="1" max="100" value="${p.points}"></div></div>`;const list=el.querySelector(".choice-editor-list");choices.forEach(v=>addChoiceEditorRow(list,v));el.querySelector(".add-choice-btn").onclick=()=>{if(list.children.length>=12)return;addChoiceEditorRow(list,"")};wrap.appendChild(el)})}
 function addChoiceEditorRow(list,value){const row=document.createElement("div");row.className="choice-editor-row";row.innerHTML=`<input class="edit-choice" value="${escapeHtml(value)}"><button type="button" class="btn secondary">−</button>`;row.querySelector("button").onclick=()=>{if(list.children.length<=2){alert("At least 2 choices required.");return}row.remove()};list.appendChild(row)}
