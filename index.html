@@ -347,7 +347,7 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
             <div><label for="recoveryPasswordInput">New Password</label><input id="recoveryPasswordInput" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>
             <div><label for="recoveryConfirmInput">Confirm New Password</label><input id="recoveryConfirmInput" type="password" autocomplete="new-password" placeholder="Type it again"></div>
           </div>
-          <div class="auth-actions"><button class="btn" id="savePasswordBtn" onclick="saveRecoveredPassword()">Save New Password</button></div>
+          <div class="auth-actions"><button class="btn" id="savePasswordBtn" onclick="saveRecoveredPassword()">Save New Password</button><button class="link-btn" onclick="cancelPasswordRecovery()">Back to Sign In</button></div>
         </div>
         <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
       </div>
@@ -509,6 +509,7 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
 const SUPABASE_URL="https://gmqwudewspaqbzxyabhe.supabase.co";
 const SUPABASE_KEY="sb_publishable_TzcN11InlMA-qJAvy3IEpQ_IKCnSOet";
 const { createClient }=supabase;
+const INITIAL_PASSWORD_RECOVERY_URL=(()=>{const query=new URLSearchParams(window.location.search),hash=new URLSearchParams(window.location.hash.replace(/^#/,""));return query.get("password-reset")==="1"||query.get("type")==="recovery"||hash.get("type")==="recovery"})();
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const billsFallbackSchedule=[
@@ -533,7 +534,7 @@ const billsFallbackSchedule=[
 ];
 
 let schedule=billsFallbackSchedule.map(g=>({...g,label:`Week ${g.week}`})),currentCompetition=null,competitionGames=[];
-let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},tiebreakerGuess=null,weekStatus={},weekStatusMeta={},isAdmin=false,recoveryMode=false;
+let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},tiebreakerGuess=null,weekStatus={},weekStatusMeta={},isAdmin=false,recoveryMode=false,passwordRecoveryRequested=false;
 let currentProps=[],adminWeek=1,adminAnswers={},adminTiebreakerValue=null,adminProps=[],adminLeagues=[],adminLeague=null,adminCompetition=null,adminSchedule=[],adminCompetitionGames=[],adminWeekStatus={},adminWeekStatusMeta={},adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={},adminPlayerTiebreakerGuess=null,adminCompetitionOptions=[],newLeagueCompetitionId=null,featuredGameSaving=false;
 
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
@@ -597,14 +598,16 @@ async function loadCompetitionContext(league){
 
 async function init(){
  renderWeekTabs();
+ passwordRecoveryRequested=isPasswordRecoveryUrl();
  db.auth.onAuthStateChange((event,session)=>{
    setTimeout(async()=>{
-     if(event==="PASSWORD_RECOVERY"){showPasswordRecovery();return}
+     if(event==="PASSWORD_RECOVERY"||passwordRecoveryRequested){showPasswordRecovery();return}
      if(session&&(!currentUser||currentUser.id!==session.user.id))await handleSession(session);
    },0);
  });
  const {data:{session}}=await db.auth.getSession();
- if(session) await handleSession(session);
+ if(passwordRecoveryRequested)showPasswordRecovery();
+ else if(session) await handleSession(session);
  else showLanding();
 }
 
@@ -617,6 +620,7 @@ function showLanding(){
 }
 
 function authRedirectUrl(){return window.location.origin+window.location.pathname}
+function isPasswordRecoveryUrl(){const query=new URLSearchParams(window.location.search),hash=new URLSearchParams(window.location.hash.replace(/^#/,""));return INITIAL_PASSWORD_RECOVERY_URL||query.get("password-reset")==="1"||query.get("type")==="recovery"||hash.get("type")==="recovery"}
 function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
 function setAuthMessage(message,isError=false){
  const el=document.getElementById("authMessage");
@@ -679,16 +683,19 @@ function showPasswordRecovery(){
  setAuthMessage("");window.scrollTo({top:0,behavior:"smooth"});
 }
 
+function cancelPasswordRecovery(){passwordRecoveryRequested=false;window.history.replaceState({},document.title,authRedirectUrl());setAuthMode("login");showLanding()}
+
 async function saveRecoveredPassword(){
  const password=document.getElementById("recoveryPasswordInput").value,confirm=document.getElementById("recoveryConfirmInput").value;
  if(password.length<8){setAuthMessage("Your password must have at least 8 characters.",true);return}
  if(password!==confirm){setAuthMessage("The two passwords do not match.",true);return}
+ const {data:{session}}=await db.auth.getSession();
+ if(!session){setAuthMessage("This password link has expired or was already used. Return to Sign In and request a new one.",true);return}
  setAuthBusy("savePasswordBtn",true,"Saving…","Save New Password");
  const {error}=await db.auth.updateUser({password});
  setAuthBusy("savePasswordBtn",false,"Saving…","Save New Password");
  if(error){setAuthMessage(error.message,true);return}
- recoveryMode=false;setAuthMessage("Password saved. Signing you in…");
- const {data:{session}}=await db.auth.getSession();
+ recoveryMode=false;passwordRecoveryRequested=false;window.history.replaceState({},document.title,authRedirectUrl());setAuthMessage("Password saved. Signing you in…");
  if(session)await handleSession(session);else setAuthMode("login");
 }
 
