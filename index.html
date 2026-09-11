@@ -95,6 +95,8 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .league-access-status{min-height:18px;margin-top:9px;color:var(--success);font-size:12px;font-weight:850}
 .danger-btn{background:#b42318!important;color:#fff!important}
 .danger-box{margin-top:16px;padding:14px;border:1px solid #f3b5ad;background:#fff4f2;border-radius:12px}
+.recap-controls{padding:16px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe}.recap-context{font-size:14px;font-weight:900;color:var(--blue)}.recap-status{min-height:20px;margin-top:10px;font-size:12px;font-weight:800;color:var(--muted)}.recap-status.success{color:var(--success)}.recap-status.error{color:#b42318}.recap-preview{display:none;margin-top:16px}.recap-preview.show{display:block}.recap-subject{padding:11px 13px;border:1px solid var(--line);border-radius:10px 10px 0 0;background:#f8fafc;font-size:12px;color:#475467}.recap-frame{display:block;width:100%;height:680px;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;background:#f4f7fb}
+@media(max-width:650px){.recap-frame{height:760px}}
 
 
 .landing-wrap{max-width:980px;margin:-44px auto 0;padding:0 20px 34px;position:relative;z-index:6}
@@ -395,6 +397,7 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
       <button class="admin-tabbtn" data-tab="questions" onclick="showAdminTab('questions')">Edit Questions</button>
       <button class="admin-tabbtn" data-tab="results" onclick="showAdminTab('results')">Submit Results</button>
       <button class="admin-tabbtn" data-tab="players" onclick="showAdminTab('players')">Manage Players</button>
+      <button class="admin-tabbtn" data-tab="emails" onclick="showAdminTab('emails')">Weekly Emails</button>
       <button class="admin-tabbtn" data-tab="leagues" onclick="showAdminTab('leagues')">Manage Leagues</button>
       <button class="admin-tabbtn" data-tab="create" onclick="showAdminTab('create')">Create League</button>
     </div>
@@ -462,6 +465,28 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
         <div class="player-detail" id="adminPlayerDetail">
           <div class="empty">Select a player to view their submitted picks.</div>
         </div>
+      </div>
+    </div>
+
+    <div class="admin-tabpanel" id="adminTab-emails">
+      <div class="section-title" style="margin:12px 0 10px">
+        <div>
+          <h2 style="font-size:20px">Weekly League Email</h2>
+          <p>Preview the weekly winner and updated season standings before sending anything.</p>
+        </div>
+      </div>
+      <div class="recap-controls">
+        <div class="recap-context" id="adminRecapContext">Choose a league and week.</div>
+        <div class="note" style="margin-top:4px">Each member receives a separate email. Previously delivered emails will not be sent twice.</div>
+        <div class="admin-actions">
+          <button class="btn secondary" id="previewRecapButton" onclick="previewWeeklyRecap()">Preview Weekly Email</button>
+          <button class="btn" id="sendRecapButton" onclick="sendWeeklyRecap()" disabled>Send Weekly Recap</button>
+        </div>
+        <div class="recap-status" id="adminRecapStatus" aria-live="polite"></div>
+      </div>
+      <div class="recap-preview" id="adminRecapPreview">
+        <div class="recap-subject" id="adminRecapSubject"></div>
+        <iframe class="recap-frame" id="adminRecapFrame" title="Weekly email preview" sandbox=""></iframe>
       </div>
     </div>
 
@@ -535,7 +560,7 @@ const billsFallbackSchedule=[
 
 let schedule=billsFallbackSchedule.map(g=>({...g,label:`Week ${g.week}`})),currentCompetition=null,competitionGames=[];
 let currentUser=null,currentProfile=null,currentLeague=null,myLeagues=[],currentWeek=1,answers={},tiebreakerGuess=null,weekStatus={},weekStatusMeta={},isAdmin=false,recoveryMode=false,passwordRecoveryRequested=false;
-let currentProps=[],adminWeek=1,adminAnswers={},adminTiebreakerValue=null,adminProps=[],adminLeagues=[],adminLeague=null,adminCompetition=null,adminSchedule=[],adminCompetitionGames=[],adminWeekStatus={},adminWeekStatusMeta={},adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={},adminPlayerTiebreakerGuess=null,adminCompetitionOptions=[],newLeagueCompetitionId=null,featuredGameSaving=false;
+let currentProps=[],adminWeek=1,adminAnswers={},adminTiebreakerValue=null,adminProps=[],adminLeagues=[],adminLeague=null,adminCompetition=null,adminSchedule=[],adminCompetitionGames=[],adminWeekStatus={},adminWeekStatusMeta={},adminPlayers=[],selectedAdminPlayer=null,selectedAdminPlayerWeek=null,adminPlayerAnswers={},adminPlayerTiebreakerGuess=null,adminCompetitionOptions=[],newLeagueCompetitionId=null,featuredGameSaving=false,adminRecapPreviewData=null;
 
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||String(team||"").split(" ").filter(Boolean).pop()||"Opponent"}
@@ -871,8 +896,8 @@ function podiumPlace(p,cls,medal,label){return `<div class="place ${cls}"><div c
 
 function showAdminLogin(){document.getElementById("admin").classList.add("open");document.getElementById("admin").scrollIntoView({behavior:"smooth"});updateAdminVisibility()}
 async function updateAdminVisibility(){const denied=document.getElementById("adminDenied"),controls=document.getElementById("adminControls");if(isAdmin){denied.style.display="none";controls.style.display="block";await loadAdminCompetitionOptions();await loadAdminLeagues()}else{denied.style.display="block";controls.style.display="none"}}
-function showAdminTab(name){document.querySelectorAll(".admin-tabbtn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".admin-tabpanel").forEach(p=>p.classList.toggle("active",p.id===`adminTab-${name}`));const weekContext=document.getElementById("adminWeekContext");if(weekContext)weekContext.style.display=["weeks","questions","results"].includes(name)?"block":"none";if(name==="players"){renderAdminLeagueSwitcher();loadAdminPlayers()}if(name==="leagues")renderAdminLeagueAccess()}
-function renderAdminWeeks(){const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";adminSchedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=g.label||`Event ${g.week}`;b.disabled=featuredGameSaving;b.onclick=()=>{adminWeek=g.week;renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})}
+function showAdminTab(name){document.querySelectorAll(".admin-tabbtn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".admin-tabpanel").forEach(p=>p.classList.toggle("active",p.id===`adminTab-${name}`));const weekContext=document.getElementById("adminWeekContext");if(weekContext)weekContext.style.display=["weeks","questions","results","emails"].includes(name)?"block":"none";if(name==="players"){renderAdminLeagueSwitcher();loadAdminPlayers()}if(name==="emails")renderAdminEmailRecap();if(name==="leagues")renderAdminLeagueAccess()}
+function renderAdminWeeks(){const bar=document.getElementById("adminWeekbar");if(!bar)return;bar.innerHTML="";adminSchedule.filter(g=>!g.bye).forEach(g=>{const b=document.createElement("button");b.className="admin-weekbtn"+(g.week===adminWeek?" active":"");b.textContent=g.label||`Event ${g.week}`;b.disabled=featuredGameSaving;b.onclick=()=>{adminWeek=g.week;resetAdminRecapPreview();renderAdminWeeks();renderAdminWeek()};bar.appendChild(b)})}
 
 async function loadAdminCompetitionContext(){
  adminCompetition=null;adminSchedule=[];adminCompetitionGames=[];adminWeekStatus={};adminWeekStatusMeta={};
@@ -904,8 +929,14 @@ function renderAdminLeagueSwitcher(){
  renderAdminLeagueAccess();
 }
 async function selectAdminLeague(id){
- const next=adminLeagues.find(l=>l.id===id);if(!next||next.id===adminLeague?.id)return;adminLeague=next;localStorage.setItem("props716_admin_league",id);selectedAdminPlayer=null;selectedAdminPlayerWeek=null;adminPlayerAnswers={};const accessStatus=document.getElementById("adminLeagueAccessStatus");if(accessStatus)accessStatus.textContent="";renderAdminLeagueSwitcher();document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player to view their submitted picks.</div>';await loadAdminCompetitionContext();renderAdminLeagueSwitcher();await loadAdminPlayers();
+ const next=adminLeagues.find(l=>l.id===id);if(!next||next.id===adminLeague?.id)return;adminLeague=next;localStorage.setItem("props716_admin_league",id);selectedAdminPlayer=null;selectedAdminPlayerWeek=null;adminPlayerAnswers={};resetAdminRecapPreview();const accessStatus=document.getElementById("adminLeagueAccessStatus");if(accessStatus)accessStatus.textContent="";renderAdminLeagueSwitcher();document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player to view their submitted picks.</div>';await loadAdminCompetitionContext();renderAdminLeagueSwitcher();await loadAdminPlayers();renderAdminEmailRecap();
 }
+
+function renderAdminEmailRecap(){const context=document.getElementById("adminRecapContext");if(!context)return;const event=adminSchedule.find(g=>g.week===adminWeek);context.textContent=adminLeague&&event?`${adminLeague.name} • ${event.label||`Event ${adminWeek}`}`:"Choose a league and week."}
+function resetAdminRecapPreview(){adminRecapPreviewData=null;const preview=document.getElementById("adminRecapPreview"),status=document.getElementById("adminRecapStatus"),send=document.getElementById("sendRecapButton"),subject=document.getElementById("adminRecapSubject"),frame=document.getElementById("adminRecapFrame");if(preview)preview.classList.remove("show");if(status){status.textContent="";status.className="recap-status"}if(send){send.disabled=true;send.textContent="Send Weekly Recap"}if(subject)subject.textContent="";if(frame)frame.removeAttribute("srcdoc");renderAdminEmailRecap()}
+async function invokeWeeklyRecap(mode){const {data,error}=await db.functions.invoke("send-weekly-recap",{body:{mode,leagueId:adminLeague?.id,week:adminWeek}});if(error){let message=error.message||"The weekly email request failed.";try{const details=await error.context?.json();if(details?.error)message=details.error}catch{}throw new Error(message)}if(data?.error)throw new Error(data.error);return data}
+async function previewWeeklyRecap(){if(!adminLeague)return;const button=document.getElementById("previewRecapButton"),send=document.getElementById("sendRecapButton"),status=document.getElementById("adminRecapStatus");button.disabled=true;send.disabled=true;status.className="recap-status";status.textContent="Building preview…";try{const data=await invokeWeeklyRecap("preview");adminRecapPreviewData=data;document.getElementById("adminRecapSubject").textContent=`Subject: ${data.subject}`;document.getElementById("adminRecapFrame").srcdoc=data.html;document.getElementById("adminRecapPreview").classList.add("show");const remaining=Number(data.pendingCount??data.recipientCount??0);status.className="recap-status success";status.textContent=`Preview ready • ${data.recipientCount} member${data.recipientCount===1?"":"s"} • ${data.sentCount||0} already sent`;send.disabled=remaining===0;send.textContent=remaining===0?"Everyone Already Received It":`Send to ${remaining} Member${remaining===1?"":"s"}`}catch(error){adminRecapPreviewData=null;status.className="recap-status error";status.textContent=error.message}finally{button.disabled=false}}
+async function sendWeeklyRecap(){if(!adminLeague||!adminRecapPreviewData)return;const remaining=Number(adminRecapPreviewData.pendingCount??adminRecapPreviewData.recipientCount??0);if(!confirm(`Send this ${adminRecapPreviewData.eventLabel} recap to ${remaining} member${remaining===1?"":"s"} of ${adminRecapPreviewData.leagueName}?`))return;const button=document.getElementById("sendRecapButton"),previewButton=document.getElementById("previewRecapButton"),status=document.getElementById("adminRecapStatus");button.disabled=true;previewButton.disabled=true;status.className="recap-status";status.textContent="Sending separate emails to league members…";try{const data=await invokeWeeklyRecap("send"),refreshed=await invokeWeeklyRecap("preview");adminRecapPreviewData=refreshed;document.getElementById("adminRecapSubject").textContent=`Subject: ${refreshed.subject}`;document.getElementById("adminRecapFrame").srcdoc=refreshed.html;const stillPending=Number(refreshed.pendingCount||0);button.disabled=stillPending===0;button.textContent=stillPending===0?"Everyone Already Received It":`Send to ${stillPending} Member${stillPending===1?"":"s"}`;status.className=data.failed?"recap-status error":"recap-status success";status.textContent=data.failed?`${data.sent} sent • ${data.failed} failed. You can try Send again for only the failed emails.`:`✓ ${data.sent} sent${data.skipped?` • ${data.skipped} previously sent`:""}. No duplicate emails were created.`}catch(error){status.className="recap-status error";status.textContent=error.message;button.disabled=false}finally{previewButton.disabled=false}}
 
 function renderAdminLeagueAccess(){
  const name=document.getElementById("adminLeagueAccessName"),help=document.getElementById("adminLeagueAccessHelp"),badge=document.getElementById("adminLeagueAccessBadge"),button=document.getElementById("adminLeagueAccessButton");if(!name||!help||!badge||!button)return;
