@@ -585,6 +585,17 @@ let currentProps=[],adminWeek=1,adminAnswers={},adminTiebreakerValue=null,adminP
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||String(team||"").split(" ").filter(Boolean).pop()||"Opponent"}
 function unlocked(w){return !!weekStatus[w]}
+function defaultCompetitionWeek(){
+ const playable=schedule.filter(g=>!g.bye);if(!playable.length)return (schedule[0]||{week:1}).week;
+ const open=playable.filter(g=>unlocked(g.week));if(open.length)return open.reduce((latest,g)=>g.week>latest.week?g:latest).week;
+ const now=new Date(),today=now.toISOString().slice(0,10);
+ const currentPeriod=playable.find(g=>g.periodStarts&&g.periodEnds&&g.periodStarts<=today&&today<=g.periodEnds);if(currentPeriod)return currentPeriod.week;
+ const timed=playable.filter(g=>g.startsAt&&!Number.isNaN(Date.parse(g.startsAt))).sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt));
+ const recent=timed.filter(g=>Date.parse(g.startsAt)<=now.getTime()).pop();if(recent&&now.getTime()-Date.parse(recent.startsAt)<=36*60*60*1000)return recent.week;
+ const upcoming=timed.find(g=>Date.parse(g.startsAt)>now.getTime());if(upcoming)return upcoming.week;
+ if(recent)return recent.week;
+ return playable[0].week;
+}
 
 function mapCompetitionEvent(e){return {week:Number(e.event_number),key:e.event_key,label:e.label||`Event ${e.event_number}`,away:e.away_team,home:e.home_team,date:e.display_date,time:e.display_time,network:e.network,colors:[e.opponent_primary_color||"#344054",e.opponent_secondary_color||"#667085"],bye:!!e.is_bye,startsAt:e.starts_at,featuredGameId:e.featured_game_id,periodStarts:e.period_starts_on,periodEnds:e.period_ends_on,tiebreakerQuestion:e.tiebreaker_question||null,tiebreakerMin:Number(e.tiebreaker_min??0),tiebreakerMax:Number(e.tiebreaker_max??250)}}
 function mapCompetitionGame(g){return {id:g.id,number:Number(g.game_number),date:g.game_date,startsAt:g.starts_at,away:g.away_team,home:g.home_team,awayCode:g.away_code,homeCode:g.home_code,network:g.network}}
@@ -636,8 +647,9 @@ async function loadCompetitionContext(league){
    competitionGames=[];
  }
  applyCompetitionTheme(currentCompetition);
- if(!schedule.some(g=>g.week===currentWeek))currentWeek=(schedule.find(g=>!g.bye)||schedule[0]||{week:1}).week;
  await loadWeekStatus();
+ currentWeek=defaultCompetitionWeek();
+ renderWeekTabs();
  renderFullCompetitionSchedule();
 }
 
@@ -837,6 +849,7 @@ function renderWeekTabs(){
  const wrap=document.getElementById("weekTabs");if(!wrap)return;wrap.innerHTML="";
  const teamName=currentCompetition?.team_name||"Buffalo Bills";
  schedule.forEach(g=>{const locked=!g.bye&&!unlocked(g.week),b=document.createElement("button");b.className="week-btn"+(g.week===currentWeek?" active":"")+(locked?" locked":"")+(g.bye?" bye":"");b.onclick=()=>selectWeek(g.week);const s=g.bye?"No game":(!g.away||!g.home?"Game not selected":(g.away===teamName?`at ${shortName(g.home)}`:`vs ${shortName(g.away)}`));b.innerHTML=`${escapeHtml(g.label||`Event ${g.week}`)}<span>${escapeHtml(s)}</span>`;wrap.appendChild(b)});
+ requestAnimationFrame(()=>{const active=wrap.querySelector(".week-btn.active");if(active)wrap.scrollLeft=Math.max(0,active.offsetLeft-(wrap.clientWidth-active.offsetWidth)/2)});
 }
 async function selectWeek(w){currentWeek=w;renderWeekTabs();await renderWeek()}
 
