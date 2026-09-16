@@ -293,10 +293,84 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
   .place .pts{font-size:16px}
   .admin-tabbar{grid-template-columns:1fr}
 }
+
+/* Home-screen install help */
+.install-help-overlay{
+  position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(16,24,40,.72);backdrop-filter:blur(4px)
+}
+.install-help-overlay.show{display:flex}
+.install-help-modal{
+  width:min(560px,100%);max-height:min(86vh,760px);overflow:auto;background:#fff;color:var(--ink);
+  border-radius:22px;border:1px solid var(--line);box-shadow:0 24px 70px rgba(16,24,40,.28);
+  padding:22px
+}
+.install-help-head{text-align:center}
+.install-help-icon{width:86px;height:86px;border-radius:20px;display:block;margin:0 auto 12px;box-shadow:0 8px 22px rgba(0,51,141,.18)}
+.install-help-head h2{margin:0;font-size:24px;letter-spacing:-.4px}
+.install-help-head p{margin:6px auto 0;color:var(--muted);font-size:13px;max-width:430px}
+.install-help-platforms{display:grid;gap:12px;margin-top:18px}
+.install-help-platform{
+  border:1px solid var(--line);border-radius:15px;padding:15px;background:#fbfcfe
+}
+.install-help-platform.primary{border:2px solid var(--blue);background:#f4f8ff}
+.install-help-platform h3{margin:0 0 8px;font-size:16px;color:var(--blue)}
+.install-help-platform ol{margin:0;padding-left:22px}
+.install-help-platform li{margin:7px 0;font-size:13px}
+.install-help-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+.install-help-actions .btn{width:100%}
+@media(max-width:560px){
+  .install-help-overlay{padding:10px;align-items:flex-end}
+  .install-help-modal{max-height:92vh;border-radius:20px 20px 14px 14px;padding:18px}
+  .install-help-icon{width:74px;height:74px;border-radius:17px}
+  .install-help-head h2{font-size:21px}
+  .install-help-actions{grid-template-columns:1fr}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 </head>
 <body>
+
+<div class="install-help-overlay" id="installHelpOverlay" role="dialog" aria-modal="true" aria-labelledby="installHelpTitle">
+  <div class="install-help-modal">
+    <div class="install-help-head">
+      <img class="install-help-icon" src="/apple-touch-icon.png" alt="716 Props app icon">
+      <h2 id="installHelpTitle">Add 716 Props to Your Home Screen</h2>
+      <p>Get quicker access to your picks, standings, and weekly matchups.</p>
+    </div>
+
+    <div class="install-help-platforms" id="installHelpPlatforms">
+      <section class="install-help-platform" id="installHelpIOS">
+        <h3>iPhone / iPad</h3>
+        <ol>
+          <li>Open <strong>716props.com</strong> in Safari.</li>
+          <li>Tap the <strong>Share</strong> button.</li>
+          <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
+          <li>Tap <strong>Add</strong>.</li>
+          <li>The 716 Props icon will appear on your Home Screen.</li>
+        </ol>
+      </section>
+
+      <section class="install-help-platform" id="installHelpAndroid">
+        <h3>Android</h3>
+        <ol>
+          <li>Open <strong>716props.com</strong> in Chrome.</li>
+          <li>Tap the <strong>⋮</strong> menu in the top-right.</li>
+          <li>Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.</li>
+          <li>Tap <strong>Add</strong> or <strong>Install</strong> to confirm.</li>
+          <li>The 716 Props icon will appear on your Home Screen.</li>
+        </ol>
+      </section>
+    </div>
+
+    <div class="install-help-actions">
+      <button class="btn secondary" type="button" onclick="closeInstallHelp(false)">Remind me next time</button>
+      <button class="btn" type="button" onclick="closeInstallHelp(true)">Got it</button>
+    </div>
+  </div>
+</div>
+
 <div class="topbar" id="topbarText">🦬 716 PROPS • 2026 BUFFALO BILLS PROP CHALLENGE • CUSTOM WEEKLY PROP VALUES</div>
 <header><nav><a class="brand" href="#"><span class="brand-mark">🦬</span><span><strong>716</strong> <em>Props</em></span></a><div class="navlinks"><a href="#leaderboard">Leaderboard</a><a href="#weeks">Weeks</a><a href="#rules">Rules</a><a href="#admin" onclick="showAdminLogin()">Admin</a></div><div style="display:flex;align-items:center;gap:8px"><div class="profile-chip" id="profileChip"><span class="avatar" id="avatar">J</span><span><b id="profileName"></b><br><span class="emailText" id="profileEmail"></span></span></div><button class="btn secondary" id="logoutBtn" style="display:none;padding:9px 12px" onclick="logoutUser()">Log Out</button></div></nav></header>
 <div class="photo-border photo-border-left" aria-hidden="true"><img id="leftBorderImage" src="josh-allen-left.png" alt=""></div>
@@ -1072,7 +1146,44 @@ async function renderAdminPlayerWeek(pick){selectedAdminPlayerWeek=pick.week;adm
 async function saveAdminPlayerPicks(){if(!adminLeague||!selectedAdminPlayer)return;const player=selectedAdminPlayer,event=adminSchedule.find(g=>g.week===Number(selectedAdminPlayerWeek)),input=document.getElementById("adminPlayerTiebreaker");let guess=null;if(event?.tiebreakerQuestion){guess=input?.value===""?null:Number(input.value);if(!Number.isInteger(guess)||guess<event.tiebreakerMin||guess>event.tiebreakerMax){alert(`Enter a whole-number tiebreaker guess from ${event.tiebreakerMin} to ${event.tiebreakerMax}.`);return}}const {error}=await db.rpc("admin_update_league_player_card",{p_league_id:adminLeague.id,p_user_id:player.user_id,p_week:selectedAdminPlayerWeek,p_answers:adminPlayerAnswers,p_tiebreaker_guess:guess});if(error){alert(error.message);return}await loadAdminPlayers();await selectAdminPlayer(player);if(currentLeague?.id===adminLeague.id)await renderLeaderboard()}
 async function deleteAdminPlayerPoolData(){if(!adminLeague||!selectedAdminPlayer)return;if(!confirm(`Remove this player from ${adminLeague.name} and delete only their ${adminLeague.name} picks?`))return;const {error}=await db.rpc("admin_delete_league_player_pool_data",{p_league_id:adminLeague.id,p_user_id:selectedAdminPlayer.user_id});if(error){alert(error.message);return}selectedAdminPlayer=null;document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player.</div>';await loadAdminPlayers();if(currentLeague?.id===adminLeague.id)await renderLeaderboard()}
 
+
+const INSTALL_HELP_DISMISSED_KEY="props716_install_help_dismissed";
+
+function isIOSDevice(){
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+}
+function isAndroidDevice(){return /Android/i.test(navigator.userAgent)}
+function isStandaloneApp(){
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone===true;
+}
+function isMobileInstallDevice(){
+  return isIOSDevice() || isAndroidDevice() || (navigator.maxTouchPoints>0 && window.innerWidth<=900);
+}
+function showInstallHelpIfNeeded(){
+  if(!isMobileInstallDevice() || isStandaloneApp() || localStorage.getItem(INSTALL_HELP_DISMISSED_KEY)==="1")return;
+  const overlay=document.getElementById("installHelpOverlay"),
+        platforms=document.getElementById("installHelpPlatforms"),
+        ios=document.getElementById("installHelpIOS"),
+        android=document.getElementById("installHelpAndroid");
+  if(!overlay||!platforms||!ios||!android)return;
+
+  ios.classList.toggle("primary",isIOSDevice());
+  android.classList.toggle("primary",isAndroidDevice());
+
+  if(isAndroidDevice())platforms.prepend(android);
+  else platforms.prepend(ios);
+
+  setTimeout(()=>overlay.classList.add("show"),450);
+}
+function closeInstallHelp(permanent){
+  const overlay=document.getElementById("installHelpOverlay");
+  if(permanent)localStorage.setItem(INSTALL_HELP_DISMISSED_KEY,"1");
+  overlay?.classList.remove("show");
+}
+
 init();
+showInstallHelpIfNeeded();
 </script>
 </body>
 </html>
