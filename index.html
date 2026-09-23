@@ -72,6 +72,7 @@ main{max-width:1160px;margin:auto;padding:0 20px 70px}.card{background:var(--car
 .player-week-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 .player-week-btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;font-size:12px;font-weight:850}
 .player-week-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.player-week-btn.missing{border-style:dashed;color:#667085;background:#f8fafc}.player-week-btn.missing.active{background:var(--blue);color:#fff;border-style:solid}
 .admin-player-pick{padding:13px 0;border-bottom:1px solid var(--line)}
 .admin-player-pick:last-child{border-bottom:0}
 .admin-player-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
@@ -325,6 +326,17 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
   .install-help-icon{width:74px;height:74px;border-radius:17px}
   .install-help-head h2{font-size:21px}
   .install-help-actions{grid-template-columns:1fr}
+}
+
+
+.mobile-install-toolbar{
+  display:none;max-width:1160px;margin:0 auto 18px;padding:0 12px
+}
+.mobile-install-toolbar .btn{
+  width:100%;min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px
+}
+@media(max-width:900px){
+  .mobile-install-toolbar{display:block}
 }
 
 </style>
@@ -626,6 +638,11 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
 
   </div>
 </main>
+
+<div class="mobile-install-toolbar" id="mobileInstallToolbar">
+  <button class="btn secondary" type="button" onclick="openInstallHelp()">📱 Add 716 Props to Home Screen</button>
+</div>
+
 <footer><div class="footer-inner"><span>© 2026 716 Props • Built for Bills fans.</span><span>Shared picks and scores powered by Supabase. No real-money wagering.</span></div></footer>
 <script>
 const SUPABASE_URL="https://gmqwudewspaqbzxyabhe.supabase.co";
@@ -1141,9 +1158,79 @@ async function loadAdminPlayers(){
  adminPlayers.forEach(p=>{const b=document.createElement("button");b.className="player-row";b.dataset.userId=p.user_id;b.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><span>${p.weeks_submitted} submitted • ${p.total_points} pts</span>`;b.onclick=()=>selectAdminPlayer(p);list.appendChild(b)})
 }
 function adminEventLabel(week){return adminSchedule.find(g=>g.week===Number(week))?.label||`Event ${week}`}
-async function selectAdminPlayer(p){if(!adminLeague)return;selectedAdminPlayer=p;document.querySelectorAll("#adminPlayerList .player-row").forEach(b=>b.classList.toggle("active",b.dataset.userId===String(p.user_id)));const {data,error}=await db.rpc("admin_get_league_player_cards",{p_league_id:adminLeague.id,p_user_id:p.user_id});const detail=document.getElementById("adminPlayerDetail");if(error){detail.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}const picks=data||[];detail.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><div class="note">${escapeHtml(p.email||"")} • ${escapeHtml(adminLeague.name)}</div><div class="player-week-tabs" id="adminPlayerWeekTabs"></div><div id="adminPlayerWeekDetail"></div>`;const tabs=detail.querySelector("#adminPlayerWeekTabs");picks.forEach(pk=>{const b=document.createElement("button");b.className="player-week-btn";b.dataset.week=pk.week;b.textContent=adminEventLabel(pk.week);b.onclick=()=>renderAdminPlayerWeek(pk);tabs.appendChild(b)});if(picks[0])await renderAdminPlayerWeek(picks[0]);else detail.querySelector("#adminPlayerWeekDetail").innerHTML='<div class="empty">No submitted events in this league.</div>'}
-async function renderAdminPlayerWeek(pick){selectedAdminPlayerWeek=pick.week;adminPlayerAnswers={...(pick.answers||{})};adminPlayerTiebreakerGuess=pick.tiebreaker_guess??null;document.querySelectorAll("#adminPlayerWeekTabs .player-week-btn").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.week)===Number(pick.week)));const props=await loadProps(pick.week,adminCompetition?.id),wrap=document.getElementById("adminPlayerWeekDetail"),event=adminSchedule.find(g=>g.week===Number(pick.week));wrap.innerHTML=`<div class="note">${escapeHtml(adminEventLabel(pick.week))} • ${pick.points} pts</div>`;props.forEach(p=>{const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],row=document.createElement("div");row.className="admin-player-pick";row.innerHTML=`<strong>${escapeHtml(p.question)}</strong><div class="admin-player-options">${choices.map(v=>`<button class="admin-player-choice ${adminPlayerAnswers[p.prop_key]===v?"selected":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;row.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{adminPlayerAnswers[p.prop_key]=btn.dataset.value;row.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected")});wrap.appendChild(row)});if(event?.tiebreakerQuestion){const box=document.createElement("div");box.className="admin-tiebreaker";box.innerHTML=`<strong>Weekly tiebreaker guess</strong><div class="note">${escapeHtml(event.tiebreakerQuestion)}</div><div style="max-width:220px;margin-top:8px"><input id="adminPlayerTiebreaker" type="number" step="1" min="${event.tiebreakerMin}" max="${event.tiebreakerMax}" value="${adminPlayerTiebreakerGuess??""}"></div>`;wrap.appendChild(box)}const actions=document.createElement("div");actions.className="admin-actions";actions.innerHTML='<button class="btn" onclick="saveAdminPlayerPicks()">Save Edited Picks</button>';wrap.appendChild(actions);const danger=document.createElement("div");danger.className="danger-box";danger.innerHTML='<strong>Remove Player From This League</strong><div class="note" style="margin:4px 0 10px">Deletes their picks and leaderboard entry for this league only. They can join again later.</div><button class="btn danger-btn" onclick="deleteAdminPlayerPoolData()">Remove From League</button>';wrap.appendChild(danger)}
-async function saveAdminPlayerPicks(){if(!adminLeague||!selectedAdminPlayer)return;const player=selectedAdminPlayer,event=adminSchedule.find(g=>g.week===Number(selectedAdminPlayerWeek)),input=document.getElementById("adminPlayerTiebreaker");let guess=null;if(event?.tiebreakerQuestion){guess=input?.value===""?null:Number(input.value);if(!Number.isInteger(guess)||guess<event.tiebreakerMin||guess>event.tiebreakerMax){alert(`Enter a whole-number tiebreaker guess from ${event.tiebreakerMin} to ${event.tiebreakerMax}.`);return}}const {error}=await db.rpc("admin_update_league_player_card",{p_league_id:adminLeague.id,p_user_id:player.user_id,p_week:selectedAdminPlayerWeek,p_answers:adminPlayerAnswers,p_tiebreaker_guess:guess});if(error){alert(error.message);return}await loadAdminPlayers();await selectAdminPlayer(player);if(currentLeague?.id===adminLeague.id)await renderLeaderboard()}
+async function selectAdminPlayer(p,preferredWeek=null){
+ if(!adminLeague)return;
+ selectedAdminPlayer=p;
+ document.querySelectorAll("#adminPlayerList .player-row").forEach(b=>b.classList.toggle("active",b.dataset.userId===String(p.user_id)));
+ const {data,error}=await db.rpc("admin_get_league_player_cards",{p_league_id:adminLeague.id,p_user_id:p.user_id});
+ const detail=document.getElementById("adminPlayerDetail");
+ if(error){detail.innerHTML=`<div class="empty">${escapeHtml(error.message)}</div>`;return}
+ const picks=data||[],pickMap=new Map(picks.map(pk=>[Number(pk.week),pk])),playable=adminSchedule.filter(g=>!g.bye);
+ detail.innerHTML=`<strong>${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</strong><div class="note">${escapeHtml(p.email||"")} • ${escapeHtml(adminLeague.name)}</div><div class="player-week-tabs" id="adminPlayerWeekTabs"></div><div id="adminPlayerWeekDetail"></div>`;
+ const tabs=detail.querySelector("#adminPlayerWeekTabs");
+ playable.forEach(g=>{
+   const existing=pickMap.get(Number(g.week)),card=existing||{week:g.week,answers:{},tiebreaker_guess:null,points:0,isMissing:true};
+   const b=document.createElement("button");
+   b.className=`player-week-btn${existing?"":" missing"}`;
+   b.dataset.week=g.week;
+   b.textContent=`${adminEventLabel(g.week)}${existing?"":" • Add"}`;
+   b.onclick=()=>renderAdminPlayerWeek(card);
+   tabs.appendChild(b);
+ });
+ const targetWeek=preferredWeek??picks[0]?.week??playable[0]?.week;
+ const target=targetWeek!=null?(pickMap.get(Number(targetWeek))||{week:Number(targetWeek),answers:{},tiebreaker_guess:null,points:0,isMissing:true}):null;
+ if(target)await renderAdminPlayerWeek(target);
+ else detail.querySelector("#adminPlayerWeekDetail").innerHTML='<div class="empty">No playable events are configured for this league.</div>';
+}
+async function renderAdminPlayerWeek(pick){
+ selectedAdminPlayerWeek=Number(pick.week);
+ adminPlayerAnswers={...(pick.answers||{})};
+ adminPlayerTiebreakerGuess=pick.tiebreaker_guess??null;
+ document.querySelectorAll("#adminPlayerWeekTabs .player-week-btn").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.week)===Number(pick.week)));
+ const props=await loadProps(pick.week,adminCompetition?.id),wrap=document.getElementById("adminPlayerWeekDetail"),event=adminSchedule.find(g=>g.week===Number(pick.week)),missing=!!pick.isMissing;
+ wrap.innerHTML=missing
+   ?`<div class="auto-status">No submitted card exists for ${escapeHtml(adminEventLabel(pick.week))}. Choose the answers below to create one for this player.</div>`
+   :`<div class="note">${escapeHtml(adminEventLabel(pick.week))} • ${pick.points} pts</div>`;
+ props.forEach(p=>{
+   const choices=Array.isArray(p.choices)?p.choices:[p.choice_a,p.choice_b],row=document.createElement("div");
+   row.className="admin-player-pick";
+   row.innerHTML=`<strong>${escapeHtml(p.question)}</strong><div class="admin-player-options">${choices.map(v=>`<button class="admin-player-choice ${adminPlayerAnswers[p.prop_key]===v?"selected":""}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join("")}</div>`;
+   row.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{adminPlayerAnswers[p.prop_key]=btn.dataset.value;row.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected")});
+   wrap.appendChild(row);
+ });
+ if(event?.tiebreakerQuestion){
+   const box=document.createElement("div");
+   box.className="admin-tiebreaker";
+   box.innerHTML=`<strong>Weekly tiebreaker guess</strong><div class="note">${escapeHtml(event.tiebreakerQuestion)}</div><div style="max-width:220px;margin-top:8px"><input id="adminPlayerTiebreaker" type="number" step="1" min="${event.tiebreakerMin}" max="${event.tiebreakerMax}" value="${adminPlayerTiebreakerGuess??""}"></div>`;
+   wrap.appendChild(box);
+ }
+ const actions=document.createElement("div");
+ actions.className="admin-actions";
+ actions.innerHTML=`<button class="btn" onclick="saveAdminPlayerPicks()">${missing?"Create This Week's Picks":"Save Edited Picks"}</button>`;
+ wrap.appendChild(actions);
+ const danger=document.createElement("div");
+ danger.className="danger-box";
+ danger.innerHTML='<strong>Remove Player From This League</strong><div class="note" style="margin:4px 0 10px">Deletes their picks and leaderboard entry for this league only. They can join again later.</div><button class="btn danger-btn" onclick="deleteAdminPlayerPoolData()">Remove From League</button>';
+ wrap.appendChild(danger);
+}
+async function saveAdminPlayerPicks(){
+ if(!adminLeague||!selectedAdminPlayer)return;
+ const player=selectedAdminPlayer,event=adminSchedule.find(g=>g.week===Number(selectedAdminPlayerWeek)),props=await loadProps(selectedAdminPlayerWeek,adminCompetition?.id),input=document.getElementById("adminPlayerTiebreaker");
+ const missingAnswers=props.filter(p=>!adminPlayerAnswers[p.prop_key]);
+ if(missingAnswers.length){alert(`Complete all ${props.length} questions before saving.`);return}
+ let guess=null;
+ if(event?.tiebreakerQuestion){
+   guess=input?.value===""?null:Number(input.value);
+   if(!Number.isInteger(guess)||guess<event.tiebreakerMin||guess>event.tiebreakerMax){alert(`Enter a whole-number tiebreaker guess from ${event.tiebreakerMin} to ${event.tiebreakerMax}.`);return}
+ }
+ const weekToKeep=selectedAdminPlayerWeek;
+ const {error}=await db.rpc("admin_update_league_player_card",{p_league_id:adminLeague.id,p_user_id:player.user_id,p_week:selectedAdminPlayerWeek,p_answers:adminPlayerAnswers,p_tiebreaker_guess:guess});
+ if(error){alert(error.message);return}
+ await loadAdminPlayers();
+ const refreshed=adminPlayers.find(x=>String(x.user_id)===String(player.user_id))||player;
+ await selectAdminPlayer(refreshed,weekToKeep);
+ if(currentLeague?.id===adminLeague.id)await renderLeaderboard();
+}
 async function deleteAdminPlayerPoolData(){if(!adminLeague||!selectedAdminPlayer)return;if(!confirm(`Remove this player from ${adminLeague.name} and delete only their ${adminLeague.name} picks?`))return;const {error}=await db.rpc("admin_delete_league_player_pool_data",{p_league_id:adminLeague.id,p_user_id:selectedAdminPlayer.user_id});if(error){alert(error.message);return}selectedAdminPlayer=null;document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player.</div>';await loadAdminPlayers();if(currentLeague?.id===adminLeague.id)await renderLeaderboard()}
 
 
@@ -1168,22 +1255,37 @@ function showInstallHelpIfNeeded(){
         android=document.getElementById("installHelpAndroid");
   if(!overlay||!platforms||!ios||!android)return;
 
+  prepareInstallHelp();
+  setTimeout(()=>overlay.classList.add("show"),450);
+}
+function prepareInstallHelp(){
+  const platforms=document.getElementById("installHelpPlatforms"),
+        ios=document.getElementById("installHelpIOS"),
+        android=document.getElementById("installHelpAndroid");
+  if(!platforms||!ios||!android)return;
   ios.classList.toggle("primary",isIOSDevice());
   android.classList.toggle("primary",isAndroidDevice());
-
   if(isAndroidDevice())platforms.prepend(android);
   else platforms.prepend(ios);
-
-  setTimeout(()=>overlay.classList.add("show"),450);
+}
+function openInstallHelp(){
+  if(isStandaloneApp())return;
+  prepareInstallHelp();
+  document.getElementById("installHelpOverlay")?.classList.add("show");
 }
 function closeInstallHelp(permanent){
   const overlay=document.getElementById("installHelpOverlay");
   if(permanent)localStorage.setItem(INSTALL_HELP_DISMISSED_KEY,"1");
   overlay?.classList.remove("show");
 }
+function updateInstallToolbarVisibility(){
+  const toolbar=document.getElementById("mobileInstallToolbar");
+  if(toolbar&&isStandaloneApp())toolbar.style.display="none";
+}
 
 init();
 showInstallHelpIfNeeded();
+updateInstallToolbarVisibility();
 </script>
 </body>
 </html>
