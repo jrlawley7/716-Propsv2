@@ -387,8 +387,19 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
 .half-champion-card{display:none;margin-top:14px;padding:16px;text-align:center;border-top:6px solid var(--gold)}
 .half-champion-card.show{display:block}.half-champion-icon{font-size:28px;line-height:1}.half-champion-title{margin-top:4px;font-size:16px;font-weight:950}.half-champion-name{margin-top:3px;color:var(--blue);font-size:14px;font-weight:900}.half-champion-meta{margin-top:2px;color:var(--muted);font-size:11px;font-weight:750}
 @media(max-width:700px){.app-view-tabs{position:sticky;top:67px;z-index:18;background:var(--bg);padding:8px 0 6px;margin-top:8px}.app-view-tab{padding:11px 8px}.standings-period-tabs{margin-top:13px}.standings-period-btn{font-size:10px;padding:9px 3px}}
-</style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+.compact-league-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}.compact-league-current{min-width:0;font-size:13px;font-weight:950;color:var(--blue);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.compact-league-toggle{border:0;background:transparent;color:var(--blue);font-size:12px;font-weight:900}.league-switcher.compact-collapsed .league-switcher-label,.league-switcher.compact-collapsed .league-row-inline{display:none}.league-switcher.expanded .league-switcher-label{display:none}.league-switcher.expanded .league-row-inline{display:flex!important}.league-switcher.expanded .league-switch-track{display:flex;gap:8px;overflow-x:auto;align-items:center;flex:1;min-width:0;padding:2px 0}.league-switcher.expanded .league-add-btn{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:auto!important;margin:0!important;border:1px dashed #aeb9c8;background:#fff;color:var(--blue);border-radius:999px;padding:9px 12px;font-size:12px;font-weight:900;white-space:nowrap}.league-switcher.expanded{display:flex!important;align-items:center;gap:8px;flex-wrap:wrap}.compact-league-header{width:100%}@media(max-width:700px){.league-switcher.expanded{display:flex!important}.league-switcher.expanded .league-switch-track{width:auto;margin:0;flex:1}.league-switcher.expanded .league-add-btn{width:auto!important;margin:0!important}}</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4">
+document.addEventListener("click",e=>{
+ if(e.target?.id==="compactLeagueToggle"){
+   const wrap=document.getElementById("leagueSwitcher");
+   if(!wrap)return;
+   const opening=wrap.classList.contains("compact-collapsed");
+   wrap.classList.toggle("compact-collapsed",!opening);
+   wrap.classList.toggle("expanded",opening);
+   refreshCompactLeagueSwitcher();
+ }
+});
+</script>
 </head>
 <body>
 
@@ -535,10 +546,16 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
   </div>
 
   <div class="app-shell" id="appShell">
-    <div class="league-switcher" id="leagueSwitcher">
+    <div class="league-switcher compact-collapsed" id="leagueSwitcher">
+<div class="compact-league-header">
+  <div id="compactCurrentLeague" class="compact-league-current">Current league</div>
+  <button id="compactLeagueToggle" class="compact-league-toggle" type="button">Change league ▾</button>
+</div>
       <div class="league-switcher-label">Your Leagues</div>
-      <div class="league-switch-track" id="leagueSwitchTrack"></div>
-      <button class="league-add-btn" onclick="showLeaguePicker()">+ Join Another League</button>
+      <div style="display:flex;align-items:center;gap:8px;width:100%;min-width:0" class="league-row-inline">
+        <div class="league-switch-track" id="leagueSwitchTrack"></div>
+        <button class="league-add-btn" onclick="showLeaguePicker()">+ Join Another League</button>
+      </div>
     </div>
 
     <div class="app-view-tabs" id="appViewTabs">
@@ -998,8 +1015,13 @@ async function handleSession(session){
  updateAdminVisibility();
 }
 
+function refreshCompactLeagueSwitcher(){
+ const wrap=document.getElementById("leagueSwitcher"),label=document.getElementById("compactCurrentLeague"),toggle=document.getElementById("compactLeagueToggle");
+ if(label)label.textContent=currentLeague?.name||"Choose league";
+ if(toggle)toggle.textContent=wrap?.classList.contains("compact-collapsed")?"Change league ▾":"Hide leagues ▴";
+}
 function applySignedIn(){
- document.body.classList.add("signed-in");document.getElementById("profileChip").style.display="flex";document.getElementById("logoutBtn").style.display="inline-block";
+ document.body.classList.add("signed-in");refreshCompactLeagueSwitcher();document.getElementById("profileChip").style.display="flex";document.getElementById("logoutBtn").style.display="inline-block";
  document.getElementById("profileName").textContent=`${currentProfile.first_name} ${currentProfile.last_name}`;
  document.getElementById("profileEmail").textContent=currentUser.email;
  document.getElementById("avatar").textContent=currentProfile.first_name[0].toUpperCase();
@@ -1040,6 +1062,7 @@ function renderLeagueSwitcher(){
    b.onclick=()=>switchLeague(l.id);
    track.appendChild(b);
  });
+ refreshCompactLeagueSwitcher();
 }
 
 async function switchLeague(id){
@@ -1048,7 +1071,7 @@ async function switchLeague(id){
 }
 
 async function enterApp(){
- document.getElementById("landingWrap").style.display="none";document.getElementById("appShell").classList.add("active");document.getElementById("leagueSwitcher").style.display="flex";
+ document.getElementById("landingWrap").style.display="none";document.getElementById("appShell").classList.add("active");document.getElementById("leagueSwitcher").style.display="block";
  renderLeagueSwitcher();await loadCompetitionContext(currentLeague);standingsPeriod=defaultStandingsPeriod();syncStandingsPeriodUI();showAppView("picks");await renderWeek();await renderLeaderboard();updateAdminVisibility();
 }
 
