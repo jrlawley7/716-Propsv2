@@ -295,6 +295,37 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
   .admin-tabbar{grid-template-columns:1fr}
 }
 
+/* One-time site update announcement */
+.site-update-overlay{
+  position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(16,24,40,.76);backdrop-filter:blur(4px)
+}
+.site-update-overlay.show{display:flex}
+.site-update-modal{
+  width:min(540px,100%);max-height:min(88vh,760px);overflow:auto;background:#fff;color:var(--ink);
+  border-radius:22px;border:1px solid var(--line);box-shadow:0 24px 70px rgba(16,24,40,.3);padding:22px
+}
+.site-update-head{text-align:center}
+.site-update-icon{width:68px;height:68px;margin:0 auto 10px;border-radius:18px;display:grid;place-items:center;background:var(--blue);color:#fff;font-size:31px;box-shadow:inset 0 -6px 0 var(--red),0 8px 22px rgba(0,51,141,.18)}
+.site-update-head h2{margin:0;font-size:25px;letter-spacing:-.4px}
+.site-update-head p{margin:6px auto 0;color:var(--muted);font-size:13px;max-width:430px}
+.site-update-section{margin-top:15px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe}
+.site-update-section.primary{border:2px solid var(--blue);background:#f4f8ff}
+.site-update-section h3{margin:0 0 7px;font-size:16px;color:var(--blue)}
+.site-update-section p{margin:0;color:#475467;font-size:13px;line-height:1.55}
+.site-update-season-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.site-update-season{padding:11px;border-radius:11px;background:#fff;border:1px solid var(--line);text-align:center}
+.site-update-season strong{display:block;color:var(--blue);font-size:13px}
+.site-update-season span{display:block;margin-top:2px;color:var(--muted);font-size:11px}
+.site-update-full{grid-column:1 / -1;border-color:#f0d66d;background:#fff9df}
+.site-update-actions{margin-top:18px}
+.site-update-actions .btn{width:100%;min-height:46px}
+@media(max-width:560px){
+  .site-update-overlay{padding:10px;align-items:flex-end}
+  .site-update-modal{max-height:92vh;border-radius:20px 20px 14px 14px;padding:18px}
+  .site-update-head h2{font-size:22px}
+}
+
 /* Home-screen install help */
 .install-help-overlay{
   position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;
@@ -355,6 +386,41 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 </head>
 <body>
+
+
+<div class="site-update-overlay" id="siteUpdateOverlay" role="dialog" aria-modal="true" aria-labelledby="siteUpdateTitle">
+  <div class="site-update-modal">
+    <div class="site-update-head">
+      <div class="site-update-icon">🏈</div>
+      <h2 id="siteUpdateTitle">716 Props Just Got an Upgrade</h2>
+      <p>The site is cleaner, easier to navigate, and the Bills season now has two separate races plus the full-season championship.</p>
+    </div>
+
+    <section class="site-update-section primary">
+      <h3>📱 Picks & Standings Are Now Separate</h3>
+      <p>Use the new <strong>Picks</strong> tab for the current week's questions and the <strong>Standings</strong> tab for leaderboards, weekly results, and season races. Same picks and scores — just easier to find.</p>
+    </section>
+
+    <section class="site-update-section">
+      <h3>🏆 New Half-Season Championships</h3>
+      <p>Your existing picks and scores are all preserved. The Bills standings are now split into three views:</p>
+      <div class="site-update-season-grid">
+        <div class="site-update-season"><strong>1st Half</strong><span>Weeks 1–9</span></div>
+        <div class="site-update-season"><strong>2nd Half</strong><span>Weeks 10–18</span></div>
+        <div class="site-update-season site-update-full"><strong>Full Season</strong><span>Weeks 1–18 combined</span></div>
+      </div>
+    </section>
+
+    <section class="site-update-section">
+      <h3>👑 Three Champions</h3>
+      <p>We'll crown a <strong>1st Half Champion</strong>, a <strong>2nd Half Champion</strong>, and a <strong>Full Season Champion</strong>. When Week 10 begins, the 2nd Half standings start fresh at zero while Full Season keeps counting every week.</p>
+    </section>
+
+    <div class="site-update-actions">
+      <button class="btn" type="button" onclick="closeSiteUpdateNotice()">Got it — let's make some picks</button>
+    </div>
+  </div>
+</div>
 
 <div class="install-help-overlay" id="installHelpOverlay" role="dialog" aria-modal="true" aria-labelledby="installHelpTitle">
   <div class="install-help-modal">
@@ -1302,6 +1368,24 @@ async function saveAdminPlayerPicks(){
 async function deleteAdminPlayerPoolData(){if(!adminLeague||!selectedAdminPlayer)return;if(!confirm(`Remove this player from ${adminLeague.name} and delete only their ${adminLeague.name} picks?`))return;const {error}=await db.rpc("admin_delete_league_player_pool_data",{p_league_id:adminLeague.id,p_user_id:selectedAdminPlayer.user_id});if(error){alert(error.message);return}selectedAdminPlayer=null;document.getElementById("adminPlayerDetail").innerHTML='<div class="empty">Select a player.</div>';await loadAdminPlayers();if(currentLeague?.id===adminLeague.id)await renderLeaderboard()}
 
 
+
+const SITE_UPDATE_NOTICE_KEY="props716_update_picks_standings_halves_2026_v1";
+
+function showSiteUpdateNoticeIfNeeded(){
+  if(localStorage.getItem(SITE_UPDATE_NOTICE_KEY)==="1"){
+    showInstallHelpIfNeeded();
+    return;
+  }
+  const overlay=document.getElementById("siteUpdateOverlay");
+  if(!overlay){showInstallHelpIfNeeded();return}
+  setTimeout(()=>overlay.classList.add("show"),300);
+}
+function closeSiteUpdateNotice(){
+  localStorage.setItem(SITE_UPDATE_NOTICE_KEY,"1");
+  document.getElementById("siteUpdateOverlay")?.classList.remove("show");
+  setTimeout(showInstallHelpIfNeeded,250);
+}
+
 const INSTALL_HELP_DISMISSED_KEY="props716_install_help_dismissed";
 
 function isIOSDevice(){
@@ -1352,7 +1436,7 @@ function updateInstallToolbarVisibility(){
 }
 
 init();
-showInstallHelpIfNeeded();
+showSiteUpdateNoticeIfNeeded();
 updateInstallToolbarVisibility();
 </script>
 </body>
