@@ -11,7 +11,7 @@
 <style>
 :root{--blue:#00338D;--red:#C60C30;--ink:#101828;--muted:#667085;--bg:#f4f7fb;--card:#fff;--line:#e4e9f1;--gold:#f6c945;--silver:#c8ced8;--bronze:#c47b3f;--success:#067647}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}.photo-border{display:none}
-.topbar{padding:8px 16px;text-align:center;background:var(--red);color:#fff;font-size:12px;font-weight:900;letter-spacing:.45px}header{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}nav{max-width:1160px;margin:auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:950}.brand-mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--blue);color:#fff;font-size:22px;box-shadow:0 5px 12px rgba(0,51,141,.18)}.brand strong{color:var(--blue)}.brand em{color:var(--red);font-style:normal}.navlinks{display:flex;gap:24px;color:#475467;font-size:14px;font-weight:800}.profile-chip{display:none;align-items:center;gap:9px;background:#f2f5fa;border:1px solid var(--line);padding:8px 10px;border-radius:999px;font-size:12px}.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:950}
+.topbar{padding:8px 16px;text-align:center;background:var(--red);color:#fff;font-size:12px;font-weight:900;letter-spacing:.45px}header{position:sticky;top:0;z-index:30;background:var(--blue);border-bottom:1px solid #00286f}nav{max-width:1160px;margin:auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:950;color:#fff}.brand-mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--blue);color:#fff;font-size:22px;box-shadow:0 5px 12px rgba(0,51,141,.18)}.brand strong{color:#fff}.brand em{color:#fff;font-style:normal}.navlinks{display:flex;gap:24px;color:#fff;font-size:14px;font-weight:800}.profile-chip{display:none;align-items:center;gap:9px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);padding:8px 10px;border-radius:999px;font-size:12px;color:#fff}.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:950}
 .hero{position:relative;overflow:hidden;color:#fff;background:var(--blue);padding:62px 20px 76px}.hero:before,.hero:after{content:"🦬";position:absolute;opacity:.07;filter:grayscale(1) brightness(5);pointer-events:none}.hero:before{font-size:270px;right:5%;top:-80px;transform:rotate(-8deg)}.hero:after{font-size:180px;left:-20px;bottom:-90px;transform:rotate(8deg)}.hero-inner{max-width:1160px;margin:auto;position:relative;z-index:2}.hero-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.75fr);gap:54px;align-items:center}.hero-layout.no-logo{grid-template-columns:1fr}.hero-copy{min-width:0;padding-left:30px}.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.badge{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px}.hero h1{max-width:760px;margin:0 0 18px;font-size:clamp(48px,6.2vw,82px);line-height:.98;letter-spacing:-3px}.hero p{max-width:720px;color:#e6efff;font-size:17px;margin:0}.hero-logo-wrap{display:flex;align-items:center;justify-content:flex-end;min-width:0}.hero-logo{display:block;width:min(410px,100%);height:auto;max-height:300px;object-fit:contain;filter:drop-shadow(0 12px 18px rgba(0,0,0,.2))}.hero-stripe{height:8px;display:grid;grid-template-columns:23% 8% 69%}.hero-stripe span:nth-child(1){background:var(--red)}.hero-stripe span:nth-child(2){background:#fff}.hero-stripe span:nth-child(3){background:var(--blue)}
 body.signed-in .hero,body.signed-in .hero-stripe{display:none}
 body.signed-in .landing-wrap{margin-top:18px}
@@ -387,18 +387,19 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
 .half-champion-card{display:none;margin-top:14px;padding:16px;text-align:center;border-top:6px solid var(--gold)}
 .half-champion-card.show{display:block}.half-champion-icon{font-size:28px;line-height:1}.half-champion-title{margin-top:4px;font-size:16px;font-weight:950}.half-champion-name{margin-top:3px;color:var(--blue);font-size:14px;font-weight:900}.half-champion-meta{margin-top:2px;color:var(--muted);font-size:11px;font-weight:750}
 @media(max-width:700px){.app-view-tabs{position:sticky;top:67px;z-index:18;background:var(--bg);padding:8px 0 6px;margin-top:8px}.app-view-tab{padding:11px 8px}.standings-period-tabs{margin-top:13px}.standings-period-btn{font-size:10px;padding:9px 3px}}
-.compact-league-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}.compact-league-current{min-width:0;font-size:13px;font-weight:950;color:var(--blue);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.compact-league-toggle{border:0;background:transparent;color:var(--blue);font-size:12px;font-weight:900}.league-switcher.compact-collapsed .league-switcher-label,.league-switcher.compact-collapsed .league-row-inline{display:none}.league-switcher.expanded .league-switcher-label{display:none}.league-switcher.expanded .league-row-inline{display:flex!important}.league-switcher.expanded .league-switch-track{display:flex;gap:8px;overflow-x:auto;align-items:center;flex:1;min-width:0;padding:2px 0}.league-switcher.expanded .league-add-btn{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:auto!important;margin:0!important;border:1px dashed #aeb9c8;background:#fff;color:var(--blue);border-radius:999px;padding:9px 12px;font-size:12px;font-weight:900;white-space:nowrap}.league-switcher.expanded{display:flex!important;align-items:center;gap:8px;flex-wrap:wrap}.compact-league-header{width:100%}@media(max-width:700px){.league-switcher.expanded{display:flex!important}.league-switcher.expanded .league-switch-track{width:auto;margin:0;flex:1}.league-switcher.expanded .league-add-btn{width:auto!important;margin:0!important}}</style>
+
+.league-switcher{display:block!important;margin:12px 0 4px!important}
+.league-switcher-label{display:none!important}
+.league-row-inline{display:flex!important;align-items:center;gap:8px;width:100%;min-width:0;overflow-x:auto;padding:2px 0 4px;-webkit-overflow-scrolling:touch}
+.league-switch-track{display:flex!important;gap:8px;align-items:center;flex:0 0 auto;overflow:visible!important;padding:0!important;margin:0!important}
+.league-pill,.league-tab{flex:0 0 auto;white-space:nowrap}
+.league-add-btn{display:inline-flex!important;flex:0 0 auto;align-items:center;justify-content:center;width:auto!important;margin:0!important;border:1px dashed #aeb9c8!important;background:#fff!important;color:var(--blue)!important;border-radius:999px!important;padding:9px 12px!important;font-size:12px!important;font-weight:900!important;white-space:nowrap}
+
+header nav{background:var(--blue);color:#fff}
+header a{color:#fff}
+header #logoutBtn{border-color:rgba(255,255,255,.35)!important;color:#fff!important;background:transparent!important}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4">
-document.addEventListener("click",e=>{
- if(e.target?.id==="compactLeagueToggle"){
-   const wrap=document.getElementById("leagueSwitcher");
-   if(!wrap)return;
-   const opening=wrap.classList.contains("compact-collapsed");
-   wrap.classList.toggle("compact-collapsed",!opening);
-   wrap.classList.toggle("expanded",opening);
-   refreshCompactLeagueSwitcher();
- }
-});
 </script>
 </head>
 <body>
@@ -546,13 +547,9 @@ document.addEventListener("click",e=>{
   </div>
 
   <div class="app-shell" id="appShell">
-    <div class="league-switcher compact-collapsed" id="leagueSwitcher">
-<div class="compact-league-header">
-  <div id="compactCurrentLeague" class="compact-league-current">Current league</div>
-  <button id="compactLeagueToggle" class="compact-league-toggle" type="button">Change league ▾</button>
-</div>
+    <div class="league-switcher" id="leagueSwitcher">
       <div class="league-switcher-label">Your Leagues</div>
-      <div style="display:flex;align-items:center;gap:8px;width:100%;min-width:0" class="league-row-inline">
+      <div class="league-row-inline">
         <div class="league-switch-track" id="leagueSwitchTrack"></div>
         <button class="league-add-btn" onclick="showLeaguePicker()">+ Join Another League</button>
       </div>
@@ -1015,13 +1012,8 @@ async function handleSession(session){
  updateAdminVisibility();
 }
 
-function refreshCompactLeagueSwitcher(){
- const wrap=document.getElementById("leagueSwitcher"),label=document.getElementById("compactCurrentLeague"),toggle=document.getElementById("compactLeagueToggle");
- if(label)label.textContent=currentLeague?.name||"Choose league";
- if(toggle)toggle.textContent=wrap?.classList.contains("compact-collapsed")?"Change league ▾":"Hide leagues ▴";
-}
 function applySignedIn(){
- document.body.classList.add("signed-in");refreshCompactLeagueSwitcher();document.getElementById("profileChip").style.display="flex";document.getElementById("logoutBtn").style.display="inline-block";
+ document.body.classList.add("signed-in");document.getElementById("profileChip").style.display="flex";document.getElementById("logoutBtn").style.display="inline-block";
  document.getElementById("profileName").textContent=`${currentProfile.first_name} ${currentProfile.last_name}`;
  document.getElementById("profileEmail").textContent=currentUser.email;
  document.getElementById("avatar").textContent=currentProfile.first_name[0].toUpperCase();
@@ -1062,7 +1054,7 @@ function renderLeagueSwitcher(){
    b.onclick=()=>switchLeague(l.id);
    track.appendChild(b);
  });
- refreshCompactLeagueSwitcher();
+ 
 }
 
 async function switchLeague(id){
