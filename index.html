@@ -398,6 +398,12 @@ html,body{max-width:100%;overflow-x:hidden}button,input,textarea,select{font:inh
 header nav{background:var(--blue);color:#fff}
 header a{color:#fff}
 header #logoutBtn{border-color:rgba(255,255,255,.35)!important;color:#fff!important;background:transparent!important}
+
+@media(max-width:700px){
+ .league-row-inline{scroll-snap-type:x proximity;scrollbar-width:none}
+ .league-row-inline::-webkit-scrollbar{display:none}
+ .league-pill,.league-add-btn{scroll-snap-align:start}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4">
 </script>
@@ -1047,14 +1053,26 @@ function renderLeagueSwitcher(){
  const track=document.getElementById("leagueSwitchTrack");
  if(!track)return;
  track.innerHTML="";
- myLeagues.forEach(l=>{
+ const ordered=[...myLeagues].sort((a,b)=>{
+   if(a.id===currentLeague?.id)return -1;
+   if(b.id===currentLeague?.id)return 1;
+   const aOp=a.name?.trim().toLowerCase()==="op teachers";
+   const bOp=b.name?.trim().toLowerCase()==="op teachers";
+   if(aOp&&!bOp)return -1;
+   if(bOp&&!aOp)return 1;
+   return String(a.name||"").localeCompare(String(b.name||""));
+ });
+ ordered.forEach(l=>{
    const b=document.createElement("button");
    b.className="league-pill"+(currentLeague?.id===l.id?" active":"");
    b.textContent=l.name;
    b.onclick=()=>switchLeague(l.id);
    track.appendChild(b);
  });
- 
+ requestAnimationFrame(()=>{
+   const active=track.querySelector(".league-pill.active");
+   if(active)active.scrollIntoView({behavior:"smooth",block:"nearest",inline:"start"});
+ });
 }
 
 async function switchLeague(id){
@@ -1215,12 +1233,34 @@ async function selectAdminLeague(id){
 
 function renderAdminEmailRecap(){const recapContext=document.getElementById("adminRecapContext"),reminderContext=document.getElementById("adminReminderContext"),event=adminSchedule.find(g=>g.week===adminWeek),label=adminLeague&&event?`${adminLeague.name} • ${event.label||`Event ${adminWeek}`}`:"Choose a league and week.";if(recapContext)recapContext.textContent=label;if(reminderContext)reminderContext.textContent=label}
 function resetAdminRecapPreview(){adminRecapPreviewData=null;const preview=document.getElementById("adminRecapPreview"),status=document.getElementById("adminRecapStatus"),send=document.getElementById("sendRecapButton"),subject=document.getElementById("adminRecapSubject"),frame=document.getElementById("adminRecapFrame");if(preview)preview.classList.remove("show");if(status){status.textContent="";status.className="recap-status"}if(send){send.disabled=true;send.textContent="Send Weekly Recap"}if(subject)subject.textContent="";if(frame)frame.removeAttribute("srcdoc");resetPickReminderPreview();renderAdminEmailRecap()}
-async function invokeWeeklyRecap(mode){const {data,error}=await db.functions.invoke("send-weekly-recap",{body:{mode,leagueId:adminLeague?.id,week:adminWeek}});if(error){let message=error.message||"The weekly email request failed.";try{const details=await error.context?.json();if(details?.error)message=details.error}catch{}throw new Error(message)}if(data?.error)throw new Error(data.error);return data}
+async function getFreshFunctionAuthHeader(){
+ const {data:refreshData,error:refreshError}=await db.auth.refreshSession();
+ const session=refreshData?.session;
+ if(refreshError||!session?.access_token){
+   await db.auth.signOut({scope:"local"}).catch(()=>{});
+   throw new Error("Your login session needs to be refreshed. Please sign in again, then retry the email.");
+ }
+ currentUser=session.user||currentUser;
+ return {Authorization:`Bearer ${session.access_token}`};
+}
+async function invokeWeeklyRecap(mode){
+ const authHeaders=await getFreshFunctionAuthHeader();
+ const {data,error}=await db.functions.invoke("send-weekly-recap",{headers:authHeaders,body:{mode,leagueId:adminLeague?.id,week:adminWeek}});
+ if(error){let message=error.message||"The weekly email request failed.";try{const details=await error.context?.json();if(details?.error)message=details.error}catch{}throw new Error(message)}
+ if(data?.error)throw new Error(data.error);
+ return data
+}
 async function previewWeeklyRecap(){if(!adminLeague)return;const button=document.getElementById("previewRecapButton"),send=document.getElementById("sendRecapButton"),status=document.getElementById("adminRecapStatus");button.disabled=true;send.disabled=true;status.className="recap-status";status.textContent="Building preview…";try{const data=await invokeWeeklyRecap("preview");adminRecapPreviewData=data;document.getElementById("adminRecapSubject").textContent=`Subject: ${data.subject}`;document.getElementById("adminRecapFrame").srcdoc=data.html;document.getElementById("adminRecapPreview").classList.add("show");const remaining=Number(data.pendingCount??data.recipientCount??0);status.className="recap-status success";status.textContent=`Preview ready • ${data.recipientCount} member${data.recipientCount===1?"":"s"} • ${data.sentCount||0} already sent`;send.disabled=remaining===0;send.textContent=remaining===0?"Everyone Already Received It":`Send to ${remaining} Member${remaining===1?"":"s"}`}catch(error){adminRecapPreviewData=null;status.className="recap-status error";status.textContent=error.message}finally{button.disabled=false}}
 async function sendWeeklyRecap(){if(!adminLeague||!adminRecapPreviewData)return;const remaining=Number(adminRecapPreviewData.pendingCount??adminRecapPreviewData.recipientCount??0);if(!confirm(`Send this ${adminRecapPreviewData.eventLabel} recap to ${remaining} member${remaining===1?"":"s"} of ${adminRecapPreviewData.leagueName}?`))return;const button=document.getElementById("sendRecapButton"),previewButton=document.getElementById("previewRecapButton"),status=document.getElementById("adminRecapStatus");button.disabled=true;previewButton.disabled=true;status.className="recap-status";status.textContent="Sending separate emails to league members…";try{const data=await invokeWeeklyRecap("send"),refreshed=await invokeWeeklyRecap("preview");adminRecapPreviewData=refreshed;document.getElementById("adminRecapSubject").textContent=`Subject: ${refreshed.subject}`;document.getElementById("adminRecapFrame").srcdoc=refreshed.html;const stillPending=Number(refreshed.pendingCount||0);button.disabled=stillPending===0;button.textContent=stillPending===0?"Everyone Already Received It":`Send to ${stillPending} Member${stillPending===1?"":"s"}`;status.className=data.failed?"recap-status error":"recap-status success";status.textContent=data.failed?`${data.sent} sent • ${data.failed} failed. You can try Send again for only the failed emails.`:`✓ ${data.sent} sent${data.skipped?` • ${data.skipped} previously sent`:""}. No duplicate emails were created.`}catch(error){status.className="recap-status error";status.textContent=error.message;button.disabled=false}finally{previewButton.disabled=false}}
 
 function resetPickReminderPreview(){adminReminderPreviewData=null;const preview=document.getElementById("adminReminderPreview"),status=document.getElementById("adminReminderStatus"),send=document.getElementById("sendReminderButton"),subject=document.getElementById("adminReminderSubject"),frame=document.getElementById("adminReminderFrame");if(preview)preview.classList.remove("show");if(status){status.textContent="";status.className="recap-status"}if(send){send.disabled=true;send.textContent="Send Pick Reminder"}if(subject)subject.textContent="";if(frame)frame.removeAttribute("srcdoc")}
-async function invokePickReminder(mode){const {data,error}=await db.functions.invoke("send-pick-reminder",{body:{mode,leagueId:adminLeague?.id,week:adminWeek}});if(error){let message=error.message||"The pick reminder request failed.";try{const details=await error.context?.json();if(details?.error)message=details.error}catch{}throw new Error(message)}if(data?.error)throw new Error(data.error);return data}
+async function invokePickReminder(mode){
+ const authHeaders=await getFreshFunctionAuthHeader();
+ const {data,error}=await db.functions.invoke("send-pick-reminder",{headers:authHeaders,body:{mode,leagueId:adminLeague?.id,week:adminWeek}});
+ if(error){let message=error.message||"The pick reminder request failed.";try{const details=await error.context?.json();if(details?.error)message=details.error}catch{}throw new Error(message)}
+ if(data?.error)throw new Error(data.error);
+ return data
+}
 async function previewPickReminder(){if(!adminLeague)return;const button=document.getElementById("previewReminderButton"),send=document.getElementById("sendReminderButton"),status=document.getElementById("adminReminderStatus");button.disabled=true;send.disabled=true;status.className="recap-status";status.textContent="Building reminder preview…";try{const data=await invokePickReminder("preview");adminReminderPreviewData=data;document.getElementById("adminReminderSubject").textContent=`Subject: ${data.subject}`;document.getElementById("adminReminderFrame").srcdoc=data.html;document.getElementById("adminReminderPreview").classList.add("show");const remaining=Number(data.pendingCount??data.recipientCount??0);status.className="recap-status success";status.textContent=`Preview ready • ${data.recipientCount} member${data.recipientCount===1?"":"s"} • ${data.sentCount||0} already reminded`;send.disabled=remaining===0;send.textContent=remaining===0?"Everyone Already Reminded":`Send to ${remaining} Member${remaining===1?"":"s"}`}catch(error){adminReminderPreviewData=null;status.className="recap-status error";status.textContent=error.message}finally{button.disabled=false}}
 async function sendPickReminder(){if(!adminLeague||!adminReminderPreviewData)return;const remaining=Number(adminReminderPreviewData.pendingCount??adminReminderPreviewData.recipientCount??0);if(!confirm(`Send this ${adminReminderPreviewData.eventLabel} pick reminder to ${remaining} member${remaining===1?"":"s"} of ${adminReminderPreviewData.leagueName}?`))return;const button=document.getElementById("sendReminderButton"),previewButton=document.getElementById("previewReminderButton"),status=document.getElementById("adminReminderStatus");button.disabled=true;previewButton.disabled=true;status.className="recap-status";status.textContent="Sending separate reminders to league members…";try{const data=await invokePickReminder("send"),refreshed=await invokePickReminder("preview");adminReminderPreviewData=refreshed;document.getElementById("adminReminderSubject").textContent=`Subject: ${refreshed.subject}`;document.getElementById("adminReminderFrame").srcdoc=refreshed.html;const stillPending=Number(refreshed.pendingCount||0);button.disabled=stillPending===0;button.textContent=stillPending===0?"Everyone Already Reminded":`Send to ${stillPending} Member${stillPending===1?"":"s"}`;status.className=data.failed?"recap-status error":"recap-status success";status.textContent=data.failed?`${data.sent} sent • ${data.failed} failed. You can try Send again for only the failed reminders.`:`✓ ${data.sent} reminder${data.sent===1?"":"s"} sent${data.skipped?` • ${data.skipped} previously sent`:""}. No duplicate emails were created.`}catch(error){status.className="recap-status error";status.textContent=error.message;button.disabled=false}finally{previewButton.disabled=false}}
 
