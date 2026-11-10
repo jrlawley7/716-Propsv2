@@ -415,33 +415,28 @@ header #logoutBtn{border-color:rgba(255,255,255,.35)!important;color:#fff!import
 <div class="site-update-overlay" id="siteUpdateOverlay" role="dialog" aria-modal="true" aria-labelledby="siteUpdateTitle">
   <div class="site-update-modal">
     <div class="site-update-head">
-      <div class="site-update-icon">🏈</div>
-      <h2 id="siteUpdateTitle">716 Props Just Got an Upgrade</h2>
-      <p>The site is cleaner, easier to navigate, and the Bills season now has two separate races plus the full-season championship.</p>
+      <div class="site-update-kicker">716 PROPS</div>
+      <h2 id="siteUpdateTitle">🏁 Final Week of the 1st Half</h2>
+      <p>Week 10 is your last chance to make a move in the first-half standings.</p>
     </div>
 
     <section class="site-update-section primary">
-      <h3>📱 Picks & Standings Are Now Separate</h3>
-      <p>Use the new <strong>Picks</strong> tab for the current week's questions and the <strong>Standings</strong> tab for leaderboards, weekly results, and season races. Same picks and scores — just easier to find.</p>
+      <h3>👑 First Half Championship</h3>
+      <p>Once Week 10 is scored, we'll crown the <strong>1st Half Champion</strong>. Check the Standings tab to see where you sit heading into the final week.</p>
     </section>
 
     <section class="site-update-section">
-      <h3>🏆 New Half-Season Championships</h3>
-      <p>Your existing picks and scores are all preserved. The Bills standings are now split into three views:</p>
-      <div class="site-update-season-grid">
-        <div class="site-update-season"><strong>1st Half</strong><span>Weeks 1–10</span></div>
-        <div class="site-update-season"><strong>2nd Half</strong><span>Weeks 11–18</span></div>
-        <div class="site-update-season site-update-full"><strong>Full Season</strong><span>Weeks 1–18 combined</span></div>
-      </div>
+      <h3>🔄 A Fresh Race Starts in Week 11</h3>
+      <p>The <strong>2nd Half standings</strong> begin at zero in Week 11, giving everyone a fresh shot at another championship.</p>
     </section>
 
     <section class="site-update-section">
-      <h3>👑 Three Champions</h3>
-      <p>We'll crown a <strong>1st Half Champion</strong>, a <strong>2nd Half Champion</strong>, and a <strong>Full Season Champion</strong>. When Week 11 begins, the 2nd Half standings start fresh at zero while Full Season keeps counting every week.</p>
+      <h3>🏆 Full Season Still Counts</h3>
+      <p>Nothing resets in the <strong>Full Season standings</strong>. Every point from Weeks 1–18 still counts toward the overall season championship.</p>
     </section>
 
     <div class="site-update-actions">
-      <button class="btn" type="button" onclick="closeSiteUpdateNotice()">Got it — let's make some picks</button>
+      <button class="btn" type="button" onclick="closeSiteUpdateNotice()">Got it — finish strong</button>
     </div>
   </div>
 </div>
@@ -1430,7 +1425,7 @@ async function deleteAdminPlayerPoolData(){if(!adminLeague||!selectedAdminPlayer
 
 
 
-const SITE_UPDATE_NOTICE_KEY="props716_update_picks_standings_halves_2026_v1";
+const SITE_UPDATE_NOTICE_KEY="props716_final_week_first_half_2026_v1";
 
 function showSiteUpdateNoticeIfNeeded(){
   if(localStorage.getItem(SITE_UPDATE_NOTICE_KEY)==="1"){
