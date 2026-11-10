@@ -429,15 +429,15 @@ header #logoutBtn{border-color:rgba(255,255,255,.35)!important;color:#fff!import
       <h3>🏆 New Half-Season Championships</h3>
       <p>Your existing picks and scores are all preserved. The Bills standings are now split into three views:</p>
       <div class="site-update-season-grid">
-        <div class="site-update-season"><strong>1st Half</strong><span>Weeks 1–9</span></div>
-        <div class="site-update-season"><strong>2nd Half</strong><span>Weeks 10–18</span></div>
+        <div class="site-update-season"><strong>1st Half</strong><span>Weeks 1–10</span></div>
+        <div class="site-update-season"><strong>2nd Half</strong><span>Weeks 11–18</span></div>
         <div class="site-update-season site-update-full"><strong>Full Season</strong><span>Weeks 1–18 combined</span></div>
       </div>
     </section>
 
     <section class="site-update-section">
       <h3>👑 Three Champions</h3>
-      <p>We'll crown a <strong>1st Half Champion</strong>, a <strong>2nd Half Champion</strong>, and a <strong>Full Season Champion</strong>. When Week 10 begins, the 2nd Half standings start fresh at zero while Full Season keeps counting every week.</p>
+      <p>We'll crown a <strong>1st Half Champion</strong>, a <strong>2nd Half Champion</strong>, and a <strong>Full Season Champion</strong>. When Week 11 begins, the 2nd Half standings start fresh at zero while Full Season keeps counting every week.</p>
     </section>
 
     <div class="site-update-actions">
@@ -802,7 +802,7 @@ function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;",
 function shortName(team){const m={"Houston Texans":"Texans","Detroit Lions":"Lions","Los Angeles Chargers":"Chargers","New England Patriots":"Patriots","Los Angeles Rams":"Rams","Las Vegas Raiders":"Raiders","Baltimore Ravens":"Ravens","Minnesota Vikings":"Vikings","New York Jets":"Jets","Miami Dolphins":"Dolphins","Kansas City Chiefs":"Chiefs","Green Bay Packers":"Packers","Chicago Bears":"Bears","Denver Broncos":"Broncos"};return m[team]||String(team||"").split(" ").filter(Boolean).pop()||"Opponent"}
 function unlocked(w){return !!weekStatus[w]}
 function isBillsCompetition(){return currentCompetition?.slug==="bills-2026"}
-function defaultStandingsPeriod(){return isBillsCompetition()&&Number(defaultCompetitionWeek())>=10?"second":isBillsCompetition()?"first":"full"}
+function defaultStandingsPeriod(){return isBillsCompetition()&&Number(defaultCompetitionWeek())>=11?"second":isBillsCompetition()?"first":"full"}
 function syncStandingsPeriodUI(){
  const tabs=document.getElementById("standingsPeriodTabs");if(!tabs)return;
  tabs.style.display=isBillsCompetition()?"grid":"none";
@@ -1167,7 +1167,7 @@ async function resetWeek(){answers={};tiebreakerGuess=null;renderProps();renderT
 async function renderLeaderboard(){
  const rows=document.getElementById("leaderRows"),podium=document.getElementById("podium"),summary=document.getElementById("leaderboardSummary"),winnerSection=document.getElementById("weeklyWinnersSection"),winnerRows=document.getElementById("weeklyWinnerRows"),winnerCount=document.getElementById("weeklyResultsCount"),heading=document.getElementById("standingsHeading"),help=document.getElementById("standingsHelp"),championCard=document.getElementById("halfChampionCard");if(!currentLeague)return;
  if(!isBillsCompetition())standingsPeriod="full";syncStandingsPeriodUI();
- const period=standingsPeriod,periodStart=period==="second"?10:1,periodEnd=period==="first"?9:18;
+ const period=standingsPeriod,periodStart=period==="second"?11:1,periodEnd=period==="first"?10:18;
  const standingsPromise=isBillsCompetition()?db.rpc("get_league_period_standings",{p_league_id:currentLeague.id,p_period:period}):db.from("league_leaderboard").select("*").eq("league_id",currentLeague.id);
  const [{data:leaders,error:leaderError},{data:profiles},{data:winners},{data:weekPicks},{data:scoredResults}]=await Promise.all([standingsPromise,db.from("profiles").select("id,first_name,last_name"),db.from("league_weekly_winners").select("*").eq("league_id",currentLeague.id).order("week",{ascending:false}).order("difference",{ascending:true}),db.from("league_picks").select("user_id,week,points,tiebreaker_guess,submitted_at").eq("league_id",currentLeague.id),db.from("official_results").select("week").eq("competition_id",currentCompetition.id)]);
  if(leaderError){rows.innerHTML=`<div class="empty">${escapeHtml(leaderError.message)}</div>`;podium.innerHTML="";return}
@@ -1176,13 +1176,13 @@ async function renderLeaderboard(){
  const statusWeek=defaultCompetitionWeek(),statusEvent=schedule.find(g=>Number(g.week)===Number(statusWeek)),statusLabel=statusEvent?.label||`Week ${statusWeek}`;
  const currentWeekSubmitters=new Set((weekPicks||[]).filter(p=>Number(p.week)===Number(statusWeek)&&p.submitted_at).map(p=>p.user_id));
  const board=(leaders||[]).map(x=>({...x,name:pm[x.user_id]||"Player",crowns:crownCounts[x.user_id]||0,currentWeekSubmitted:currentWeekSubmitters.has(x.user_id)})).sort((a,b)=>Number(b.total_points||0)-Number(a.total_points||0)||Number(b.weeks_submitted||0)-Number(a.weeks_submitted||0)||a.name.localeCompare(b.name)),blank={name:"Open",total_points:0,crowns:0,currentWeekSubmitted:false};
- const labels={first:["First Half Standings","Weeks 1–9. The first-half champion is crowned after Week 9."],second:["Second Half Standings","Weeks 10–18. This race starts from zero after Week 9."],full:["Full Season Standings","Weeks 1–18 combined for the overall season championship."]};
+ const labels={first:["First Half Standings","Weeks 1–10. The first-half champion is crowned after Week 10."],second:["Second Half Standings","Weeks 11–18. This race starts from zero after Week 10."],full:["Full Season Standings","Weeks 1–18 combined for the overall season championship."]};
  const copy=isBillsCompetition()?labels[period]:["Season Standings","Season points for this league."];if(heading)heading.textContent=copy[0];if(help)help.textContent=copy[1];
  const first=board[0]||blank,second=board[1]||blank,third=board[2]||blank;podium.innerHTML=`${podiumPlace(second,"second","🥈","2nd",statusLabel)}${podiumPlace(first,"first","🥇","1st",statusLabel)}${podiumPlace(third,"third","🥉","3rd",statusLabel)}`;
  if(summary)summary.textContent=`Show all players (${board.length})`;
  rows.innerHTML=board.length?board.map((p,i)=>`<div class="leader-row"><span class="rank">${i+1}</span><span class="person">${escapeHtml(p.name)}${p.crowns?` <span class="crown-count">👑 ${p.crowns}</span>`:""}<br><span class="current-pick-status ${p.currentWeekSubmitted?"yes":"no"}">${p.currentWeekSubmitted?"✅":"⚠️"} ${escapeHtml(statusLabel)} ${p.currentWeekSubmitted?"submitted":"not submitted"}</span></span><span class="score">${p.total_points} pts</span></div>`).join(""):`<div class="empty">No players are in ${escapeHtml(currentLeague.name)} yet.</div>`;
  if(championCard){
-   const scored=new Set((scoredResults||[]).map(r=>Number(r.week))),periodComplete=isBillsCompetition()&&((period==="first"&&scored.has(9))||((period==="second"||period==="full")&&scored.has(18)));
+   const scored=new Set((scoredResults||[]).map(r=>Number(r.week))),periodComplete=isBillsCompetition()&&((period==="first"&&scored.has(10))||((period==="second"||period==="full")&&scored.has(18)));
    if(periodComplete&&board.length){const top=Number(board[0].total_points||0),champions=board.filter(p=>Number(p.total_points||0)===top).map(p=>p.name),title=period==="first"?"First Half Champion":period==="second"?"Second Half Champion":"Full Season Champion";championCard.innerHTML=`<div class="half-champion-icon">🏆</div><div class="half-champion-title">${title}</div><div class="half-champion-name">${escapeHtml(champions.join(" & "))}</div><div class="half-champion-meta">${top} pts${champions.length>1?" • Co-Champions":""}</div>`;championCard.classList.add("show")}else{championCard.classList.remove("show");championCard.innerHTML=""}
  }
  const hasTiebreakers=schedule.some(g=>g.tiebreakerQuestion);winnerSection.style.display=hasTiebreakers?"block":"none";if(!hasTiebreakers)return;
