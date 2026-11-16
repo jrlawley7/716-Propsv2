@@ -416,27 +416,27 @@ header #logoutBtn{border-color:rgba(255,255,255,.35)!important;color:#fff!import
   <div class="site-update-modal">
     <div class="site-update-head">
       <div class="site-update-kicker">716 PROPS</div>
-      <h2 id="siteUpdateTitle">🏁 Final Week of the 1st Half</h2>
-      <p>Week 10 is your last chance to make a move in the first-half standings.</p>
+      <h2 id="siteUpdateTitle">🏈 Welcome to the 2nd Half</h2>
+      <p>A fresh race starts now. Weeks 11–18 will decide the 2nd Half Champion.</p>
     </div>
 
     <section class="site-update-section primary">
-      <h3>👑 First Half Championship</h3>
-      <p>Once Week 10 is scored, we'll crown the <strong>1st Half Champion</strong>. Check the Standings tab to see where you sit heading into the final week.</p>
+      <h3>🔄 2nd Half Standings Start at Zero</h3>
+      <p>Your <strong>2nd Half standings</strong> restart with Week 11, so everyone has a fresh shot at the top of the podium.</p>
     </section>
 
     <section class="site-update-section">
-      <h3>🔄 A Fresh Race Starts in Week 11</h3>
-      <p>The <strong>2nd Half standings</strong> begin at zero in Week 11, giving everyone a fresh shot at another championship.</p>
+      <h3>👑 Another Championship Is Up for Grabs</h3>
+      <p>Points earned from Weeks 11–18 will determine the <strong>2nd Half Champion</strong>. Every week matters from here on out.</p>
     </section>
 
     <section class="site-update-section">
-      <h3>🏆 Full Season Still Counts</h3>
-      <p>Nothing resets in the <strong>Full Season standings</strong>. Every point from Weeks 1–18 still counts toward the overall season championship.</p>
+      <h3>🏆 Full Season Standings Keep Going</h3>
+      <p>Your season-long score does <strong>not</strong> reset. The <strong>Full Season standings</strong> still include every point from Weeks 1–18.</p>
     </section>
 
     <div class="site-update-actions">
-      <button class="btn" type="button" onclick="closeSiteUpdateNotice()">Got it — finish strong</button>
+      <button class="btn" type="button" onclick="closeSiteUpdateNotice()">Let’s start the 2nd half</button>
     </div>
   </div>
 </div>
@@ -1425,7 +1425,7 @@ async function deleteAdminPlayerPoolData(){if(!adminLeague||!selectedAdminPlayer
 
 
 
-const SITE_UPDATE_NOTICE_KEY="props716_final_week_first_half_2026_v1";
+const SITE_UPDATE_NOTICE_KEY="props716_second_half_kickoff_2026_v1";
 
 function showSiteUpdateNoticeIfNeeded(){
   if(localStorage.getItem(SITE_UPDATE_NOTICE_KEY)==="1"){
