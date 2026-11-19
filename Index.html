@@ -706,6 +706,456 @@ body.signed-in footer{
 }
 
 
+
+/* =========================================================
+   MOBILE APP CLEANUP — PHASE 2
+   Picks + Standings presentation only.
+   No database, scoring, submission or standings logic changes.
+   ========================================================= */
+
+/* ---------- Picks: tighter, easier to scan ---------- */
+body.signed-in .props-grid{
+  gap:12px;
+  margin-top:12px;
+}
+body.signed-in .prop{
+  padding:16px;
+  border-radius:16px;
+}
+body.signed-in .prop-top{
+  gap:8px;
+}
+body.signed-in .category{
+  font-size:10px;
+  letter-spacing:.75px;
+}
+body.signed-in .points{
+  flex:0 0 auto;
+  padding:4px 7px;
+  font-size:10px;
+}
+body.signed-in .prop h3{
+  margin:8px 0 4px;
+  font-size:17px;
+  line-height:1.22;
+}
+body.signed-in .prop p{
+  margin-bottom:11px;
+  font-size:12px;
+  line-height:1.4;
+}
+body.signed-in .choices{
+  gap:8px;
+}
+body.signed-in .choice{
+  min-height:48px;
+  padding:11px 9px;
+  border-radius:11px;
+  font-size:13px;
+  line-height:1.2;
+  transition:transform .08s ease,border-color .15s ease,background .15s ease,box-shadow .15s ease;
+}
+body.signed-in .choice:active:not(:disabled){
+  transform:scale(.985);
+}
+body.signed-in .choice.selected{
+  position:relative;
+  background:#e8f0ff;
+  color:var(--blue);
+  border:2px solid var(--blue);
+  padding:10px 8px;
+  box-shadow:0 3px 10px rgba(0,51,141,.12);
+}
+body.signed-in .choice.selected::after{
+  content:"✓";
+  position:absolute;
+  top:5px;
+  right:7px;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--blue);
+  color:#fff;
+  font-size:11px;
+  font-weight:950;
+}
+body.signed-in .status{
+  min-height:15px;
+  margin-top:7px;
+  font-size:11px;
+}
+
+/* Locked props should read disabled immediately */
+body.signed-in .prop.locked{
+  opacity:.68;
+}
+body.signed-in .prop.locked .choice{
+  box-shadow:none;
+}
+
+/* Matchup is important, but doesn't need to dominate phone height */
+body.signed-in .matchup-inner{
+  min-height:0;
+}
+body.signed-in .team{
+  padding:20px 22px;
+}
+body.signed-in .game-meta{
+  padding:10px 22px 12px;
+}
+
+/* Tiebreaker becomes a compact final question */
+body.signed-in .tiebreaker-card{
+  padding:16px;
+  border-radius:16px;
+}
+body.signed-in .tiebreaker-card h3{
+  font-size:17px;
+  line-height:1.25;
+}
+body.signed-in .tiebreaker-input input{
+  min-height:48px;
+}
+
+/* ---------- Submit: app-style action area ---------- */
+body.signed-in .submit-card{
+  position:sticky;
+  bottom:max(8px,env(safe-area-inset-bottom));
+  z-index:22;
+  margin-top:12px;
+  padding:12px 13px;
+  gap:10px;
+  border:1px solid #c9d5e6;
+  border-radius:16px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 10px 28px rgba(16,24,40,.18);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+body.signed-in .submit-card .big{
+  font-size:28px;
+}
+body.signed-in .submit-card .small{
+  font-size:10px;
+}
+body.signed-in .submit-card .save-state{
+  margin-top:4px;
+  font-size:11px;
+}
+body.signed-in #submitBtn{
+  min-height:46px;
+  min-width:132px;
+  border-radius:12px;
+  box-shadow:0 5px 13px rgba(0,51,141,.2);
+}
+body.signed-in #resetBtn{
+  min-height:46px;
+  border-radius:12px;
+}
+
+/* ---------- Standings period control ---------- */
+body.signed-in .standings-period-tabs{
+  position:sticky;
+  top:112px;
+  z-index:20;
+  padding:4px;
+  margin:10px 0 4px;
+  border:1px solid #dce3ed;
+  background:rgba(233,238,246,.94);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+body.signed-in .standings-period-btn{
+  min-height:40px;
+  padding:8px 5px;
+}
+body.signed-in .standings-period-btn.active{
+  box-shadow:0 2px 7px rgba(16,24,40,.12),inset 0 -3px 0 var(--red);
+}
+
+/* ---------- Podium: cleaner hierarchy ---------- */
+body.signed-in .leaderboard-card{
+  padding:16px;
+  border-radius:16px;
+}
+body.signed-in .podium{
+  margin:15px auto 7px;
+  gap:8px;
+}
+body.signed-in .place{
+  border-radius:14px 14px 8px 8px;
+  box-shadow:0 4px 12px rgba(16,24,40,.06);
+}
+body.signed-in .place.first{
+  box-shadow:0 7px 17px rgba(212,167,44,.17);
+}
+body.signed-in .medal{
+  font-size:32px;
+}
+body.signed-in .place .name{
+  margin-top:4px;
+}
+body.signed-in .place .pts{
+  margin-top:2px;
+}
+body.signed-in .leaderboard-details{
+  margin-top:12px;
+}
+body.signed-in .leaderboard-details summary{
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 8px 2px;
+  border-top:1px solid #edf0f4;
+}
+
+/* Full standings rows: scan rank/name/score first */
+body.signed-in .leader-row{
+  position:relative;
+  gap:9px;
+  min-height:52px;
+  padding:9px 3px;
+}
+body.signed-in .rank{
+  width:27px;
+  height:27px;
+  flex:0 0 27px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  background:#eef3fb;
+  color:var(--blue);
+  font-size:11px;
+}
+body.signed-in .person{
+  line-height:1.25;
+}
+body.signed-in .score{
+  flex:0 0 auto;
+  padding-left:5px;
+  font-size:13px;
+}
+body.signed-in .current-pick-status{
+  margin-top:2px;
+  font-size:10px;
+}
+body.signed-in .person .crown-count{
+  vertical-align:1px;
+  margin:0 0 0 4px;
+}
+
+/* ---------- Weekly results: compact accordion ---------- */
+body.signed-in .weekly-winners-card{
+  border-radius:16px;
+}
+body.signed-in .weekly-results-main>summary{
+  min-height:50px;
+  padding:12px 14px;
+}
+body.signed-in .weekly-results-body{
+  padding:0 12px 6px;
+}
+body.signed-in .weekly-result-week>summary{
+  min-height:50px;
+  padding:10px 2px;
+}
+body.signed-in .weekly-score-row{
+  padding:7px 2px;
+}
+body.signed-in .weekly-score-note{
+  margin-top:2px;
+}
+
+/* ---------- Mobile ---------- */
+@media(max-width:700px){
+  body.signed-in .props-grid{
+    grid-template-columns:1fr;
+    gap:9px;
+  }
+
+  body.signed-in .prop{
+    padding:13px;
+    border-radius:14px;
+  }
+  body.signed-in .prop h3{
+    font-size:16px;
+    margin-top:7px;
+  }
+  body.signed-in .prop p{
+    margin-bottom:9px;
+    font-size:11px;
+  }
+  body.signed-in .choices{
+    gap:7px;
+  }
+  body.signed-in .choice{
+    min-height:50px;
+    padding:11px 8px;
+  }
+  body.signed-in .choice.selected{
+    padding:10px 7px;
+  }
+
+  body.signed-in .team{
+    padding:16px 13px;
+    font-size:clamp(18px,6vw,28px);
+  }
+  body.signed-in .team small{
+    font-size:9px;
+    margin-bottom:5px;
+  }
+  body.signed-in .game-meta{
+    gap:7px;
+    padding:9px 13px 11px;
+    font-size:10px;
+  }
+  body.signed-in .lock-banner{
+    margin-top:8px;
+    padding:10px 12px;
+    font-size:11px;
+    line-height:1.4;
+  }
+
+  body.signed-in .tiebreaker-grid{
+    gap:12px;
+  }
+
+  body.signed-in .submit-card{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    bottom:max(7px,env(safe-area-inset-bottom));
+    margin-inline:-2px;
+    padding:10px 10px;
+  }
+  body.signed-in .submit-card>div:last-child{
+    display:grid!important;
+    grid-template-columns:auto auto;
+    gap:6px!important;
+  }
+  body.signed-in #resetBtn{
+    min-width:62px;
+    padding:10px 10px;
+    font-size:11px;
+  }
+  body.signed-in #submitBtn{
+    min-width:108px;
+    padding:10px 11px;
+    font-size:11px;
+  }
+  body.signed-in .submit-card .big{
+    font-size:23px;
+    line-height:.95;
+  }
+  body.signed-in .submit-card .small{
+    font-size:9px;
+    line-height:1.25;
+  }
+  body.signed-in .submit-card .save-state{
+    max-width:150px;
+    font-size:9px;
+    line-height:1.25;
+  }
+
+  body.signed-in .standings-period-tabs{
+    top:107px;
+    margin-inline:-2px;
+  }
+  body.signed-in .standings-period-btn{
+    min-height:38px;
+    font-size:9px;
+  }
+
+  body.signed-in #standingsViewPanel>.section{
+    margin-top:13px;
+  }
+  body.signed-in #standingsViewPanel .section-title{
+    margin-bottom:9px;
+  }
+  body.signed-in #standingsViewPanel .section-title h2{
+    font-size:20px;
+  }
+  body.signed-in #standingsViewPanel .section-title p{
+    font-size:11px;
+    line-height:1.35;
+  }
+  body.signed-in #standingsViewPanel .section-title .unlock-key{
+    display:none;
+  }
+
+  body.signed-in .leaderboard-card{
+    padding:12px 9px 10px;
+  }
+  body.signed-in .podium{
+    gap:4px;
+    margin-top:11px;
+  }
+  body.signed-in .medal{
+    font-size:27px;
+  }
+  body.signed-in .place .name{
+    font-size:11px;
+  }
+  body.signed-in .place .pts{
+    font-size:16px;
+  }
+  body.signed-in .place .weeks{
+    font-size:9px;
+  }
+
+  body.signed-in .leader-row{
+    min-height:49px;
+    padding:8px 2px;
+  }
+  body.signed-in .rank{
+    width:25px;
+    height:25px;
+    flex-basis:25px;
+    border-radius:7px;
+    font-size:10px;
+  }
+  body.signed-in .person{
+    font-size:12px;
+  }
+  body.signed-in .score{
+    font-size:12px;
+  }
+
+  body.signed-in .weekly-results-main>summary{
+    padding:11px 12px;
+    font-size:12px;
+  }
+  body.signed-in .weekly-results-count{
+    font-size:9px;
+  }
+  body.signed-in .weekly-result-week>summary{
+    min-height:46px;
+    padding:8px 1px;
+  }
+  body.signed-in .weekly-winner-event{
+    font-size:10px;
+  }
+  body.signed-in .weekly-winner-name{
+    font-size:11px;
+  }
+  body.signed-in .weekly-winner-meta{
+    font-size:9px;
+  }
+  body.signed-in .weekly-score-row{
+    grid-template-columns:28px minmax(0,1fr) auto;
+    font-size:11px;
+  }
+}
+
+/* Extra breathing room so sticky submit never hides the schedule/footer. */
+body.signed-in #picksViewPanel{
+  padding-bottom:14px;
+}
+
+
 /* =========================================================
    716 Props Thanksgiving Week skin
    Active only Nov 23-29, 2026 (America/New_York)
@@ -1085,7 +1535,7 @@ body.signed-in footer{
     </div>
 
     <div class="app-view-panel active" id="picksViewPanel">
-<section class="section" id="weeks"><div class="section-title"><div><h2 id="competitionScheduleTitle">2026 Bills Regular Season</h2><p id="scheduleHelp">Tap or swipe across the weeks. Locked events can be viewed, but picks cannot be submitted until they open.</p></div><span class="unlock-key" id="unlockKey">🔓 Event status</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This event is view-only right now. The questions are visible, but picks and submissions are disabled until it opens.</div><div class="bye" id="byeBox"><h2 id="byeTitle" style="margin:0 0 5px">Bye</h2><div id="byeDescription">There are no props to submit for this event.</div></div><div class="props-grid" id="propsGrid"></div><div class="card tiebreaker-card" id="tiebreakerCard"><div class="tiebreaker-grid"><div><div class="tiebreaker-kicker">Weekly Winner Tiebreaker • 0 Points</div><h3 id="tiebreakerQuestion"></h3><p>Used only among players tied for the highest weekly score. Closest guess wins; if equally close, the lower guess wins.</p></div><div class="tiebreaker-input"><label for="tiebreakerGuess">Your Number</label><input id="tiebreakerGuess" type="number" step="1" inputmode="numeric"></div></div></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT EVENT</div><div class="big" id="pickCount">0 / 5</div><div class="small" id="possiblePointsText">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset Picks</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit / Update Picks</button></div></div><div class="card full-schedule" id="fullCompetitionSchedule"></div></section>
+<section class="section" id="weeks"><div class="section-title"><div><h2 id="competitionScheduleTitle">2026 Bills Regular Season</h2><p id="scheduleHelp">Tap or swipe across the weeks. Locked events can be viewed, but picks cannot be submitted until they open.</p></div><span class="unlock-key" id="unlockKey">🔓 Event status</span></div><div class="week-tabs" id="weekTabs"></div><div class="matchup" id="matchup"><div class="matchup-inner"><div class="team" id="leftTeam"></div><div class="team right" id="rightTeam"></div></div><div class="game-meta" id="gameMeta"></div></div><div class="lock-banner" id="lockBanner">🔒 This event is view-only right now. The questions are visible, but picks and submissions are disabled until it opens.</div><div class="bye" id="byeBox"><h2 id="byeTitle" style="margin:0 0 5px">Bye</h2><div id="byeDescription">There are no props to submit for this event.</div></div><div class="props-grid" id="propsGrid"></div><div class="card tiebreaker-card" id="tiebreakerCard"><div class="tiebreaker-grid"><div><div class="tiebreaker-kicker">Weekly Winner Tiebreaker • 0 Points</div><h3 id="tiebreakerQuestion"></h3><p>Used only among players tied for the highest weekly score. Closest guess wins; if equally close, the lower guess wins.</p></div><div class="tiebreaker-input"><label for="tiebreakerGuess">Your Number</label><input id="tiebreakerGuess" type="number" step="1" inputmode="numeric"></div></div></div><div class="card submit-card" id="submitCard"><div><div class="small">CURRENT EVENT</div><div class="big" id="pickCount">0 / 5</div><div class="small" id="possiblePointsText">props selected • 10 possible points</div><div class="save-state" id="saveState"></div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn secondary" id="resetBtn" onclick="resetWeek()">Reset</button><button class="btn" id="submitBtn" onclick="submitPicks()">Submit Picks</button></div></div><div class="card full-schedule" id="fullCompetitionSchedule"></div></section>
 
     </div>
 
