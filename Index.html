@@ -1156,6 +1156,190 @@ body.signed-in #picksViewPanel{
 }
 
 
+
+/* =========================================================
+   MOBILE APP CLEANUP — PHASE 3
+   Startup, auth, connectivity + app polish.
+   No scoring, standings, league or stored-pick schema changes.
+   ========================================================= */
+
+/* Startup screen prevents signed-out UI flashing while auth restores. */
+.app-boot{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:
+    max(22px,env(safe-area-inset-top))
+    max(22px,env(safe-area-inset-right))
+    max(22px,env(safe-area-inset-bottom))
+    max(22px,env(safe-area-inset-left));
+  background:linear-gradient(145deg,#00265f 0%,#00338d 52%,#0d4da1 100%);
+  color:#fff;
+  transition:opacity .22s ease,visibility .22s ease;
+}
+.app-boot.hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.app-boot-card{
+  display:grid;
+  justify-items:center;
+  gap:12px;
+  text-align:center;
+}
+.app-boot-icon{
+  width:82px;
+  height:82px;
+  border-radius:22px;
+  object-fit:cover;
+  background:#fff;
+  box-shadow:0 16px 40px rgba(0,0,0,.22);
+}
+.app-boot-title{
+  font-size:25px;
+  font-weight:950;
+  letter-spacing:-.4px;
+}
+.app-boot-title span{color:#ff7b87}
+.app-boot-copy{
+  font-size:12px;
+  font-weight:750;
+  color:rgba(255,255,255,.8);
+}
+.app-boot-spinner{
+  width:25px;
+  height:25px;
+  border:3px solid rgba(255,255,255,.25);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:propsBootSpin .8s linear infinite;
+}
+@keyframes propsBootSpin{to{transform:rotate(360deg)}}
+
+/* Network state lives above the app, not inside page content. */
+.network-banner{
+  position:fixed;
+  left:50%;
+  top:max(8px,calc(env(safe-area-inset-top) + 6px));
+  transform:translate(-50%,-18px);
+  z-index:4200;
+  width:min(calc(100% - 22px),620px);
+  padding:10px 13px;
+  border-radius:12px;
+  background:#7f1d1d;
+  color:#fff;
+  text-align:center;
+  font-size:11px;
+  font-weight:850;
+  line-height:1.35;
+  box-shadow:0 10px 28px rgba(16,24,40,.2);
+  opacity:0;
+  visibility:hidden;
+  transition:.2s ease;
+}
+.network-banner.show{
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0);
+}
+.network-banner.online{
+  background:#166534;
+}
+
+/* Small native-feeling toast for successful reconnect/app feedback. */
+.app-toast{
+  position:fixed;
+  left:50%;
+  bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));
+  transform:translate(-50%,16px);
+  z-index:4300;
+  width:max-content;
+  max-width:calc(100% - 28px);
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(17,24,39,.94);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  text-align:center;
+  box-shadow:0 10px 28px rgba(16,24,40,.22);
+  opacity:0;
+  visibility:hidden;
+  transition:.2s ease;
+}
+.app-toast.show{
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0);
+}
+
+/* Auth stage polish */
+body:not(.signed-in) .landing-card{
+  border-radius:20px;
+}
+body:not(.signed-in) .auth-stage{
+  scroll-margin-top:20px;
+}
+body:not(.signed-in) .auth-mode-tabs{
+  padding:4px;
+  background:#edf2f8;
+  border-radius:12px;
+}
+body:not(.signed-in) .auth-mode-btn{
+  min-height:42px;
+  border-radius:9px;
+}
+body:not(.signed-in) .auth-mode-btn.active{
+  box-shadow:0 2px 8px rgba(16,24,40,.11);
+}
+body:not(.signed-in) .auth-form-grid input{
+  min-height:48px;
+}
+body:not(.signed-in) .auth-actions .btn{
+  min-height:46px;
+}
+body:not(.signed-in) .auth-message.show{
+  border-radius:12px;
+  line-height:1.4;
+}
+
+/* Better keyboard/focus accessibility ahead of Capacitor. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+summary:focus-visible{
+  outline:3px solid rgba(0,82,204,.3);
+  outline-offset:2px;
+}
+
+/* Prevent content from feeling dead while app data is refreshing. */
+.app-refreshing #appShell{
+  opacity:.78;
+  pointer-events:none;
+  transition:opacity .15s ease;
+}
+
+@media(max-width:700px){
+  .app-boot-icon{width:74px;height:74px;border-radius:20px}
+  .app-boot-title{font-size:23px}
+  .network-banner{font-size:10px}
+  body:not(.signed-in) .landing-wrap{
+    padding-top:10px;
+  }
+  body:not(.signed-in) .landing-card{
+    padding:16px 13px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .app-boot-spinner{animation:none}
+  .app-boot,.network-banner,.app-toast{transition:none}
+}
+
+
 /* =========================================================
    716 Props Thanksgiving Week skin
    Active only Nov 23-29, 2026 (America/New_York)
@@ -1366,6 +1550,18 @@ body.signed-in #picksViewPanel{
 
 </head>
 <body>
+
+<div class="app-boot" id="appBoot" aria-live="polite">
+  <div class="app-boot-card">
+    <img class="app-boot-icon" src="/apple-touch-icon.png" alt="716 Props">
+    <div class="app-boot-title">716 <span>Props</span></div>
+    <div class="app-boot-spinner" aria-hidden="true"></div>
+    <div class="app-boot-copy" id="appBootCopy">Loading your league…</div>
+  </div>
+</div>
+<div class="network-banner" id="networkBanner" role="status" aria-live="polite"></div>
+<div class="app-toast" id="appToast" role="status" aria-live="polite"></div>
+
 
 
 
@@ -1855,22 +2051,78 @@ async function loadCompetitionContext(league){
  renderFullCompetitionSchedule();
 }
 
+
+let appToastTimer=null;
+let connectivityBannerTimer=null;
+
+function finishAppBoot(){
+  const boot=document.getElementById("appBoot");
+  if(!boot)return;
+  boot.classList.add("hidden");
+  setTimeout(()=>{boot.style.display="none"},260);
+}
+function setAppBootCopy(message){
+  const el=document.getElementById("appBootCopy");
+  if(el)el.textContent=message||"Loading your league…";
+}
+function showAppToast(message,duration=2200){
+  const toast=document.getElementById("appToast");
+  if(!toast)return;
+  clearTimeout(appToastTimer);
+  toast.textContent=message;
+  toast.classList.add("show");
+  appToastTimer=setTimeout(()=>toast.classList.remove("show"),duration);
+}
+function updateConnectivityUI(showReconnectToast=false){
+  const banner=document.getElementById("networkBanner");
+  if(!banner)return;
+  clearTimeout(connectivityBannerTimer);
+
+  if(!navigator.onLine){
+    banner.textContent="You’re offline. Picks will not submit until your connection returns.";
+    banner.classList.remove("online");
+    banner.classList.add("show");
+    return;
+  }
+
+  banner.classList.remove("show");
+  if(showReconnectToast)showAppToast("Connection restored ✓");
+}
+function friendlyNetworkMessage(){
+  return navigator.onLine
+    ?"Something went wrong. Please try again."
+    :"You’re offline. Reconnect to the internet and try again.";
+}
+window.addEventListener("offline",()=>updateConnectivityUI(false));
+window.addEventListener("online",()=>updateConnectivityUI(true));
+
+
 async function init(){
+ setAppBootCopy("Loading your league…");
+ updateConnectivityUI(false);
  renderWeekTabs();
  passwordRecoveryRequested=isPasswordRecoveryUrl();
  db.auth.onAuthStateChange((event,session)=>{
    setTimeout(async()=>{
-     if(event==="PASSWORD_RECOVERY"||passwordRecoveryRequested){showPasswordRecovery();return}
-     if(session&&(!currentUser||currentUser.id!==session.user.id))await handleSession(session);
+     try{
+       if(event==="PASSWORD_RECOVERY"||passwordRecoveryRequested){showPasswordRecovery();finishAppBoot();return}
+       if(session&&(!currentUser||currentUser.id!==session.user.id))await handleSession(session);
+     }catch(error){
+       console.error("Auth state refresh failed",error);
+       finishAppBoot();
+       showAppToast(friendlyNetworkMessage(),3200);
+     }
    },0);
  });
- const {data:{session}}=await db.auth.getSession();
- if(passwordRecoveryRequested)showPasswordRecovery();
- else if(session) await handleSession(session);
- else showLanding();
+ const {data:{session},error}=await db.auth.getSession();
+ if(error)throw error;
+ if(passwordRecoveryRequested){showPasswordRecovery();finishAppBoot()}
+ else if(session){setAppBootCopy("Restoring your session…");await handleSession(session);finishAppBoot()}
+ else{showLanding();finishAppBoot()}
 }
 
 function showLanding(){
+ finishAppBoot();
  document.getElementById("landingWrap").style.display="block";
  document.getElementById("landingSignIn").classList.add("active");
  document.getElementById("leaguePicker").classList.remove("active");
@@ -1901,6 +2153,7 @@ function setAuthBusy(buttonId,busy,busyText,readyText){
 }
 
 async function signInWithPassword(){
+ if(!navigator.onLine){setAuthMessage("You’re offline. Reconnect to the internet and try signing in again.",true);return}
  const email=document.getElementById("loginEmailInput").value.trim().toLowerCase(),password=document.getElementById("loginPasswordInput").value;
  if(!validEmail(email)||!password){setAuthMessage("Enter your email address and password.",true);return}
  setAuthBusy("passwordSignInBtn",true,"Signing In…","Sign In");setAuthMessage("");
@@ -1911,6 +2164,7 @@ async function signInWithPassword(){
 }
 
 async function createAccount(){
+ if(!navigator.onLine){setAuthMessage("You’re offline. Reconnect to the internet before creating an account.",true);return}
  const first=document.getElementById("firstNameInput").value.trim(),last=document.getElementById("lastNameInput").value.trim(),email=document.getElementById("emailInput").value.trim().toLowerCase(),password=document.getElementById("signupPasswordInput").value,confirm=document.getElementById("confirmPasswordInput").value;
  if(!first||!last||!validEmail(email)){setAuthMessage("Enter your first name, last name, and a valid email address.",true);return}
  if(password.length<8){setAuthMessage("Your password must have at least 8 characters.",true);return}
@@ -1925,6 +2179,7 @@ async function createAccount(){
 }
 
 async function sendPasswordReset(){
+ if(!navigator.onLine){setAuthMessage("You’re offline. Reconnect to the internet before requesting a password reset.",true);return}
  const email=document.getElementById("loginEmailInput").value.trim().toLowerCase();
  if(!validEmail(email)){setAuthMessage("Enter your email address first, then choose Forgot password?",true);return}
  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:authRedirectUrl()});
@@ -2049,6 +2304,7 @@ async function switchLeague(id){
 }
 
 async function enterApp(){
+ setAppBootCopy("Loading picks and standings…");
  document.getElementById("landingWrap").style.display="none";document.getElementById("appShell").classList.add("active");document.getElementById("leagueSwitcher").style.display="block";
  renderLeagueSwitcher();await loadCompetitionContext(currentLeague);standingsPeriod=defaultStandingsPeriod();syncStandingsPeriodUI();showAppView("picks");await renderWeek();await renderLeaderboard();updateAdminVisibility();
 }
@@ -2121,13 +2377,21 @@ function updateCount(){const possible=currentProps.reduce((s,p)=>s+Number(p.poin
 function updateSaveState(){const s=document.getElementById("saveState");s.textContent=!unlocked(currentWeek)?"This week is locked and view-only.":"Submit to save these picks in this league."}
 
 async function submitPicks(){
+ if(!navigator.onLine){showAppToast("You’re offline. Your picks have not been submitted.",3200);return}
  if(!currentLeague)return;if(!unlocked(currentWeek)){alert("This week is locked.");return}if(Object.keys(answers).length<currentProps.length){alert(`Complete all ${currentProps.length} questions first.`);return}
  const game=currentEvent();if(game?.tiebreakerQuestion&&(!Number.isInteger(tiebreakerGuess)||tiebreakerGuess<game.tiebreakerMin||tiebreakerGuess>game.tiebreakerMax)){alert(`Enter a whole-number tiebreaker guess from ${game.tiebreakerMin} to ${game.tiebreakerMax}.`);return}
  const now=new Date().toISOString();
  const {data:existing}=await db.from("league_picks").select("week").eq("league_id",currentLeague.id).eq("user_id",currentUser.id).eq("week",currentWeek).maybeSingle();
  let error;const payload={answers,tiebreaker_guess:game?.tiebreakerQuestion?tiebreakerGuess:null,submitted_at:now,updated_at:now};if(existing){({error}=await db.from("league_picks").update(payload).eq("league_id",currentLeague.id).eq("user_id",currentUser.id).eq("week",currentWeek))}
  else{({error}=await db.from("league_picks").insert({league_id:currentLeague.id,user_id:currentUser.id,week:currentWeek,...payload}))}
- if(error){alert(error.message);return}document.getElementById("saveState").textContent="✓ Picks saved.";await renderLeaderboard();
+ if(error){
+   console.error("Pick submission failed",error);
+   showAppToast(navigator.onLine?"Picks could not be saved. Please try again.":"You’re offline. Your picks have not been submitted.",3400);
+   return
+ }
+ document.getElementById("saveState").textContent="✓ Picks saved.";
+ showAppToast("Picks submitted ✓");
+ await renderLeaderboard();
 }
 async function resetWeek(){answers={};tiebreakerGuess=null;renderProps();renderTiebreaker()}
 
@@ -2559,7 +2823,12 @@ function updateInstallToolbarVisibility(){
   if(toolbar&&isStandaloneApp())toolbar.style.display="none";
 }
 
-init();
+init().catch(error=>{
+  console.error("716 Props failed to start",error);
+  finishAppBoot();
+  showLanding();
+  setAuthMessage(friendlyNetworkMessage(),true);
+});
 showSiteUpdateNoticeIfNeeded();
 updateInstallToolbarVisibility();
 
